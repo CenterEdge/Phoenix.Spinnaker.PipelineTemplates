@@ -1,0 +1,33 @@
+schema: "1"
+pipeline:
+  application: businessentities
+  name: BusinessEntities Production
+  id: phnx-businessentities-prod
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/production-template.yml
+  variables:
+    application: businessentities
+    loadbalancer: businessentities-prod
+    clustername: businessentities-prod-api
+    stagingloadbalancer: businessentities-dev
+    stagingclustername: businessentities-staging-api
+    imagenamepattern: .*businessentities.*
+    smoketestjob: Phoenix/job/Services/job/Phoenix.Service.BusinessEntities/job/Phoenix.Service.BusinessEntities.Tests.Smoke
+    gcrrepo: phoenix-177420/phoenix-service-businessentities
+    gcrimage: us.gcr.io/phoenix-177420/phoenix-service-businessentities
+  metadata:
+    description: The Business Entities Production Pipeline Config
+    name: BusinessEntities-Production
+    owner: gbaker@centeredgesoftware.com
+    scopes:
+    - businessentities
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications']
+  triggers:
+  - account: gcr-phoenix
+    enabled: true
+    organization: phoenix-177420
+    registry: us.gcr.io
+    repository: phoenix-177420/phoenix-service-businessentities
+    runAsUser: phoenix-svc-account
+    type: docker
