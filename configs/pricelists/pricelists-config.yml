@@ -1,0 +1,33 @@
+schema: "1"
+pipeline:
+  application: pricelists
+  name: PriceLists Production
+  id: phnx-pricelists-prod
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/production-template.yml
+  variables:
+    application: pricelists
+    loadbalancer: pricelists-prod-api
+    clustername: pricelists-prod-api
+    stagingloadbalancer: pricelists-staging-api
+    stagingclustername: pricelists-staging-api
+    imagenamepattern: .*pricelists.*
+    smoketestjob: Phoenix/job/Services/job/Phoenix.Service.PriceLists/job/Phoenix.Service.PriceLists.Tests.Smoke
+    gcrrepo: phoenix-177420/phoenix-service-pricelists
+    gcrimage: us.gcr.io/phoenix-177420/phoenix-service-pricelists
+  metadata:
+    description: The PriceLists Production Pipeline Config
+    name: PriceLists-Production
+    owner: gbaker@centeredgesoftware.com
+    scopes:
+    - pricelists
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications']
+  triggers:
+  - account: gcr-phoenix
+    enabled: true
+    organization: phoenix-177420
+    registry: us.gcr.io
+    repository: phoenix-177420/phoenix-service-pricelists
+    runAsUser: phoenix-svc-account
+    type: docker

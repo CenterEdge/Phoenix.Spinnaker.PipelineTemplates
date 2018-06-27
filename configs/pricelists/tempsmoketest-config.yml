@@ -1,0 +1,22 @@
+schema: "1"
+pipeline:
+  application: pricelists
+  name: Temp Smoke Test
+  id: phoenix-pricelists-tempsmoketest
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/tempsmoketest-template.yml
+  variables:
+    application: pricelists
+    loadbalancer: pricelists-staging-api
+    clustername: pricelists-staging-temp
+    gcrrepo: phoenix-177420/phoenix-service-pricelists
+    gcrimage: us.gcr.io/phoenix-177420/phoenix-service-pricelists:latest
+  metadata:
+    description: A Temporary Smoke Test Configuration
+    name: PriceLists-TempSmokeTest
+    owner: gbaker@centeredgesoftware.com
+    scopes:
+    - pricelists
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications']
+  triggers: []
