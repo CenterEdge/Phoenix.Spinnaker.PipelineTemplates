@@ -1,0 +1,22 @@
+schema: "1"
+pipeline:
+  application: businessentities
+  name: Temp Smoke Test
+  id: phoenix-businessentities-tempsmoketest
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/tempsmoketest-template.yml
+  variables:
+    application: businessentities
+    loadbalancer: businessentities-dev
+    clustername: businessentities-staging-temp
+    gcrrepo: phoenix-177420/phoenix-service-businessentities
+    gcrimage: us.gcr.io/phoenix-177420/phoenix-service-businessentities:latest
+  metadata:
+    description: A Temporary Smoke Test Configuration
+    name: BusinessEntities-TempSmokeTest
+    owner: gbaker@centeredgesoftware.com
+    scopes:
+    - businessentities
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications']
+  triggers: []
