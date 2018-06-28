@@ -56,6 +56,11 @@ stages:
               key: url
           name: BusinessEntities__Host
         - envSource:
+            configMapSource:
+              configMapName: productcatalogs-api
+              key: url
+          name: ProductCatalogs__Host
+        - envSource:
             secretSource:
               key: url
               secretName: couchbase-primary
@@ -235,6 +240,11 @@ stages:
               configMapName: businessentities-api
               key: url
           name: BusinessEntities__Host
+        - envSource:
+            configMapSource:
+              configMapName: productcatalogs-api
+              key: url
+          name: ProductCatalogs__Host
         - envSource:
             secretSource:
               key: url
