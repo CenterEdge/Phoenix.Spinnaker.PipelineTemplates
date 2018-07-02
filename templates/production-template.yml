@@ -326,12 +326,7 @@ stages:
         volumeMounts: []
       - args: []
         command: []
-        envVars:
-        - envSource:
-            secretSource:
-              key: key
-              secretName: api-gateway
-          name: API_GATEWAY_KEY
+        envVars: []
         imageDescription:
           account: gcr-phoenix
           imageId: us.gcr.io/phoenix-177420/nginx-proxy:2
