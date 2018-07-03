@@ -1,0 +1,22 @@
+schema: "1"
+pipeline:
+  application: posdesigner
+  name: Temp Smoke Test
+  id: phoenix-posdesigner-tempsmoketest
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/tempsmoketest-template.yml
+  variables:
+    application: posdesigner
+    loadbalancer: posdesigner-staging-api
+    clustername: posdesigner-staging-temp
+    gcrrepo: phoenix-177420/phoenix-service-posdesigner
+    gcrimage: us.gcr.io/phoenix-177420/phoenix-service-posdesigner:latest
+  metadata:
+    description: A Temporary Smoke Test Configuration
+    name: POSDesigner-TempSmokeTest
+    owner: gbaker@centeredgesoftware.com
+    scopes:
+    - posdesigner
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications']
+  triggers: []
