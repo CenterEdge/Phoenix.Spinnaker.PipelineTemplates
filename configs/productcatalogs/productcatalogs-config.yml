@@ -12,7 +12,7 @@ pipeline:
     stagingloadbalancer: productcatalogs-staging-api
     stagingclustername: productcatalogs-staging-api
     imagenamepattern: .*productcatalogs.*
-    smoketestjob: Phoenix/job/Services/job/Phoenix.Service.ProductCatalogs/job/Phoenix.Service.ProductCatalogs.Tests.Smoke
+    smoketestjob: Phoenix/job/Services/job/Phoenix.Service.ProductCatalogs/job/Phoenix.Service.ProductCatalogs.Smoke
     gcrrepo: phoenix-177420/phoenix-service-productcatalogs
     gcrimage: us.gcr.io/phoenix-177420/phoenix-service-productcatalogs
   metadata:
