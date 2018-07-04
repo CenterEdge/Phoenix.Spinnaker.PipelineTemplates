@@ -12,7 +12,7 @@ pipeline:
     stagingloadbalancer: pricelists-staging-api
     stagingclustername: pricelists-staging-api
     imagenamepattern: .*pricelists.*
-    smoketestjob: Phoenix/job/Services/job/Phoenix.Service.PriceLists/job/Phoenix.Service.PriceLists.Tests.Smoke
+    smoketestjob: Phoenix/job/Services/job/Phoenix.Service.PriceLists/job/Phoenix.Service.PriceLists.Smoke
     gcrrepo: phoenix-177420/phoenix-service-pricelists
     gcrimage: us.gcr.io/phoenix-177420/phoenix-service-pricelists
   metadata:

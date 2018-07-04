@@ -12,7 +12,7 @@ pipeline:
     stagingloadbalancer: posdesigner-staging-api
     stagingclustername: posdesigner-staging-api
     imagenamepattern: .*posdesigner.*
-    smoketestjob: Phoenix/job/Services/job/Phoenix.Service.POSDesigner/job/Phoenix.Service.POSDesigner.Tests.Smoke
+    smoketestjob: Phoenix/job/Services/job/Phoenix.Service.POSDesigner/job/Phoenix.Service.POSDesigner.Smoke
     gcrrepo: phoenix-177420/phoenix-service-posdesigner
     gcrimage: us.gcr.io/phoenix-177420/phoenix-service-posdesigner
   metadata:

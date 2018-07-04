@@ -12,7 +12,7 @@ pipeline:
     stagingloadbalancer: transactions-staging-api
     stagingclustername: transactions-staging-api
     imagenamepattern: .*transactions.*
-    smoketestjob: Phoenix/job/Services/job/Phoenix.Service.Transactions/job/Phoenix.Service.Transactions.Tests.Smoke
+    smoketestjob: Phoenix/job/Services/job/Phoenix.Service.Transactions/job/Phoenix.Service.Transactions.Smoke
     gcrrepo: phoenix-177420/phoenix-service-transactions
     gcrimage: us.gcr.io/phoenix-177420/phoenix-service-transactions
   metadata:
