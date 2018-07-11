@@ -151,7 +151,7 @@ stages:
           name: API_GATEWAY_KEY
         imageDescription:
           account: gcr-phoenix
-          imageId: us.gcr.io/phoenix-177420/nginx-proxy:2
+          imageId: us.gcr.io/phoenix-177420/nginx-proxy:4
           registry: us.gcr.io
           repository: phoenix-177420/nginx-proxy
           tag: "2"
@@ -329,7 +329,7 @@ stages:
         envVars: []
         imageDescription:
           account: gcr-phoenix
-          imageId: us.gcr.io/phoenix-177420/nginx-proxy:2
+          imageId: us.gcr.io/phoenix-177420/nginx-proxy:4
           registry: us.gcr.io
           repository: phoenix-177420/nginx-proxy
           tag: "2"
