@@ -154,7 +154,7 @@ stages:
           imageId: us.gcr.io/phoenix-177420/nginx-proxy:4
           registry: us.gcr.io
           repository: phoenix-177420/nginx-proxy
-          tag: "2"
+          tag: "4"
         imagePullPolicy: IFNOTPRESENT
         limits: {}
         name: phoenix-177420-nginx-proxy
@@ -332,7 +332,7 @@ stages:
           imageId: us.gcr.io/phoenix-177420/nginx-proxy:4
           registry: us.gcr.io
           repository: phoenix-177420/nginx-proxy
-          tag: "2"
+          tag: "4"
         imagePullPolicy: IFNOTPRESENT
         limits: {}
         name: phoenix-177420-nginx-proxy
