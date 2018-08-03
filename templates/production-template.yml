@@ -116,7 +116,7 @@ stages:
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 1
-        name: phoenix-177420-phoenix-service-productcatalogs
+        name: "phoenix-177420-phoenix-service-{{ application }}"
         ports:
         - containerPort: 8080
           name: http
