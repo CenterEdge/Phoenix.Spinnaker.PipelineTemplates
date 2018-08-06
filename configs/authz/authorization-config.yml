@@ -1,0 +1,33 @@
+schema: "1"
+pipeline:
+  application: authz
+  name: Authorization Production
+  id: phnx-authorization-prod
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/production-template.yml
+  variables:
+    application: authz
+    loadbalancer: authz-prod-api
+    clustername: authz-prod-api
+    stagingloadbalancer: authz-staging-api
+    stagingclustername: authz-staging-api
+    imagenamepattern: .*authorization.*
+    smoketestjob: Phoenix/job/Services/job/Phoenix.Service.Authorization/job/Phoenix.Service.Authorization.Smoke
+    gcrrepo: phoenix-177420/phoenix-service-authorization
+    gcrimage: us.gcr.io/phoenix-177420/phoenix-service-authorization
+  metadata:
+    description: The Authorization Production Pipeline Config
+    name: Authorization-Production
+    owner: gbaker@centeredgesoftware.com
+    scopes:
+    - authz
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications']
+  triggers:
+  - account: gcr-phoenix
+    enabled: true
+    organization: phoenix-177420
+    registry: us.gcr.io
+    repository: phoenix-177420/phoenix-service-authorization
+    runAsUser: phoenix-svc-account
+    type: docker
