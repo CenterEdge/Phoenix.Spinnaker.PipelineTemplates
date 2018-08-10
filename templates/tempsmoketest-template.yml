@@ -70,6 +70,31 @@ stages:
               configMapName: productcatalogs-api
               key: url
           name: ProductCatalogs__Host
+        - envSource:
+            secretSource:
+              key: clientId
+              secretName: cognito-creds
+          name: COGNITO__clientId
+        - envSource:
+            secretSource:
+              key: credentials
+              secretName: cognito-creds
+          name: COGNITO__credentials__IdentityPoolId
+        - envSource:
+            secretSource:
+              key: endpointUrl
+              secretName: cognito-creds
+          name: COGNITO__endpointUrl
+        - envSource:
+            secretSource:
+              key: poolId
+              secretName: cognito-creds
+          name: COGNITO__poolId
+        - envSource:
+            secretSource:
+              key: region
+              secretName: cognito-creds
+          name: COGNITO__region
         imageDescription:
           account: gcr-phoenix
           fromTrigger: true
