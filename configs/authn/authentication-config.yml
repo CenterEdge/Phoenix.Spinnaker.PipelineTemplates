@@ -1,0 +1,33 @@
+schema: "1"
+pipeline:
+  application: authn
+  name: Authentication Production
+  id: phnx-authentication-prod
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/production-template.yml
+  variables:
+    application: authn
+    loadbalancer: authn-prod-api
+    clustername: authn-prod-api
+    stagingloadbalancer: authn-staging-api
+    stagingclustername: authn-staging-api
+    imagenamepattern: .*authentication.*
+    smoketestjob: Phoenix/job/Services/job/Phoenix.Service.Authentication/job/Phoenix.Service.Authentication.Smoke
+    gcrrepo: phoenix-177420/phoenix-service-authentication
+    gcrimage: us.gcr.io/phoenix-177420/phoenix-service-authentication
+  metadata:
+    description: The Authentication Production Pipeline Config
+    name: Authentication-Production
+    owner: gbaker@centeredgesoftware.com
+    scopes:
+    - authn
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications']
+  triggers:
+  - account: gcr-phoenix
+    enabled: true
+    organization: phoenix-177420
+    registry: us.gcr.io
+    repository: phoenix-177420/phoenix-service-authentication
+    runAsUser: phoenix-svc-account
+    type: docker

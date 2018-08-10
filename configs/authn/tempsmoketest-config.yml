@@ -1,0 +1,22 @@
+schema: "1"
+pipeline:
+  application: authn
+  name: Temp Smoke Test
+  id: phoenix-authentication-tempsmoketest
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/tempsmoketest-template.yml
+  variables:
+    application: authn
+    loadbalancer: authn-staging-api
+    clustername: authn-staging-temp
+    gcrrepo: phoenix-177420/phoenix-service-authentication
+    gcrimage: us.gcr.io/phoenix-177420/phoenix-service-authentication:latest
+  metadata:
+    description: A Temporary Smoke Test Configuration
+    name: Authentication-TempSmokeTest
+    owner: gbaker@centeredgesoftware.com
+    scopes:
+    - authn
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications']
+  triggers: []
