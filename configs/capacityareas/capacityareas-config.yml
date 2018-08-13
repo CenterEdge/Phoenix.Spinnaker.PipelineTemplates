@@ -1,0 +1,33 @@
+schema: "1"
+pipeline:
+  application: capacity
+  name: CapacityAreas Production
+  id: phnx-capacity-prod
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/production-template.yml
+  variables:
+    application: capacity
+    loadbalancer: capacity-prod-api
+    clustername: capacity-prod-api
+    stagingloadbalancer: capacity-staging-api
+    stagingclustername: capacity-staging-api
+    imagenamepattern: .*capacity.*
+    smoketestjob: Phoenix/job/Services/job/Phoenix.Service.CapacityAreas/job/Phoenix.Service.CapacityAreas.Smoke
+    gcrrepo: phoenix-177420/phoenix-service-capacityareas
+    gcrimage: us.gcr.io/phoenix-177420/phoenix-service-capacityareas
+  metadata:
+    description: The CapacityAreas Production Pipeline Config
+    name: CapacityAreas-Production
+    owner: gbaker@centeredgesoftware.com
+    scopes:
+    - capacity
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications']
+  triggers:
+  - account: gcr-phoenix
+    enabled: true
+    organization: phoenix-177420
+    registry: us.gcr.io
+    repository: phoenix-177420/phoenix-service-capacityareas
+    runAsUser: phoenix-svc-account
+    type: docker
