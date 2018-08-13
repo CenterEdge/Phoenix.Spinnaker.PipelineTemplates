@@ -1,0 +1,22 @@
+schema: "1"
+pipeline:
+  application: capacity
+  name: Temp Smoke Test
+  id: phoenix-capacity-tempsmoketest
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/tempsmoketest-template.yml
+  variables:
+    application: capacity
+    loadbalancer: capacity-staging-api
+    clustername: capacity-staging-temp
+    gcrrepo: phoenix-177420/phoenix-service-capacityareas
+    gcrimage: us.gcr.io/phoenix-177420/phoenix-service-capacityareas:latest
+  metadata:
+    description: A Temporary Smoke Test Configuration
+    name: CapacityAreas-TempSmokeTest
+    owner: gbaker@centeredgesoftware.com
+    scopes:
+    - capacity
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications']
+  triggers: []
