@@ -96,27 +96,17 @@ stages:
             secretSource:
               key: clientId
               secretName: cognito-creds
-          name: COGNITO__clientId
-        - envSource:
-            secretSource:
-              key: credentials
-              secretName: cognito-creds
-          name: COGNITO__credentials__IdentityPoolId
-        - envSource:
-            secretSource:
-              key: endpointUrl
-              secretName: cognito-creds
-          name: COGNITO__endpointUrl
+          name: COGNITO__ClientId
         - envSource:
             secretSource:
               key: poolId
               secretName: cognito-creds
-          name: COGNITO__poolId
+          name: COGNITO__UserPoolId
         - envSource:
             secretSource:
               key: region
               secretName: cognito-creds
-          name: COGNITO__region
+          name: COGNITO__Region
         imageDescription:
           account: gcr-phoenix
           fromTrigger: true
@@ -306,27 +296,17 @@ stages:
             secretSource:
               key: clientId
               secretName: cognito-creds
-          name: COGNITO__clientId
-        - envSource:
-            secretSource:
-              key: credentials
-              secretName: cognito-creds
-          name: COGNITO__credentials__IdentityPoolId
-        - envSource:
-            secretSource:
-              key: endpointUrl
-              secretName: cognito-creds
-          name: COGNITO__endpointUrl
+          name: COGNITO__ClientId
         - envSource:
             secretSource:
               key: poolId
               secretName: cognito-creds
-          name: COGNITO__poolId
+          name: COGNITO__UserPoolId
         - envSource:
             secretSource:
               key: region
               secretName: cognito-creds
-          name: COGNITO__region
+          name: COGNITO__Region
         imageDescription:
           account: gcr-phoenix
           fromTrigger: true
