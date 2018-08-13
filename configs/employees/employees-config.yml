@@ -1,0 +1,33 @@
+schema: "1"
+pipeline:
+  application: employees
+  name: Employees Production
+  id: phnx-employees-prod
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/production-template.yml
+  variables:
+    application: employees
+    loadbalancer: employees-prod-api
+    clustername: employees-prod-api
+    stagingloadbalancer: employees-staging-api
+    stagingclustername: employees-staging-api
+    imagenamepattern: .*employees.*
+    smoketestjob: Phoenix/job/Services/job/Phoenix.Service.Employees/job/Phoenix.Service.Employees.Smoke
+    gcrrepo: phoenix-177420/phoenix-service-employees
+    gcrimage: us.gcr.io/phoenix-177420/phoenix-service-employees
+  metadata:
+    description: The Employees Production Pipeline Config
+    name: Employees-Production
+    owner: gbaker@centeredgesoftware.com
+    scopes:
+    - employees
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications']
+  triggers:
+  - account: gcr-phoenix
+    enabled: true
+    organization: phoenix-177420
+    registry: us.gcr.io
+    repository: phoenix-177420/phoenix-service-employees
+    runAsUser: phoenix-svc-account
+    type: docker
