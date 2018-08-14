@@ -1,0 +1,33 @@
+schema: "1"
+pipeline:
+  application: evtsched
+  name: EventScheduling Production
+  id: phnx-evtsched-prod
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/production-template.yml
+  variables:
+    application: evtsched
+    loadbalancer: evtsched-prod-api
+    clustername: evtsched-prod-api
+    stagingloadbalancer: evtsched-staging-api
+    stagingclustername: evtsched-staging-api
+    imagenamepattern: .*eventscheduling.*
+    smoketestjob: Phoenix/job/Services/job/Phoenix.Service.EventScheduling/job/Phoenix.Service.EventScheduling.Smoke
+    gcrrepo: phoenix-177420/phoenix-service-eventscheduling
+    gcrimage: us.gcr.io/phoenix-177420/phoenix-service-eventscheduling
+  metadata:
+    description: The EventScheduling Production Pipeline Config
+    name: EventScheduling-Production
+    owner: gbaker@centeredgesoftware.com
+    scopes:
+    - evtsched
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications']
+  triggers:
+  - account: gcr-phoenix
+    enabled: true
+    organization: phoenix-177420
+    registry: us.gcr.io
+    repository: phoenix-177420/phoenix-service-eventscheduling
+    runAsUser: phoenix-svc-account
+    type: docker
