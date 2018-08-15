@@ -1,0 +1,33 @@
+schema: "1"
+pipeline:
+  application: stations
+  name: Stations Production
+  id: phnx-stations-prod
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/production-template.yml
+  variables:
+    application: stations
+    loadbalancer: stations-prod-api
+    clustername: stations-prod-api
+    stagingloadbalancer: stations-staging-api
+    stagingclustername: stations-staging-api
+    imagenamepattern: .*stations.*
+    smoketestjob: Phoenix/job/Services/job/Phoenix.Service.Stations/job/Phoenix.Service.Stations.Smoke
+    gcrrepo: phoenix-177420/phoenix-service-stations
+    gcrimage: us.gcr.io/phoenix-177420/phoenix-service-stations
+  metadata:
+    description: The Stations Production Pipeline Config
+    name: Stations-Production
+    owner: gbaker@centeredgesoftware.com
+    scopes:
+    - stations
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications']
+  triggers:
+  - account: gcr-phoenix
+    enabled: true
+    organization: phoenix-177420
+    registry: us.gcr.io
+    repository: phoenix-177420/phoenix-service-stations
+    runAsUser: phoenix-svc-account
+    type: docker
