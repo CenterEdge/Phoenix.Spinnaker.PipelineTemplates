@@ -1,0 +1,22 @@
+schema: "1"
+pipeline:
+  application: actsched
+  name: Temp Smoke Test
+  id: phoenix-activityscheduling-tempsmoketest
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/tempsmoketest-template.yml
+  variables:
+    application: actsched
+    loadbalancer: actsched-staging-api
+    clustername: actsched-staging-temp
+    gcrrepo: phoenix-177420/phoenix-service-activityscheduling
+    gcrimage: us.gcr.io/phoenix-177420/phoenix-service-activityscheduling:latest
+  metadata:
+    description: A Temporary Smoke Test Configuration
+    name: ActivityScheduling-TempSmokeTest
+    owner: gbaker@centeredgesoftware.com
+    scopes:
+    - actsched
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications']
+  triggers: []
