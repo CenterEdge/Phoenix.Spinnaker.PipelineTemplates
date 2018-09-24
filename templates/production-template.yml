@@ -38,6 +38,8 @@ variables:
   description: The GCR image of the container to run
 - name: gcrrepo
   description: The GCR repository to connect to
+- name: awsrole
+  description: The AWS role to assign to pods
 stages:
 - config:
     clusters:
@@ -196,7 +198,8 @@ stages:
       - "{{ stagingloadbalancer }}"
       namespace: default
       nodeSelector: {}
-      podAnnotations: {}
+      podAnnotations:
+        iam.amazonaws.com/role: "{{ awsrole }}"
       provider: kubernetes
       region: default
       replicaSetAnnotations: {}
@@ -389,7 +392,8 @@ stages:
       - "{{ loadbalancer }}"
       namespace: default
       nodeSelector: {}
-      podAnnotations: {}
+      podAnnotations:
+        iam.amazonaws.com/role: "{{ awsrole }}"
       provider: kubernetes
       region: default
       replicaSetAnnotations: {}
