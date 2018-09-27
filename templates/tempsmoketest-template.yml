@@ -16,6 +16,10 @@ variables:
   description: The GCR image of the container to run
 - name: gcrrepo
   description: The GCR repository to connect to
+- name: podAnnotations
+  type: object
+  defaultValue: {}
+  description: The annotations to assign to pods
 stages:
 - config:
     clusters:
