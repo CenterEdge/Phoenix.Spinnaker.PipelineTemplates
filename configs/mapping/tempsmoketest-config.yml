@@ -1,0 +1,22 @@
+schema: "1"
+pipeline:
+  application: mapping
+  name: Temp Smoke Test
+  id: phoenix-mapping-tempsmoketest
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/tempsmoketest-template.yml
+  variables:
+    application: mapping
+    loadbalancer: mapping-staging-api
+    clustername: mapping-staging-temp
+    gcrrepo: phoenix-177420/phoenix-service-mapping
+    gcrimage: us.gcr.io/phoenix-177420/phoenix-service-mapping:latest
+  metadata:
+    description: A Temporary Smoke Test Configuration
+    name: Mapping-TempSmokeTest
+    owner: gbaker@centeredgesoftware.com
+    scopes:
+    - mapping
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications']
+  triggers: []
