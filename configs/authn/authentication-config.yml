@@ -15,7 +15,7 @@ pipeline:
     smoketestjob: Phoenix/job/Services/job/Phoenix.Service.Authentication/job/Phoenix.Service.Authentication.Smoke
     gcrrepo: phoenix-177420/phoenix-service-authentication
     gcrimage: us.gcr.io/phoenix-177420/phoenix-service-authentication
-    awsrole: PhoenixAuthenticationService
+    podAnnotations: "{ iam.amazonaws.com/role: PhoenixAuthenticationService }"
   metadata:
     description: The Authentication Production Pipeline Config
     name: Authentication-Production
