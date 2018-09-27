@@ -14,7 +14,7 @@ pipeline:
   metadata:
     description: A Temporary Smoke Test Configuration
     name: Mapping-TempSmokeTest
-    owner: mmasenthiner@centeredgesoftware.com
+    owner: mmasenthin@centeredgesoftware.com
     scopes:
     - mapping
 configuration:
