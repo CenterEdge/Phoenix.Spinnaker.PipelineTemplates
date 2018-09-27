@@ -18,7 +18,7 @@ pipeline:
   metadata:
     description: The Mapping Production Pipeline Config
     name: Mapping-Production
-    owner: gbaker@centeredgesoftware.com
+    owner: mmasenthin@centeredgesoftware.com
     scopes:
     - mapping
 configuration:
