@@ -1,0 +1,33 @@
+schema: "1"
+pipeline:
+  application: mapping
+  name: Mapping Production
+  id: phnx-mapping-prod
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/production-template.yml
+  variables:
+    application: mapping
+    loadbalancer: mapping-prod-api
+    clustername: mapping-prod-api
+    stagingloadbalancer: mapping-staging-api
+    stagingclustername: mapping-staging-api
+    imagenamepattern: .*mapping.*
+    smoketestjob: Phoenix/job/Services/job/Phoenix.Service.Mapping/job/Phoenix.Service.Mapping.Smoke
+    gcrrepo: phoenix-177420/phoenix-service-mapping
+    gcrimage: us.gcr.io/phoenix-177420/phoenix-service-mapping
+  metadata:
+    description: The Mapping Production Pipeline Config
+    name: Mapping-Production
+    owner: mmasenthin@centeredgesoftware.com
+    scopes:
+    - mapping
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications']
+  triggers:
+  - account: gcr-phoenix
+    enabled: true
+    organization: phoenix-177420
+    registry: us.gcr.io
+    repository: phoenix-177420/phoenix-service-mapping
+    runAsUser: phoenix-svc-account
+    type: docker
