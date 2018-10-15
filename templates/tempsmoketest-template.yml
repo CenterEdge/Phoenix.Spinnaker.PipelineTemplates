@@ -94,6 +94,11 @@ stages:
               key: region
               secretName: cognito-creds
           name: COGNITO__Region
+        - envSource:
+            secretSource:
+              key: defaultTempPass
+              secretName: cognito-creds
+          name: COGNITO__DefaultTemporaryPassword
         imageDescription:
           account: gcr-phoenix
           fromTrigger: true
