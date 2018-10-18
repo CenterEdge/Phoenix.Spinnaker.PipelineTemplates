@@ -42,6 +42,9 @@ variables:
   type: object
   defaultValue: {}
   description: The annotations to assign to pods
+- name: product
+  description: The name of the product this deployment belongs to
+  defaultValue: Phoenix
 stages:
 - config:
     clusters:
@@ -480,3 +483,64 @@ stages:
   inject: {}
   name: Destroy Staging Server Group
   type: destroyServerGroup
+- config:
+    alias: preconfiguredWebhook
+    parameterValues:
+      alertType: info
+      environment: ${#stage('Deploy Production').context.clusters[0].stack}
+      product: "{{ product }}"
+      text: Start Deploy of ${execution['application']} to ${#stage('Deploy Production').context.clusters[0].stack}
+      title: Start Deploy of ${execution['application']} to ${#stage('Deploy Production').context.clusters[0].stack}
+    statusUrlResolution: getMethod
+  dependsOn:
+  - phoenix-scriptedpipelinetest-smoketest
+  id: pipelineevent-start-deployment
+  inheritanceControl: {}
+  inject: {}
+  name: Publish Start Event
+  type: pipelineEvent
+- config:
+    alias: preconfiguredWebhook
+    parameterValues:
+      alertType: success
+      environment: ${#stage('Deploy Production').context.clusters[0].stack}
+      product: "{{ product }}"
+      text: "'Deployed image {{ gcrimage }}
+        of ${execution[''application'']} to ${#stage(''Deploy Production'').context.clusters[0].stack}
+        Deploy Duration: ${new java.text.SimpleDateFormat(''HH:mm:ss'').format(#stage(''Deploy Production'').endTime
+        - execution[''startTime''])}'"
+      title: Deployed ${execution['application']} to ${#stage('Deploy Production').context.clusters[0].stack}
+    stageEnabled:
+      expression: '#stage("Deploy Production").status.toString() == ''SUCCEEDED'''
+      type: expression
+    statusUrlResolution: getMethod
+  dependsOn:
+  - phoenix-production-deploy
+  id: pipelineevent-success
+  inheritanceControl: {}
+  inject: {}
+  name: Publish Success Event
+  type: pipelineEvent
+- config:
+    alias: preconfiguredWebhook
+    failOnFailedExpressions: true
+    parameterValues:
+      alertType: error
+      environment: ${#stage('Deploy Production').context.clusters[0].stack}
+      product: "{{ product }}"
+      text: "'Failed to deploy image {{ gcrimage }}
+        of ${execution[''application'']} to ${#stage(''Deploy Production'').context.clusters[0].stack}
+        Deploy Duration: ${new java.text.SimpleDateFormat(''HH:mm:ss'').format(#stage(''Deploy Production'').endTime
+        - execution[''startTime''])}'"
+      title: Failed to deploy ${execution['application']} to ${#stage('Deploy Production').context.clusters[0].stack}
+    stageEnabled:
+      expression: '#stage("Deploy Production").status.toString() != ''SUCCEEDED'''
+      type: expression
+    statusUrlResolution: getMethod
+  dependsOn:
+  - phoenix-production-deploy
+  id: pipelineevent-failed
+  inheritanceControl: {}
+  inject: {}
+  name: Publish Failed Event
+  type: pipelineEvent
