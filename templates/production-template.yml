@@ -505,11 +505,10 @@ stages:
       alertType: success
       environment: "{{ clustername }}"
       product: "{{ product }}"
-      text: "Deployed image {{ gcrimage }} of {{ application }} to {{ clustername }}
-        Deploy Duration: ${new java.text.SimpleDateFormat('HH:mm:ss').format(#stage(Deploy Production').endTime - execution['startTime'])}"
+      text: "Deployed image {{ gcrimage }} of {{ application }} to {{ clustername }} Deploy Duration: ${new java.text.SimpleDateFormat('HH:mm:ss').format(#stage(Deploy Production').endTime - execution['startTime'])}"
       title: "Deployed {{ application }} to {{ clustername }}"
     stageEnabled:
-      expression: '#stage("Deploy Production").status.toString() == ''SUCCEEDED'''
+      expression: "#stage('Deploy Production').status.toString() == 'SUCCEEDED'"
       type: expression
     statusUrlResolution: getMethod
   dependsOn:
@@ -526,11 +525,10 @@ stages:
       alertType: error
       environment: "{{ clustername }}"
       product: "{{ product }}"
-      text: "Failed to deploy image {{ gcrimage }} of {{ application }} to {{ clustername }}
-        Deploy Duration: ${new java.text.SimpleDateFormat('HH:mm:ss).format(#stage('Deploy Production).endTime - execution['startTime'])}"
+      text: "Failed to deploy image {{ gcrimage }} of {{ application }} to {{ clustername }} Deploy Duration: ${new java.text.SimpleDateFormat('HH:mm:ss).format(#stage('Deploy Production).endTime - execution['startTime'])}"
       title: "Failed to deploy {{ application }} to {{ clustername }}"
     stageEnabled:
-      expression: '#stage("Deploy Production").status.toString() != ''SUCCEEDED'''
+      expression: "#stage('Deploy Production').status.toString() != 'SUCCEEDED'"
       type: expression
     statusUrlResolution: getMethod
   dependsOn:
