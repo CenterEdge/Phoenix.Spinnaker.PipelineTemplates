@@ -144,6 +144,11 @@ stages:
           successThreshold: 1
           timeoutSeconds: 1
         name: "phoenix-177420-phoenix-service-{{ application }}"
+        resources:
+          limits:
+            cpu: "1"
+          requests:
+            cpu: "0.5"
         ports:
         - containerPort: 8080
           name: http
@@ -164,9 +169,6 @@ stages:
           periodSeconds: 5
           successThreshold: 1
           timeoutSeconds: 1
-        requests:
-          cpu: ""
-          memory: ""
         volumeMounts: []
       - args: []
         command: []
