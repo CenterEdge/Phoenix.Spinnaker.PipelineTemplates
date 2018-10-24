@@ -45,6 +45,18 @@ variables:
 - name: product
   description: The name of the product this deployment belongs to
   defaultValue: Phoenix
+- name: requestcpu
+  description: The CPU limit for requests
+  defaultValue: 200m
+- name: requestmem
+  description: The Memory limit for requests
+  defaultValue: 128Mi
+- name: podcpu
+  description: The CPU limit for a given pod
+  defaultValue: 500m
+- name: podmem
+  description: The Memory limit for a pod
+  defaultValue: 512mi
 stages:
 - config:
     clusters:
@@ -164,9 +176,6 @@ stages:
           periodSeconds: 5
           successThreshold: 1
           timeoutSeconds: 1
-        requests:
-          cpu: ""
-          memory: ""
         volumeMounts: []
       - args: []
         command: []
@@ -331,7 +340,9 @@ stages:
           registry: us.gcr.io
           repository: "{{ gcrrepo }}"
         imagePullPolicy: IFNOTPRESENT
-        limits: {}
+        limits:
+          cpu: "{{ podcpu }}"
+          memory: "{{ podmem }}"
         livenessProbe:
           failureThreshold: 3
           handler:
@@ -369,7 +380,9 @@ stages:
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 1
-        requests: {}
+        requests: 
+          cpu: "{{ requestcpu }}"
+          memory: "{{ requestmem }}"
         volumeMounts: []
       - args: []
         command: []
