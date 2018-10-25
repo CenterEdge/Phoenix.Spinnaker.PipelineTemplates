@@ -46,10 +46,10 @@ variables:
   description: The name of the product this deployment belongs to
   defaultValue: Phoenix
 - name: requestcpu
-  description: The CPU limit for requests
+  description: The amount of CPU requested
   defaultValue: 100m
 - name: requestmem
-  description: The Memory limit for requests
+  description: The amount of Memory requested
   defaultValue: 512mi
 - name: maxcpu
   description: The CPU limit for a given pod
