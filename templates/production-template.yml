@@ -50,13 +50,13 @@ variables:
   defaultValue: 100m
 - name: requestmem
   description: The amount of Memory requested
-  defaultValue: 512mi
+  defaultValue: 512Mi
 - name: maxcpu
   description: The CPU limit for a given pod
   defaultValue: 200m
 - name: maxmem
   description: The Memory limit for a pod
-  defaultValue: 1024mi
+  defaultValue: 1024Mi
 stages:
 - config:
     clusters:
