@@ -50,7 +50,7 @@ variables:
   defaultValue: 200m
 - name: requestmem
   description: The Memory limit for requests
-  defaultValue: 128Mi
+  defaultValue: 256mi
 - name: podcpu
   description: The CPU limit for a given pod
   defaultValue: 500m
