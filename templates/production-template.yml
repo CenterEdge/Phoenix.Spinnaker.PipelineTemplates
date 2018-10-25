@@ -47,16 +47,16 @@ variables:
   defaultValue: Phoenix
 - name: requestcpu
   description: The CPU limit for requests
-  defaultValue: 200m
+  defaultValue: 100m
 - name: requestmem
   description: The Memory limit for requests
-  defaultValue: 256mi
-- name: podcpu
-  description: The CPU limit for a given pod
-  defaultValue: 500m
-- name: podmem
-  description: The Memory limit for a pod
   defaultValue: 512mi
+- name: maxcpu
+  description: The CPU limit for a given pod
+  defaultValue: 200m
+- name: maxmem
+  description: The Memory limit for a pod
+  defaultValue: 1024mi
 stages:
 - config:
     clusters:
@@ -341,8 +341,8 @@ stages:
           repository: "{{ gcrrepo }}"
         imagePullPolicy: IFNOTPRESENT
         limits:
-          cpu: "{{ podcpu }}"
-          memory: "{{ podmem }}"
+          cpu: "{{ maxcpu }}"
+          memory: "{{ maxmem }}"
         livenessProbe:
           failureThreshold: 3
           handler:
