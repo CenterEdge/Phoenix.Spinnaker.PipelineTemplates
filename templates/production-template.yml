@@ -200,7 +200,7 @@ stages:
         - name: STATSD_SAMPLE_RATE
           value: "{{ statsdSampleRate }}"
         - name: SERVICE_NAME
-          value: "{{ application }}"
+          value: "smoke.{{ application }}"
         imageDescription:
           account: gcr-phoenix
           imageId: us.gcr.io/phoenix-177420/nginx-proxy:PR-4-15
@@ -402,13 +402,23 @@ stages:
         volumeMounts: []
       - args: []
         command: []
-        envVars: []
+        envVars:
+        - name: STATSD_ENABLED
+          value: "{{ statsdEnabled }}"
+        - name: STATSD_SERVER
+          envSource:
+            fieldRef:
+              fieldPath: status.hostIP
+        - name: STATSD_SAMPLE_RATE
+          value: "{{ statsdSampleRate }}"
+        - name: SERVICE_NAME
+          value: "prod.{{ application }}"
         imageDescription:
           account: gcr-phoenix
-          imageId: us.gcr.io/phoenix-177420/nginx-proxy:7
+          imageId: us.gcr.io/phoenix-177420/nginx-proxy:PR-4-15
           registry: us.gcr.io
           repository: phoenix-177420/nginx-proxy
-          tag: "7"
+          tag: "PR-4-15"
         imagePullPolicy: IFNOTPRESENT
         limits: {}
         name: phoenix-177420-nginx-proxy

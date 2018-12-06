@@ -22,7 +22,7 @@ variables:
   description: The annotations to assign to pods
 - name: statsdEnabled
   description: Whether or not statsd logging is enabled
-  defaultValue: false
+  defaultValue: true
 - name: statsdSampleRate
   description: The percentage of requests to log to statsd
   defaultValue: 100
@@ -171,7 +171,7 @@ stages:
         - name: STATSD_SAMPLE_RATE
           value: "{{ statsdSampleRate }}"
         - name: SERVICE_NAME
-          value: "{{ application }}"
+          value: "staging.{{ application }}"
         imageDescription:
           account: gcr-phoenix
           imageId: us.gcr.io/phoenix-177420/nginx-proxy:PR-4-15
