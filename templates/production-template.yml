@@ -489,7 +489,7 @@ stages:
     namespaces:
     - default
     retainLargerOverNewer: "false"
-    shrinkToSize: 3
+    shrinkToSize: 2
   dependsOn:
   - phoenix-production-disablecluster
   id: phoenix-production-shrinkcluster
