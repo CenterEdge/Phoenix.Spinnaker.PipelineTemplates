@@ -16,13 +16,16 @@ variables:
   description: The GCR image of the container to run
 - name: gcrrepo
   description: The GCR repository to connect to
+- name: gcrimagetag
+  description: The tag of the image you want to run
+  defaultValue: latest
 - name: podAnnotations
   type: object
   defaultValue: {}
   description: The annotations to assign to pods
 - name: statsdSampleRate
   description: The percentage of requests to log to statsd. Set to 0 to disable
-  defaultValue: 100
+  defaultValue: 100 
 stages:
 - config:
     clusters:
@@ -108,7 +111,7 @@ stages:
           imageId: "{{ gcrimage }}"
           registry: us.gcr.io
           repository: "{{ gcrrepo }}"
-          tag: latest
+          tag: "{{ gcrimagetag }}"
         imagePullPolicy: IFNOTPRESENT
         limits: {}
         livenessProbe:
