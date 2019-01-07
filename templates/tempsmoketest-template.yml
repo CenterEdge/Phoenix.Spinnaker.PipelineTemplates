@@ -16,9 +16,6 @@ variables:
   description: The GCR image of the container to run
 - name: gcrrepo
   description: The GCR repository to connect to
-- name: gcrimagetag
-  description: The tag of the image you want to run
-  defaultValue: latest
 - name: podAnnotations
   type: object
   defaultValue: {}
@@ -111,7 +108,6 @@ stages:
           imageId: "{{ gcrimage }}"
           registry: us.gcr.io
           repository: "{{ gcrrepo }}"
-          tag: "{{ gcrimagetag }}"
         imagePullPolicy: IFNOTPRESENT
         limits: {}
         livenessProbe:
