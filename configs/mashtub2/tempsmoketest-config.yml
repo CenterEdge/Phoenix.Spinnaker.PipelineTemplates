@@ -1,0 +1,22 @@
+schema: "1"
+pipeline:
+  application: mashtub2
+  name: Temp Smoke Test
+  id: phoenix-mashtub2-tempsmoketest
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/tempsmoketest-template.yml
+  variables:
+    application: mashtub2
+    loadbalancer: mashtub2-staging-api
+    clustername: mashtub2-staging-temp
+    gcrrepo: phoenix-177420/phoenix-mashtub2
+    gcrimage: us.gcr.io/phoenix-177420/phoenix-mashtub2:latest
+  metadata:
+    description: A Temporary Smoke Test Configuration
+    name: Mashtub2-TempSmokeTest
+    owner: gbrown@centeredgesoftware.com
+    scopes:
+    - mashtub2
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications']
+  triggers: []

@@ -1,0 +1,33 @@
+schema: "1"
+pipeline:
+  application: mashtub2
+  name: Mashtub2 Production
+  id: phoenix-mashtub2-prod
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/production-template.yml
+  variables:
+    application: mashtub2
+    loadbalancer: mashtub2-prod-api
+    clustername: mashtub2-prod-api
+    stagingloadbalancer: mashtub2-staging-api
+    stagingclustername: mashtub2-staging-api
+    imagenamepattern: .*mashtub2.*
+    smoketestjob: Phoenix/job/Mashtub/job/Phoenix.Mashtub2/job/Phoenix.Mashtub2.Smoke
+    gcrrepo: phoenix-177420/phoenix-mashtub2
+    gcrimage: us.gcr.io/phoenix-177420/phoenix-mashtub2
+  metadata:
+    description: The Mashtub2 Production Pipeline Config
+    name: Mashtub2-Production
+    owner: gbrown@centeredgesoftware.com
+    scopes:
+    - mashtub2
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications']
+  triggers:
+  - account: gcr-phoenix
+    enabled: true
+    organization: phoenix-177420
+    registry: us.gcr.io
+    repository: phoenix-177420/phoenix-mashtub2
+    runAsUser: phoenix-svc-account
+    type: docker
