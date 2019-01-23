@@ -105,6 +105,11 @@ stages:
               key: defaultTempPass
               secretName: cognito-creds
           name: COGNITO__DefaultTemporaryPassword
+        - envSource:
+            secretSource:
+              key: key
+              secretName: feature-flag-key
+          name: LaunchDarklyOptions__SdkKey
         imageDescription:
           account: gcr-phoenix
           imageId: "{{ gcrimage }}"

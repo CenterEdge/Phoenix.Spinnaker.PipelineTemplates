@@ -134,6 +134,11 @@ stages:
               key: region
               secretName: cognito-creds
           name: COGNITO__Region
+        - envSource:
+            secretSource:
+              key: key
+              secretName: feature-flag-key
+          name: LaunchDarklyOptions__SdkKey
         imageDescription:
           account: gcr-phoenix
           fromTrigger: true
@@ -344,6 +349,11 @@ stages:
               key: region
               secretName: cognito-creds
           name: COGNITO__Region
+        - envSource:
+            secretSource:
+              key: key
+              secretName: feature-flag-key
+          name: LaunchDarklyOptions__SdkKey
         imageDescription:
           account: gcr-phoenix
           fromTrigger: true
