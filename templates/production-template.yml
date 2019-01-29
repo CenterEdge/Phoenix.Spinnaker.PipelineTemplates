@@ -454,7 +454,7 @@ stages:
       replicaSetAnnotations: {}
       scalingPolicy:
         cpuUtilization:
-          target: 40
+          target: 200m
       stack: prod
       strategy: ""
       targetSize: 3
