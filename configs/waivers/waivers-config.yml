@@ -15,7 +15,7 @@ pipeline:
     smoketestjob: Phoenix/job/Services/job/Phoenix.Service.Waivers/job/Phoenix.Service.Waivers.Smoke
     gcrrepo: phoenix-177420/phoenix-service-waivers
     gcrimage: us.gcr.io/phoenix-177420/phoenix-service-waivers
-  podAnnotations: "{ iam.amazonaws.com/role: PhoenixWaiversSvc }"
+    podAnnotations: "{ iam.amazonaws.com/role: PhoenixWaiversSvc }"
   metadata:
     description: The Waivers Production Pipeline Config
     name: Waivers-Production
