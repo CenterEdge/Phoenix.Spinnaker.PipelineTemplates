@@ -11,6 +11,7 @@ pipeline:
     clustername: waivers-staging-temp
     gcrrepo: phoenix-177420/phoenix-service-waivers
     gcrimage: us.gcr.io/phoenix-177420/phoenix-service-waivers:latest
+    podAnnotations: "{ iam.amazonaws.com/role: PhoenixWaiversSvc }"
   metadata:
     description: A Temporary Smoke Test Configuration
     name: Waivers-TempSmokeTest
