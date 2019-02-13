@@ -76,68 +76,8 @@ stages:
         envVars:
         - name: ASPNETCORE_ENVIRONMENT
           value: Staging
-        - envSource:
-            configMapSource:
-              configMapName: businessentities-api
-              key: url
-          name: BusinessEntities__Host
-        - envSource:
-            configMapSource:
-              configMapName: productcatalogs-api
-              key: url
-          name: ProductCatalogs__Host
-        - envSource:
-            secretSource:
-              key: url
-              secretName: couchbase-primary
-          name: Couchbase__Servers__0
         - name: ASPNETCORE_URLS
           value: http://localhost:8080/
-        - envSource:
-            secretSource:
-              key: username
-              secretName: couchbase-primary
-          name: Couchbase__Username
-        - envSource:
-            secretSource:
-              key: password
-              secretName: couchbase-primary
-          name: Couchbase__Password
-        - envSource:
-            configMapSource:
-              configMapName: rabbitmq
-              key: host
-          name: RabbitMQ__Hosts__0__Host
-        - envSource:
-            configMapSource:
-              configMapName: rabbitmq
-              key: username
-          name: RabbitMQ__Username
-        - envSource:
-            secretSource:
-              key: default-pass
-              secretName: rabbitmq-config
-          name: RabbitMQ__Password
-        - envSource:
-            secretSource:
-              key: clientId
-              secretName: cognito-creds
-          name: COGNITO__ClientId
-        - envSource:
-            secretSource:
-              key: clientSecret
-              secretName: cognito-creds
-          name: COGNITO__ClientSecret
-        - envSource:
-            secretSource:
-              key: poolId
-              secretName: cognito-creds
-          name: COGNITO__UserPoolId
-        - envSource:
-            secretSource:
-              key: region
-              secretName: cognito-creds
-          name: COGNITO__Region
         - envSource:
             secretSource:
               key: key
@@ -263,6 +203,23 @@ stages:
   name: Wait for ALB Health Checks
   type: wait
 - config:
+    cloudProvider: kubernetes
+    cloudProviderType: kubernetes
+    cluster: mashtub-prod-api
+    credentials: phoenix
+    imageNamePattern: .*mashtub.*
+    namespaces:
+    - default
+    onlyEnabled: true
+    selectionStrategy: NEWEST
+  dependsOn:
+  - healthchecks-wait
+  id: phoenix-find-mashtub-production-image
+  inheritanceControl: {}
+  inject: {}
+  name: Find MashTub Production Image
+  type: findImage
+- config:
     completeOtherBranchesThenFail: false
     continuePipeline: true
     failPipeline: false
@@ -270,7 +227,7 @@ stages:
     master: primary-jenkins
     parameters: "{{ smoketestparams }}"
   dependsOn:
-  - healthchecks-wait
+  - phoenix-find-mashtub-production-image
   id: phoenix-scriptedpipelinetest-smoketest
   inheritanceControl: {}
   inject: {}
@@ -291,68 +248,8 @@ stages:
         envVars:
         - name: ASPNETCORE_ENVIRONMENT
           value: Production
-        - envSource:
-            configMapSource:
-              configMapName: businessentities-api
-              key: url
-          name: BusinessEntities__Host
-        - envSource:
-            configMapSource:
-              configMapName: productcatalogs-api
-              key: url
-          name: ProductCatalogs__Host
-        - envSource:
-            secretSource:
-              key: url
-              secretName: couchbase-primary
-          name: Couchbase__Servers__0
-        - envSource:
-            secretSource:
-              key: username
-              secretName: couchbase-primary
-          name: Couchbase__Username
-        - envSource:
-            secretSource:
-              key: password
-              secretName: couchbase-primary
-          name: Couchbase__Password
         - name: ASPNETCORE_URLS
           value: http://localhost:8080/
-        - envSource:
-            configMapSource:
-              configMapName: rabbitmq
-              key: host
-          name: RabbitMQ__Hosts__0__Host
-        - envSource:
-            configMapSource:
-              configMapName: rabbitmq
-              key: username
-          name: RabbitMQ__Username
-        - envSource:
-            secretSource:
-              key: default-pass
-              secretName: rabbitmq-config
-          name: RabbitMQ__Password
-        - envSource:
-            secretSource:
-              key: clientId
-              secretName: cognito-creds
-          name: COGNITO__ClientId
-        - envSource:
-            secretSource:
-              key: clientSecret
-              secretName: cognito-creds
-          name: COGNITO__ClientSecret
-        - envSource:
-            secretSource:
-              key: poolId
-              secretName: cognito-creds
-          name: COGNITO__UserPoolId
-        - envSource:
-            secretSource:
-              key: region
-              secretName: cognito-creds
-          name: COGNITO__Region
         - envSource:
             secretSource:
               key: key

@@ -4,7 +4,7 @@ pipeline:
   name: Mashtub2 Production
   id: phoenix-mashtub2-prod
   template:
-    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/production-template.yml
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/mt-production-template.yml
   variables:
     application: mashtub2
     loadbalancer: mashtub2-prod-api
@@ -12,7 +12,8 @@ pipeline:
     stagingloadbalancer: mashtub2-staging-api
     stagingclustername: mashtub2-staging-api
     imagenamepattern: .*mashtub2.*
-    smoketestjob: Phoenix/job/Mashtub/job/Phoenix.Mashtub2/job/Phoenix.Mashtub2.Smoke
+    smoketestjob: Phoenix/job/MashTub.Net/job/MashTub.SmokeTests
+    smoketestparams: "{ BASE_URL: https://api-ingress.phoenix.centeredge.io/v1-staging, SDK_VERSION: ${#stage( 'FindImage' )["context"]["amiDetails"][0]["tag"]} }"
     gcrrepo: phoenix-177420/phoenix-mashtub2
     gcrimage: us.gcr.io/phoenix-177420/phoenix-mashtub2
   metadata:
