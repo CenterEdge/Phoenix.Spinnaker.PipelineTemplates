@@ -4,7 +4,7 @@ pipeline:
   name: Mashtub2 Production
   id: phoenix-mashtub2-prod
   template:
-    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/production-template.yml
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/mt-production-template.yml
   variables:
     application: mashtub2
     loadbalancer: mashtub2-prod-api
