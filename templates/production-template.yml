@@ -30,6 +30,10 @@ variables:
   description: A string used to pattern match the name of the image we want to pull from the staging cluster
 - name: smoketestjob
   description: Location of the job to execute for running Smoke Tests
+- name: smoketestparams
+  type: object
+  defaultValue: {}
+  description: Optional parameters to pass to the smoke test
 - name: stagingloadbalancer
   description: The name of the load balancer for clusters created by this pipeline
 - name: stagingclustername
@@ -264,7 +268,7 @@ stages:
     failPipeline: false
     job: "{{ smoketestjob }}"
     master: primary-jenkins
-    parameters: {}
+    parameters: "{{ smoketestparams }}"
   dependsOn:
   - healthchecks-wait
   id: phoenix-scriptedpipelinetest-smoketest
