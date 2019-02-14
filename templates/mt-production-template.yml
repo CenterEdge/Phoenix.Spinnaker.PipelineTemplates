@@ -224,7 +224,7 @@ stages:
     parameters:
       BASE_URL: https://api-ingress.phoenix.centeredge.io/v1-staging
       SDK_VERSION:
-        expression: "${#stage(\"FindImage\")[\"context\"][\"amiDetails\"][0][\"tag\"]}"
+        expression: "\"${#stage(\"FindImage\")[\"context\"][\"amiDetails\"][0][\"tag\"]}\""
         type: expression
   dependsOn:
   - phoenix-find-mashtub-production-image
