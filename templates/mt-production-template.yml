@@ -225,7 +225,7 @@ stages:
     job: "{{ smoketestjob }}"
     master: primary-jenkins
     parameters:
-       BASE_URL: "https://api-ingress.phoenix.centeredge.io/v1-staging",
+       BASE_URL: "https://api-ingress.phoenix.centeredge.io/v1-staging"
        SDK_VERSION: "{{ sdkversion }}"
   dependsOn:
   - phoenix-find-mashtub-production-image
