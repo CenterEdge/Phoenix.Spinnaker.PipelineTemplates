@@ -62,7 +62,7 @@ variables:
   defaultValue: 100
 - name: sdkversion
   description: The sdk version to use when testing
-  defaultValue: "229"
+  defaultValue: "${#stage( 'FindImage' )['context']['amiDetails'][0]['tag']} }"
 stages:
 - config:
     clusters:
