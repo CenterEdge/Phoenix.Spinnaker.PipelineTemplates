@@ -223,7 +223,7 @@ stages:
     master: primary-jenkins
     parameters: {
         "BASE_URL": "https://api-ingress.phoenix.centeredge.io/v1-staging",
-        "SDK_VERSION": "${`#stage( 'FindImage' )[\"context\"][\"amiDetails\"][0][\"tag\"]}"
+        "SDK_VERSION": "${##stage( 'FindImage' )[\"context\"][\"amiDetails\"][0][\"tag\"]}"
       }
   dependsOn:
   - phoenix-find-mashtub-production-image
