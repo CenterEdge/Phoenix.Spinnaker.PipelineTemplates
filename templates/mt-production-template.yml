@@ -216,7 +216,7 @@ stages:
   id: phoenix-find-mashtub-production-image
   inheritanceControl: {}
   inject: {}
-  name: Find MashTub Production Image
+  name: FindImage
   type: findImage
 - config:
     completeOtherBranchesThenFail: false
