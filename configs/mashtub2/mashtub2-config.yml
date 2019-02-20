@@ -12,8 +12,8 @@ pipeline:
     stagingloadbalancer: mashtub2-staging-api
     stagingclustername: mashtub2-staging-api
     imagenamepattern: .*mashtub2.*
-    smoketestjob: Phoenix/job/MashTub.Net/job/MashTub.SmokeTests
-    smoketestparams: "{ BASE_URL: https://api-ingress.phoenix.centeredge.io/v1-staging, SDK_VERSION: ${#stage( 'FindImage' )["context"]["amiDetails"][0]["tag"]} }"
+    smoketestjob: Phoenix/job/MashTub.Net/job/MashTub.SmokeTests/job/master/
+    sdkversion: "${#stage( 'FindImage' )[\"context\"][\"amiDetails\"][0][\"tag\"]}"
     gcrrepo: phoenix-177420/phoenix-mashtub2
     gcrimage: us.gcr.io/phoenix-177420/phoenix-mashtub2
   metadata:
