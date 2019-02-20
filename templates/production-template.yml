@@ -427,13 +427,17 @@ stages:
           repository: phoenix-177420/nginx-proxy
           tag: "8"
         imagePullPolicy: IFNOTPRESENT
-        limits: {}
+        limits:
+          cpu: "{{ maxcpu }}"
+          memory: "{{ maxmem }}"
         name: phoenix-177420-nginx-proxy
         ports:
         - containerPort: 80
           name: http
           protocol: TCP
-        requests: {}
+        requests: 
+          cpu: "{{ requestcpu }}"
+          memory: "{{ requestmem }}"
         volumeMounts: []
       deployment:
         deploymentStrategy:
