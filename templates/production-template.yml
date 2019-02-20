@@ -283,7 +283,7 @@ stages:
       capacity:
         desired: 1
         max: 9
-        min: 3
+        min: 1
       cloudProvider: kubernetes
       containers:
       - args: []
