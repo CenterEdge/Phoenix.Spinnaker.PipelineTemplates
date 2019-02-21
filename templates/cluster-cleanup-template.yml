@@ -46,7 +46,7 @@ stages:
   id: shrinkCluster1
   inheritanceControl: {}
   inject: {}
-  name: Shrink Cluster
+  name: Shrink Production Cluster
   type: shrinkCluster
 - config:
     cloudProvider: kubernetes
