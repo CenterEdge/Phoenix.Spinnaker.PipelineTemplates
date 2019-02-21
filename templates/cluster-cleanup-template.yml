@@ -18,7 +18,7 @@ configuration:
     - pipeline.complete
     - pipeline.failed
   triggers:
-  - cronExpression: 0 0 0 1/1 * ? *
+  - cronExpression: 0 0 3 1/1 * ? *
     enabled: true
     name: cronTrigger
     runAsUser: phoenix-svc-account
