@@ -281,9 +281,9 @@ stages:
     - account: phoenix
       application: "{{ application }}"
       capacity:
-        desired: 1
+        desired: 2
         max: 9
-        min: 1
+        min: 2
       cloudProvider: kubernetes
       containers:
       - args: []
