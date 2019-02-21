@@ -25,9 +25,13 @@ configuration:
     type: cron
 variables:
 - name: prodclustername
-  description: The name of the application to scope this pipeline to
+  description: The name of the production cluster to reduce
 - name: stagingclustername
-  description: The name of the application to scope this pipeline to
+  description: The name of the staging cluster to cleanup
+- name: tempclustername
+  description: The name of the temporary application cluster usually used by QA
+- name: imagenamepattern
+  description: The image name pattern to use when looking to see if an application cluster exists or not
 stages:
 - config:
     allowDeleteActive: false
@@ -39,23 +43,82 @@ stages:
     - default
     retainLargerOverNewer: "false"
     shrinkToSize: 1
-  id: shrinkCluster
+  id: shrinkCluster1
   inheritanceControl: {}
   inject: {}
   name: Shrink Production Cluster
   type: shrinkCluster
 - config:
-    allowDeleteActive: false
     cloudProvider: kubernetes
     cloudProviderType: kubernetes
     cluster: "{{ stagingclustername }}"
+    completeOtherBranchesThenFail: false
+    continuePipeline: false
     credentials: phoenix
-    namespaces:
-    - default
-    retainLargerOverNewer: "false"
-    shrinkToSize: 1
-  id: shrinkCluster2
+    failPipeline: false
+    imageNamePattern: "{{ imagenamepattern }}"
+    namespaces: []
+    onlyEnabled: true
+    selectionStrategy: NEWEST
+  id: findImage2
   inheritanceControl: {}
   inject: {}
-  name: Shrink Staging Cluster
-  type: shrinkCluster
+  name: Find Image from Staging Cluster
+  type: findImage
+- config:
+    cloudProvider: kubernetes
+    cloudProviderType: kubernetes
+    cluster: "{{ stagingclustername }}"
+    completeOtherBranchesThenFail: false
+    continuePipeline: true
+    credentials: phoenix
+    failPipeline: false
+    interestingHealthProviderNames:
+    - KubernetesService
+    namespaces: []
+    target: current_asg_dynamic
+  dependsOn:
+  - findImage2
+  id: destroyServerGroup3
+  inheritanceControl: {}
+  inject: {}
+  name: Destroy Staging Cluster
+  type: destroyServerGroup
+- config:
+    cloudProvider: kubernetes
+    cloudProviderType: kubernetes
+    cluster: "{{ tempclustername }}"
+    completeOtherBranchesThenFail: false
+    continuePipeline: false
+    credentials: phoenix
+    failPipeline: false
+    imageNamePattern: "{{ imagenamepattern }}"
+    namespaces:
+    - default
+    onlyEnabled: true
+    selectionStrategy: NEWEST
+  id: findImage4
+  inheritanceControl: {}
+  inject: {}
+  name: Find Image from Temp Cluster
+  type: findImage
+- config:
+    cloudProvider: kubernetes
+    cloudProviderType: kubernetes
+    cluster: "{{ tempclustername }}"
+    completeOtherBranchesThenFail: false
+    continuePipeline: true
+    credentials: phoenix
+    failPipeline: false
+    interestingHealthProviderNames:
+    - KubernetesService
+    namespaces:
+    - default
+    target: current_asg_dynamic
+  dependsOn:
+  - findImage4
+  id: destroyServerGroup5
+  inheritanceControl: {}
+  inject: {}
+  name: Destroy Temp Cluster
+  type: destroyServerGroup
