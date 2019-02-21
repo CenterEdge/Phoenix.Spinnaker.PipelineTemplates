@@ -1,0 +1,61 @@
+schema: "1"
+id: phoenix-clustercleanup-template
+protect: false
+configuration:
+  concurrentExecutions:
+    limitConcurrent: true
+    parallel: false
+  notifications:
+  - address: phoenixdev-ci
+    level: pipeline
+    message:
+      pipeline.failed:
+        text: "Pipeline Failure...@channel"
+    name: slack0
+    type: slack
+    when:
+    - pipeline.starting
+    - pipeline.complete
+    - pipeline.failed
+  triggers:
+  - cronExpression: 0 0 3 1/1 * ? *
+    enabled: true
+    name: cronTrigger
+    runAsUser: phoenix-svc-account
+    type: cron
+variables:
+- name: prodclustername
+  description: The name of the application to scope this pipeline to
+- name: stagingclustername
+  description: The name of the application to scope this pipeline to
+stages:
+- config:
+    allowDeleteActive: false
+    cloudProvider: kubernetes
+    cloudProviderType: kubernetes
+    cluster: "{{ prodclustername }}"
+    credentials: phoenix
+    namespaces:
+    - default
+    retainLargerOverNewer: "false"
+    shrinkToSize: 1
+  id: shrinkCluster
+  inheritanceControl: {}
+  inject: {}
+  name: Shrink Production Cluster
+  type: shrinkCluster
+- config:
+    allowDeleteActive: false
+    cloudProvider: kubernetes
+    cloudProviderType: kubernetes
+    cluster: "{{ stagingclustername }}"
+    credentials: phoenix
+    namespaces:
+    - default
+    retainLargerOverNewer: "false"
+    shrinkToSize: 1
+  id: shrinkCluster2
+  inheritanceControl: {}
+  inject: {}
+  name: Shrink Staging Cluster
+  type: shrinkCluster
