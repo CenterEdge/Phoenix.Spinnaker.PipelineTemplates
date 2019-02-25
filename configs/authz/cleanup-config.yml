@@ -1,0 +1,20 @@
+schema: "1"
+pipeline:
+  application: authz
+  name: Authorization Cluster Cleanup
+  id: phnx-authz-cleanup
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/cluster-cleanup-template.yml
+  variables:
+    prodclustername: authz-prod-api
+    stagingclustername: authz-staging-api
+    tempclustername: authz-staging-temp
+    imagenamepattern: .*authz.*
+  metadata:
+    description: The Authorization Production Cluster Cleanup Config
+    name: Authorization-ClusterCleanup
+    owner: gbaker@centeredgesoftware.com
+    scopes:
+    - authz
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications', 'triggers']

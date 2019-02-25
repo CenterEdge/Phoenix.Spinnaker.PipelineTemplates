@@ -1,0 +1,20 @@
+schema: "1"
+pipeline:
+  application: authn
+  name: Authentication Cluster Cleanup
+  id: phnx-authentication-cleanup
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/cluster-cleanup-template.yml
+  variables:
+    prodclustername: authn-prod-api
+    stagingclustername: authn-staging-api
+    tempclustername: authn-staging-temp
+    imagenamepattern: .*authentication.*
+  metadata:
+    description: The Authentication Production Cluster Cleanup Config
+    name: Authentication-ClusterCleanup
+    owner: gbaker@centeredgesoftware.com
+    scopes:
+    - authn
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications', 'triggers']
