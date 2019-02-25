@@ -1,0 +1,20 @@
+schema: "1"
+pipeline:
+  application: productcatalogs
+  name: ProductCatalogs Cluster Cleanup
+  id: phnx-productcatalogs-cleanup
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/cluster-cleanup-template.yml
+  variables:
+    prodclustername: productcatalogs-prod-api
+    stagingclustername: productcatalogs-staging-api
+    tempclustername: productcatalogs-staging-temp
+    imagenamepattern: .*productcatalogs.*
+  metadata:
+    description: The ProductCatalogs Production Cluster Cleanup Config
+    name: ProductCatalogs-ClusterCleanup
+    owner: gbaker@centeredgesoftware.com
+    scopes:
+    - productcatalogs
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications', 'triggers']

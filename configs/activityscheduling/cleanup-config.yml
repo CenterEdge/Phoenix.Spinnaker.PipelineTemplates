@@ -1,0 +1,20 @@
+schema: "1"
+pipeline:
+  application: actsched
+  name: ActivityScheduling Cluster Cleanup
+  id: phnx-actsched-cleanup
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/cluster-cleanup-template.yml
+  variables:
+    prodclustername: actsched-prod-api
+    stagingclustername: actsched-staging-api
+    tempclustername: actsched-staging-temp
+    imagenamepattern: .*actsched.*
+  metadata:
+    description: The ActivityScheduling Production Cluster Cleanup Config
+    name: ActivityScheduling-ClusterCleanup
+    owner: gbaker@centeredgesoftware.com
+    scopes:
+    - actsched
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications', 'triggers']

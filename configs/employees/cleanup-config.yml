@@ -1,0 +1,20 @@
+schema: "1"
+pipeline:
+  application: employees
+  name: Employees Cluster Cleanup
+  id: phnx-employees-cleanup
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/cluster-cleanup-template.yml
+  variables:
+    prodclustername: employees-prod-api
+    stagingclustername: employees-staging-api
+    tempclustername: employees-staging-temp
+    imagenamepattern: .*employees.*
+  metadata:
+    description: The Employees Production Cluster Cleanup Config
+    name: Employees-ClusterCleanup
+    owner: gbaker@centeredgesoftware.com
+    scopes:
+    - employees
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications', 'triggers']
