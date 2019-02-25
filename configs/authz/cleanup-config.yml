@@ -9,7 +9,7 @@ pipeline:
     prodclustername: authz-prod-api
     stagingclustername: authz-staging-api
     tempclustername: authz-staging-temp
-    imagenamepattern: .*authz.*
+    imagenamepattern: .*authorization.*
   metadata:
     description: The Authorization Production Cluster Cleanup Config
     name: Authorization-ClusterCleanup
