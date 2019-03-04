@@ -234,6 +234,17 @@ stages:
   inject: {}
   name: Smoke Test
   type: jenkins
+  notifications:
+    - address: phoenixdev-ci
+      level: stage
+      message:
+        stage.failed:
+          text: "Smoke Tests Failed...@channel"
+      name: slackSmokeTestsFailed
+      type: slack
+      when:
+      - stage.failed
+    sendNotifications: true
 - config:
     clusters:
     - account: phoenix

@@ -14,8 +14,6 @@ configuration:
     name: slack0
     type: slack
     when:
-    - pipeline.starting
-    - pipeline.complete
     - pipeline.failed
   triggers:
   - cronExpression: 0 0 3 1/1 * ? *
