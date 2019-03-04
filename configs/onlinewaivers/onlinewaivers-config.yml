@@ -4,7 +4,7 @@ pipeline:
   name: Online Waivers Production
   id: phnx-onlinewaivers-prod
   template:
-    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/200b03702453f3164fa085b86145438ba20258e0/templates/waiverswebapp-prod-template.yml
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/onlinewaivers-prod-template.yml
   variables:
     application: onlinewaivers
     loadbalancer: onlinewaivers-prod-ui
