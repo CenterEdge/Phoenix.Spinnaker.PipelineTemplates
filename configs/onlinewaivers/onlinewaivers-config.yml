@@ -24,6 +24,6 @@ configuration:
     enabled: true
     organization: phoenix-177420
     registry: us.gcr.io
-    repository: phoenix-177420/phoenix-service-onlinewaivers
+    repository: phoenix-177420/phoenix-onlinewaivers
     runAsUser: phoenix-svc-account
     type: docker
