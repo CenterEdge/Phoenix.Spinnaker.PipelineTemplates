@@ -286,7 +286,6 @@ stages:
       type: slack
       when:
       - stage.failed
-    sendNotifications: true
 - config:
     clusters:
     - account: phoenix
