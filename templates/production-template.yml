@@ -277,7 +277,7 @@ stages:
   name: Smoke Test
   type: jenkins
   notifications:
-    - address: phoenixdev-ci
+    - address: "#phoenixdev-ci"
       level: stage
       message:
         stage.failed:
