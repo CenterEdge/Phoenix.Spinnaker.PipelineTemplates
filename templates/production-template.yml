@@ -595,7 +595,7 @@ stages:
       failPipeline: true
       type: expression
   dependsOn:
-  - phoenix-scriptedpipelinetest-smoketest
+  - destroy-staging-server-group
   id: check-smoketest-failure
   inheritanceControl: {}
   inject: {}
