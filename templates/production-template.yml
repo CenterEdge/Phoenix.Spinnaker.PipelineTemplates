@@ -277,11 +277,11 @@ stages:
   name: Smoke Test
   type: jenkins
   notifications:
-    - address: phoenixdev-ci
+    - address: "#phoenixdev-ci"
       level: stage
       message:
         stage.failed:
-          text: "Smoke Tests Failed...@channel"
+          text: "Smoke Tests Failed for {{ application }}...@channel"
       name: slackSmokeTestsFailed
       type: slack
       when:
