@@ -265,7 +265,7 @@ stages:
 - config:
     completeOtherBranchesThenFail: true
     continuePipeline: true
-    failPipeline: true
+    failPipeline: false
     job: "{{ smoketestjob }}"
     master: primary-jenkins
     parameters: "{{ smoketestparams }}"
@@ -276,16 +276,6 @@ stages:
   inject: {}
   name: Smoke Test
   type: jenkins
-  notifications:
-    - address: "#phoenixdev-ci"
-      level: stage
-      message:
-        stage.failed:
-          text: "Smoke Tests Failed for {{ application }}...@channel"
-      name: slackSmokeTestsFailed
-      type: slack
-      when:
-      - stage.failed
 - config:
     clusters:
     - account: phoenix
@@ -598,3 +588,16 @@ stages:
   inject: {}
   name: Publish Failed Event
   type: datadogEvent
+- config:
+    preconditions:
+    - context:
+        expression: '"#stage(''Smoke Test'')[''context''][''buildInfo''][''result'']!=''SUCCESS''"'
+      failPipeline: true
+      type: expression
+  dependsOn:
+  - deploy1
+  id: phoenix-scriptedpipelinetest-smoketest
+  inheritanceControl: {}
+  inject: {}
+  name: Check for Smoke Test Failure
+  type: checkPreconditions
