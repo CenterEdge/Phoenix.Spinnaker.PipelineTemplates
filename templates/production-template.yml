@@ -263,9 +263,9 @@ stages:
   name: Wait for ALB Health Checks
   type: wait
 - config:
-    completeOtherBranchesThenFail: false
+    completeOtherBranchesThenFail: true
     continuePipeline: true
-    failPipeline: false
+    failPipeline: true
     job: "{{ smoketestjob }}"
     master: primary-jenkins
     parameters: "{{ smoketestparams }}"

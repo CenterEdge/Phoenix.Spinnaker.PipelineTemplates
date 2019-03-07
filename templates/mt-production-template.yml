@@ -219,9 +219,9 @@ stages:
   name: FindImage
   type: findImage
 - config:
-    completeOtherBranchesThenFail: false
+    completeOtherBranchesThenFail: true
     continuePipeline: true
-    failPipeline: false
+    failPipeline: true
     job: "{{ smoketestjob }}"
     master: primary-jenkins
     parameters:
