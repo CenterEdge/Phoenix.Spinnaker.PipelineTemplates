@@ -595,9 +595,9 @@ stages:
       failPipeline: true
       type: expression
   dependsOn:
-  - deploy1
-  id: phoenix-scriptedpipelinetest-smoketest
+  - phoenix-scriptedpipelinetest-smoketest
+  id: check-smoketest-failure
   inheritanceControl: {}
   inject: {}
-  name: Check for Smoke Test Failure
+  name: Check Smoke Test Failure
   type: checkPreconditions
