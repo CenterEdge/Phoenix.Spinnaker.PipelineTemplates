@@ -219,9 +219,9 @@ stages:
   name: FindImage
   type: findImage
 - config:
-    completeOtherBranchesThenFail: true
+    completeOtherBranchesThenFail: false
     continuePipeline: true
-    failPipeline: true
+    failPipeline: false
     job: "{{ smoketestjob }}"
     master: primary-jenkins
     parameters:
@@ -234,16 +234,6 @@ stages:
   inject: {}
   name: Smoke Test
   type: jenkins
-  notifications:
-    - address: phoenixdev-ci
-      level: stage
-      message:
-        stage.failed:
-          text: "Smoke Tests Failed...@channel"
-      name: slackSmokeTestsFailed
-      type: slack
-      when:
-      - stage.failed
 - config:
     clusters:
     - account: phoenix
@@ -496,3 +486,16 @@ stages:
   inject: {}
   name: Publish Failed Event
   type: datadogEvent
+- config:
+    preconditions:
+    - context:
+        expression: '"#stage(''Smoke Test'')[''context''][''buildInfo''][''result'']!=''SUCCESS''"'
+      failPipeline: true
+      type: expression
+  dependsOn:
+  - destroy-staging-server-group
+  id: check-smoketest-failure
+  inheritanceControl: {}
+  inject: {}
+  name: Check Smoke Test Failure
+  type: checkPreconditions

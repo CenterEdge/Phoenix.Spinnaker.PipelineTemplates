@@ -263,7 +263,7 @@ stages:
   name: Wait for ALB Health Checks
   type: wait
 - config:
-    completeOtherBranchesThenFail: true
+    completeOtherBranchesThenFail: false
     continuePipeline: true
     failPipeline: false
     job: "{{ smoketestjob }}"
