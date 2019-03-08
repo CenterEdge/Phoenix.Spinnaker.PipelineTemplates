@@ -589,10 +589,20 @@ stages:
   name: Publish Failed Event
   type: datadogEvent
 - config:
+    failOnFailedExpressions: true
+    notifications:
+    - address: '#phoenixdev-ci'
+      level: stage
+      type: slack
+      message:
+      stage.failed:
+        text: "Smoke Tests Failure for {{ application }}...@channel"
+      when:
+      - stage.failed
     preconditions:
     - context:
         expression: '"#stage(''Smoke Test'')[''context''][''buildInfo''][''result'']!=''SUCCESS''"'
-      failPipeline: true
+      failPipeline: false
       type: expression
   dependsOn:
   - destroy-staging-server-group
