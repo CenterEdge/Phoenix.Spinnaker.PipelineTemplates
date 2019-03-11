@@ -10,9 +10,7 @@ configuration:
     level: pipeline
     message:
       pipeline.failed:
-        text: 
-          expression: "Pipeline Failure...@channel"
-          type: expression
+        text: "Pipeline Failure...@channel"
     name: slack0
     type: slack
     when:
