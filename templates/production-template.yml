@@ -11,7 +11,7 @@ configuration:
     message:
       pipeline.failed:
         text: 
-          expression: "Pipeline Failure...Smoke Test Results: #stage('Smoke Test')['context']['buildInfo']['testResults']['failCount'] of #stage('Smoke Test')['context']['buildInfo']['testResults']['totalCount']"
+          expression: "Pipeline Failure...@channel"
           type: expression
     name: slack0
     type: slack
