@@ -10,7 +10,9 @@ configuration:
     level: pipeline
     message:
       pipeline.failed:
-        text: "Pipeline Failure...Smoke Test Results: #stage('Smoke Test')['context']['buildInfo']['testResults']"
+        text: 
+          expression: "Pipeline Failure...Smoke Test Results: #stage('Smoke Test')['context']['buildInfo']['testResults']['failCount'] of #stage('Smoke Test')['context']['buildInfo']['testResults']['totalCount']"
+          type: expression
     name: slack0
     type: slack
     when:
