@@ -10,7 +10,7 @@ configuration:
     level: pipeline
     message:
       pipeline.failed:
-        text: "Pipeline Failure...@channel"
+        text: "Pipeline Failure...Smoke Test Results: #stage('Smoke Test')['context']['buildInfo']['testResults']"
     name: slack0
     type: slack
     when:
