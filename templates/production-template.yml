@@ -589,6 +589,9 @@ stages:
   name: Publish Failed Event
   type: datadogEvent
 - config:
+    stageEnabled:
+      expression: "#stage('Smoke Test')['context']['buildInfo']['result']!='SUCCESS'"
+      type: expression
     preconditions:
     - context:
         expression: "#stage('Smoke Test')['context']['buildInfo']['result']"
