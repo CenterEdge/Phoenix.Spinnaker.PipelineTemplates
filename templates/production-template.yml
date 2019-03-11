@@ -591,7 +591,7 @@ stages:
 - config:
     preconditions:
     - context:
-        expression: "#stage('Smoke Test')['outputs']['buildInfo']['result']=='FAILURE'"
+        expression: "#stage('Smoke Test')['context']"
       failPipeline: true
       type: expression
   dependsOn:
