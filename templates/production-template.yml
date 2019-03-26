@@ -87,6 +87,11 @@ stages:
               key: url
           name: ProductCatalogs__Host
         - envSource:
+            configMapSource:
+              configMapName: pdf-api
+              key: url
+          name: HtmlToPdf__Host
+        - envSource:
             secretSource:
               key: url
               secretName: couchbase-primary
@@ -301,6 +306,11 @@ stages:
               configMapName: productcatalogs-api
               key: url
           name: ProductCatalogs__Host
+        - envSource:
+            configMapSource:
+              configMapName: pdf-api
+              key: url
+          name: HtmlToPdf__Host
         - envSource:
             secretSource:
               key: url

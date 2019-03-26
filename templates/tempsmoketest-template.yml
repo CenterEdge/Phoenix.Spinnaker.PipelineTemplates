@@ -81,6 +81,11 @@ stages:
               key: url
           name: ProductCatalogs__Host
         - envSource:
+            configMapSource:
+              configMapName: pdf-api
+              key: url
+          name: HtmlToPdf__Host
+        - envSource:
             secretSource:
               key: clientId
               secretName: cognito-creds
