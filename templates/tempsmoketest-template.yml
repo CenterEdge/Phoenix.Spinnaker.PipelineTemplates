@@ -77,6 +77,11 @@ stages:
           name: BusinessEntities__Host
         - envSource:
             configMapSource:
+              configMapName: mappings-api
+              key: url
+          name: Mappings__Host
+        - envSource:
+            configMapSource:
               configMapName: productcatalogs-api
               key: url
           name: ProductCatalogs__Host
