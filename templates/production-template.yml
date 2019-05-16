@@ -63,7 +63,7 @@ variables:
   defaultValue: 1024Mi
 - name: statsdSampleRate
   description: The percentage of requests to log to statsd. Set to 0 to disable
-  defaultValue: 100
+  defaultValue: 1
 stages:
 - config:
     clusters:
