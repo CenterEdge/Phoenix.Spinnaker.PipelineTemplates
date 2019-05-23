@@ -11,6 +11,7 @@ pipeline:
     clustername: businessentities-staging-temp
     gcrrepo: phoenix-177420/phoenix-service-businessentities
     gcrimage: us.gcr.io/phoenix-177420/phoenix-service-businessentities:latest
+    podAnnotations: "{ iam.amazonaws.com/role: PhoenixBusEntSvc }"
   metadata:
     description: A Temporary Smoke Test Configuration
     name: BusinessEntities-TempSmokeTest
