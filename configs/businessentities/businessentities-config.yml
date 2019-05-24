@@ -15,6 +15,7 @@ pipeline:
     smoketestjob: Phoenix/job/Services/job/Phoenix.Service.BusinessEntities/job/Phoenix.Service.BusinessEntities.Smoke
     gcrrepo: phoenix-177420/phoenix-service-businessentities
     gcrimage: us.gcr.io/phoenix-177420/phoenix-service-businessentities
+    podAnnotations: "{ iam.amazonaws.com/role: PhoenixBusEntSvc }"
   metadata:
     description: The Business Entities Production Pipeline Config
     name: BusinessEntities-Production
