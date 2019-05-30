@@ -120,6 +120,11 @@ stages:
               key: key
               secretName: feature-flag-key
           name: LaunchDarklyOptions__SdkKey
+        - envSource:
+            secretSource:
+              key: secret
+              secretName: jwt-options
+          name: JwtOptions__Secret
         imageDescription:
           account: gcr-phoenix
           imageId: "{{ gcrimage }}"
