@@ -87,6 +87,21 @@ stages:
               key: secret
               secretName: jwt-options
           name: JwtOptions__Secret
+        - envSource:
+            configMapSource:
+              configMapName: rabbitmq
+              key: host
+          name: RabbitMQ__Hosts__0__Host
+        - envSource:
+            configMapSource:
+              configMapName: rabbitmq
+              key: username
+          name: RabbitMQ__Username
+        - envSource:
+            secretSource:
+              key: default-pass
+              secretName: rabbitmq-config
+          name: RabbitMQ__Password
         imageDescription:
           account: gcr-phoenix
           fromTrigger: true
@@ -266,6 +281,21 @@ stages:
               key: secret
               secretName: jwt-options
           name: JwtOptions__Secret
+        - envSource:
+            configMapSource:
+              configMapName: rabbitmq
+              key: host
+          name: RabbitMQ__Hosts__0__Host
+        - envSource:
+            configMapSource:
+              configMapName: rabbitmq
+              key: username
+          name: RabbitMQ__Username
+        - envSource:
+            secretSource:
+              key: default-pass
+              secretName: rabbitmq-config
+          name: RabbitMQ__Password
         imageDescription:
           account: gcr-phoenix
           fromTrigger: true
