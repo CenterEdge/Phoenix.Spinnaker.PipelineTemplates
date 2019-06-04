@@ -1,5 +1,5 @@
 schema: "1"
-id: phoenix-production-template
+id: phoenix-auth-production-template
 protect: false
 configuration:
   concurrentExecutions:
@@ -30,6 +30,10 @@ variables:
   description: A string used to pattern match the name of the image we want to pull from the staging cluster
 - name: smoketestjob
   description: Location of the job to execute for running Smoke Tests
+- name: smoketestparams
+  type: object
+  defaultValue: {}
+  description: Optional parameters to pass to the smoke test
 - name: stagingloadbalancer
   description: The name of the load balancer for clusters created by this pipeline
 - name: stagingclustername
@@ -60,9 +64,6 @@ variables:
 - name: statsdSampleRate
   description: The percentage of requests to log to statsd. Set to 0 to disable
   defaultValue: 1
-- name: sdkversion
-  description: The sdk version to use when testing
-  defaultValue: "${#stage( 'FindImage' )['context']['amiDetails'][0]['tag']} }"
 stages:
 - config:
     clusters:
@@ -75,13 +76,23 @@ stages:
         envVars:
         - name: ASPNETCORE_ENVIRONMENT
           value: Staging
+        - envSource:
+            secretSource:
+              key: url
+              secretName: couchbase-primary
+          name: Couchbase__Servers__0
         - name: ASPNETCORE_URLS
           value: http://localhost:8080/
         - envSource:
             secretSource:
-              key: key
-              secretName: feature-flag-key
-          name: LaunchDarklyOptions__SdkKey
+              key: username
+              secretName: couchbase-primary
+          name: Couchbase__Username
+        - envSource:
+            secretSource:
+              key: password
+              secretName: couchbase-primary
+          name: Couchbase__Password
         - envSource:
             configMapSource:
               configMapName: rabbitmq
@@ -97,6 +108,36 @@ stages:
               key: default-pass
               secretName: rabbitmq-config
           name: RabbitMQ__Password
+        - envSource:
+            secretSource:
+              key: clientId
+              secretName: cognito-creds
+          name: COGNITO__ClientId
+        - envSource:
+            secretSource:
+              key: clientSecret
+              secretName: cognito-creds
+          name: COGNITO__ClientSecret
+        - envSource:
+            secretSource:
+              key: poolId
+              secretName: cognito-creds
+          name: COGNITO__UserPoolId
+        - envSource:
+            secretSource:
+              key: region
+              secretName: cognito-creds
+          name: COGNITO__Region
+        - envSource:
+            secretSource:
+              key: key
+              secretName: feature-flag-key
+          name: LaunchDarklyOptions__SdkKey
+        - envSource:
+            secretSource:
+              key: secret
+              secretName: jwt-options
+          name: JwtOptions__Secret
         imageDescription:
           account: gcr-phoenix
           fromTrigger: true
@@ -217,33 +258,14 @@ stages:
   name: Wait for ALB Health Checks
   type: wait
 - config:
-    cloudProvider: kubernetes
-    cloudProviderType: kubernetes
-    cluster: mashtub-prod-api
-    credentials: phoenix
-    imageNamePattern: .*mashtub.*
-    namespaces:
-    - default
-    onlyEnabled: true
-    selectionStrategy: NEWEST
-  dependsOn:
-  - healthchecks-wait
-  id: phoenix-find-mashtub-production-image
-  inheritanceControl: {}
-  inject: {}
-  name: FindImage
-  type: findImage
-- config:
     completeOtherBranchesThenFail: false
     continuePipeline: true
     failPipeline: false
     job: "{{ smoketestjob }}"
     master: primary-jenkins
-    parameters:
-       BASE_URL: "https://api-ingress.phoenix.centeredge.io/v1-staging"
-       SDK_VERSION: "{{ sdkversion }}"
+    parameters: "{{ smoketestparams }}"
   dependsOn:
-  - phoenix-find-mashtub-production-image
+  - healthchecks-wait
   id: phoenix-scriptedpipelinetest-smoketest
   inheritanceControl: {}
   inject: {}
@@ -264,13 +286,19 @@ stages:
         envVars:
         - name: ASPNETCORE_ENVIRONMENT
           value: Production
-        - name: ASPNETCORE_URLS
-          value: http://localhost:8080/
+          name: Couchbase__Servers__0
         - envSource:
             secretSource:
-              key: key
-              secretName: feature-flag-key
-          name: LaunchDarklyOptions__SdkKey
+              key: username
+              secretName: couchbase-primary
+          name: Couchbase__Username
+        - envSource:
+            secretSource:
+              key: password
+              secretName: couchbase-primary
+          name: Couchbase__Password
+        - name: ASPNETCORE_URLS
+          value: http://localhost:8080/
         - envSource:
             configMapSource:
               configMapName: rabbitmq
@@ -286,6 +314,36 @@ stages:
               key: default-pass
               secretName: rabbitmq-config
           name: RabbitMQ__Password
+        - envSource:
+            secretSource:
+              key: clientId
+              secretName: cognito-creds
+          name: COGNITO__ClientId
+        - envSource:
+            secretSource:
+              key: clientSecret
+              secretName: cognito-creds
+          name: COGNITO__ClientSecret
+        - envSource:
+            secretSource:
+              key: poolId
+              secretName: cognito-creds
+          name: COGNITO__UserPoolId
+        - envSource:
+            secretSource:
+              key: region
+              secretName: cognito-creds
+          name: COGNITO__Region
+        - envSource:
+            secretSource:
+              key: key
+              secretName: feature-flag-key
+          name: LaunchDarklyOptions__SdkKey
+        - envSource:
+            secretSource:
+              key: secret
+              secretName: jwt-options
+          name: JwtOptions__Secret
         imageDescription:
           account: gcr-phoenix
           fromTrigger: true
