@@ -219,9 +219,9 @@ stages:
 - config:
     cloudProvider: kubernetes
     cloudProviderType: kubernetes
-    cluster: mashtub-prod-api
+    cluster: mashtub2-prod-api
     credentials: phoenix
-    imageNamePattern: .*mashtub.*
+    imageNamePattern: .*mashtub2.*
     namespaces:
     - default
     onlyEnabled: true
