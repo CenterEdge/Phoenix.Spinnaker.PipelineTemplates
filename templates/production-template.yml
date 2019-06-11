@@ -130,26 +130,6 @@ stages:
           name: RabbitMQ__Password
         - envSource:
             secretSource:
-              key: clientId
-              secretName: cognito-creds
-          name: COGNITO__ClientId
-        - envSource:
-            secretSource:
-              key: clientSecret
-              secretName: cognito-creds
-          name: COGNITO__ClientSecret
-        - envSource:
-            secretSource:
-              key: poolId
-              secretName: cognito-creds
-          name: COGNITO__UserPoolId
-        - envSource:
-            secretSource:
-              key: region
-              secretName: cognito-creds
-          name: COGNITO__Region
-        - envSource:
-            secretSource:
               key: key
               secretName: feature-flag-key
           name: LaunchDarklyOptions__SdkKey
