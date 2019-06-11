@@ -4,7 +4,7 @@ pipeline:
   name: Authorization Production
   id: phnx-authorization-prod
   template:
-    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/production-template.yml
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/auth-production-template.yml
   variables:
     application: authz
     loadbalancer: authz-prod-api

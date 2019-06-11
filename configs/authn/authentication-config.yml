@@ -4,7 +4,7 @@ pipeline:
   name: Authentication Production
   id: phnx-authentication-prod
   template:
-    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/production-template.yml
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/auth-production-template.yml
   variables:
     application: authn
     loadbalancer: authn-prod-api
