@@ -298,6 +298,11 @@ stages:
           name: BusinessEntities__Host
         - envSource:
             secretSource:
+              key: url
+              secretName: couchbase-primary
+          name: Couchbase__Servers__0
+        - envSource:
+            secretSource:
               key: username
               secretName: couchbase-primary
           name: Couchbase__Username
