@@ -77,6 +77,11 @@ stages:
         - name: ASPNETCORE_ENVIRONMENT
           value: Staging
         - envSource:
+            configMapSource:
+              configMapName: businessentities-api
+              key: url
+          name: BusinessEntities__Host
+        - envSource:
             secretSource:
               key: url
               secretName: couchbase-primary
@@ -287,6 +292,11 @@ stages:
         - name: ASPNETCORE_ENVIRONMENT
           value: Production
           name: Couchbase__Servers__0
+        - envSource:
+            configMapSource:
+              configMapName: businessentities-api
+              key: url
+          name: BusinessEntities__Host
         - envSource:
             secretSource:
               key: username
