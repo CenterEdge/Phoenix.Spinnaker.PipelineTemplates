@@ -1,0 +1,261 @@
+{
+  "schema": "v2",
+  "id": "advantageproxy-template",
+  "variables": [
+    {
+      "name": "stackName",
+      "type": "string",
+      "description": "Stack Name"
+    },
+    {
+      "name": "loadBalancer",
+      "type": "string",
+      "description": "Load Balancer Name"
+    },
+    {
+      "name": "relayDomainSuffix",
+      "type": "string",
+      "defaultValue": ".relay.int.centeredgeonline.com",
+      "description": "Relay Domain Suffix"
+    },
+    {
+      "name": "slackChannel",
+      "type": "string",
+      "defaultValue": "phoenixdev-ci",
+      "description": "Slack Channel"
+    }
+  ],
+  "protect": false,
+  "metadata": {
+    "name": "Advantage Proxy Template",
+    "description": "Deploys Advantage Proxy to K8S behind a port 80 load balancer",
+    "owner": "bburnett@centeredgesoftware.com",
+    "scopes": ["global"]
+  },
+  "pipeline": {
+    "application": "advantageproxy",
+    "expectedArtifacts": [
+     {
+      "defaultArtifact": {
+       "customKind": true,
+       "id": "d8e7cf0c-6f07-42b8-9b36-445c4cead0d8"
+      },
+      "displayName": "varnish",
+      "id": "c5c3d29c-1e63-4f34-9dd8-35aaa257b16d",
+      "matchArtifact": {
+       "id": "a76a8447-ce75-42d7-90f3-d75c752b31f1",
+       "name": "us.gcr.io/phoenix-177420/advantage-proxy-varnish",
+       "type": "docker/image"
+      },
+      "useDefaultArtifact": false,
+      "usePriorArtifact": false
+     },
+     {
+      "defaultArtifact": {
+       "customKind": true,
+       "id": "1fbce003-6935-4f77-95db-b0c9311f3380"
+      },
+      "displayName": "nginx",
+      "id": "fa46e029-bef3-4f16-89b0-a37ae7571787",
+      "matchArtifact": {
+       "id": "902cfcb7-d80a-4571-8b70-8cd19fe621f7",
+       "name": "us.gcr.io/phoenix-177420/advantage-proxy-nginx",
+       "type": "docker/image"
+      },
+      "useDefaultArtifact": false,
+      "usePriorArtifact": false
+     }
+    ],
+    "keepWaitingPipelines": false,
+    "lastModifiedBy": "bburnett@centeredgesoftware.com",
+    "limitConcurrent": true,
+    "notifications": [
+      {
+        "address": "${ templateVariables.slackChannel }",
+        "level": "pipeline",
+        "message": {
+          "pipeline.failed": {
+            "text": "Pipeline Failure... @channel"
+          }
+        },
+        "name": "slack0",
+        "type": "slack",
+        "when": [
+          "pipeline.starting",
+          "pipeline.complete",
+          "pipeline.failed"
+        ]
+      }
+    ],
+    "parameterConfig": [],
+    "stages": [
+     {
+      "clusters": [
+       {
+        "account": "phoenix",
+        "application": "advantageproxy",
+        "cloudProvider": "kubernetes",
+        "containers": [
+         {
+          "args": [],
+          "command": [],
+          "envFrom": [],
+          "envVars": [],
+          "imageDescription": {
+           "artifactId": "c5c3d29c-1e63-4f34-9dd8-35aaa257b16d",
+           "fromArtifact": true,
+           "imageId": "us.gcr.io/phoenix-177420/advantage-proxy-varnish (Artifact resolved at runtime)"
+          },
+          "imagePullPolicy": "IFNOTPRESENT",
+          "limits": {
+           "cpu": "2000m",
+           "memory": "1200Mi"
+          },
+          "name": "us-gcr-io-phoenix-177420-advantage-proxy-varnish",
+          "ports": [
+           {
+            "containerPort": 80,
+            "name": "http",
+            "protocol": "TCP"
+           }
+          ],
+          "readinessProbe": {
+           "failureThreshold": 3,
+           "handler": {
+            "execAction": {
+             "commands": []
+            },
+            "httpGetAction": {
+             "path": "/proxyhealthz",
+             "port": 80,
+             "uriScheme": "HTTP"
+            },
+            "tcpSocketAction": {
+             "port": 80
+            },
+            "type": "HTTP"
+           },
+           "initialDelaySeconds": 10,
+           "periodSeconds": 10,
+           "successThreshold": 1,
+           "timeoutSeconds": 1
+          },
+          "requests": {
+           "cpu": "500m",
+           "memory": "1200Mi"
+          },
+          "volumeMounts": []
+         },
+         {
+          "args": [],
+          "command": [],
+          "envFrom": [],
+          "envVars": [
+           {
+            "name": "RELAY_DOMAIN_SUFFIX",
+            "value": "${ templateVariables.relayDomainSuffix }"
+           },
+           {
+            "envSource": {
+             "fieldRef": {
+              "fieldPath": "status.hostIP"
+             }
+            },
+            "name": "STATSD_SERVER"
+           }
+          ],
+          "imageDescription": {
+           "artifactId": "fa46e029-bef3-4f16-89b0-a37ae7571787",
+           "fromArtifact": true,
+           "imageId": "us.gcr.io/phoenix-177420/advantage-proxy-nginx (Artifact resolved at runtime)"
+          },
+          "imagePullPolicy": "IFNOTPRESENT",
+          "limits": {
+           "cpu": "2000m",
+           "memory": "512Mi"
+          },
+          "name": "us-gcr-io-phoenix-177420-advantage-proxy-nginx",
+          "ports": [
+           {
+            "containerPort": 8080,
+            "name": "http",
+            "protocol": "TCP"
+           }
+          ],
+          "readinessProbe": {
+           "failureThreshold": 3,
+           "handler": {
+            "execAction": {
+             "commands": []
+            },
+            "httpGetAction": {
+             "path": "/proxyhealthz",
+             "port": 8080,
+             "uriScheme": "HTTP"
+            },
+            "tcpSocketAction": {
+             "port": 80
+            },
+            "type": "HTTP"
+           },
+           "initialDelaySeconds": 10,
+           "periodSeconds": 10,
+           "successThreshold": 1,
+           "timeoutSeconds": 1
+          },
+          "requests": {
+           "cpu": "500m",
+           "memory": "256Mi"
+          },
+          "volumeMounts": []
+         }
+        ],
+        "delayBeforeDisableSec": 0,
+        "delayBeforeScaleDownSec": 0,
+        "deployment": {
+         "deploymentStrategy": {
+          "rollingUpdate": {
+           "maxSurge": 1,
+           "maxUnavailable": 1
+          },
+          "type": "RollingUpdate"
+         },
+         "enabled": false,
+         "minReadySeconds": 0
+        },
+        "dnsPolicy": "ClusterFirst",
+        "initContainers": [],
+        "interestingHealthProviderNames": [
+         "KubernetesContainer",
+         "KubernetesPod"
+        ],
+        "loadBalancers": [
+         "${ templateVariables.loadBalancer }"
+        ],
+        "maxRemainingAsgs": 2,
+        "namespace": "default",
+        "nodeSelector": {},
+        "podAnnotations": {},
+        "provider": "kubernetes",
+        "region": "default",
+        "replicaSetAnnotations": {},
+        "rollback": {
+         "onFailure": true
+        },
+        "scaleDown": false,
+        "stack": "${ templateVariables.stackName }",
+        "strategy": "redblack",
+        "targetSize": 2,
+        "terminationGracePeriodSeconds": 30,
+        "useSourceCapacity": false,
+        "volumeSources": []
+       }
+      ],
+      "name": "Deploy",
+      "refId": "1",
+      "requisiteStageRefIds": [],
+      "type": "deploy"
+     }
+    ]
+   }
+}
