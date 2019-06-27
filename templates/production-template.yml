@@ -232,6 +232,7 @@ stages:
       region: default
       replicaSetAnnotations: {}
       stack: staging
+      environment: staging
       strategy: ""
       targetSize: 1
       terminationGracePeriodSeconds: 30
@@ -443,7 +444,8 @@ stages:
       scalingPolicy:
         cpuUtilization:
           target: 40
-      stack: prod
+      stack: production
+      environment: production
       strategy: ""
       targetSize: 3
       terminationGracePeriodSeconds: 30
