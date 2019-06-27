@@ -228,11 +228,14 @@ stages:
       namespace: default
       nodeSelector: {}
       podAnnotations: "{{ podAnnotations }}"
+      metadata:
+        labels:
+          app: "{{ application }}"
+          environment: staging
       provider: kubernetes
       region: default
       replicaSetAnnotations: {}
       stack: staging
-      environment: staging
       strategy: ""
       targetSize: 1
       terminationGracePeriodSeconds: 30
@@ -438,6 +441,10 @@ stages:
       namespace: default
       nodeSelector: {}
       podAnnotations: "{{ podAnnotations }}"
+      metadata:
+        labels:
+          app: "{{ application }}"
+          environment: production
       provider: kubernetes
       region: default
       replicaSetAnnotations: {}
@@ -445,7 +452,6 @@ stages:
         cpuUtilization:
           target: 40
       stack: production
-      environment: production
       strategy: ""
       targetSize: 3
       terminationGracePeriodSeconds: 30
