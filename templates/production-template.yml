@@ -46,6 +46,10 @@ variables:
   type: object
   defaultValue: {}
   description: The annotations to assign to pods
+- name: podAnnotationsStaging
+  type: object
+  defaultValue: {}
+  description: The annotations to assign to staging pods
 - name: product
   description: The name of the product this deployment belongs to
   defaultValue: Phoenix
@@ -227,11 +231,7 @@ stages:
       - "{{ stagingloadbalancer }}"
       namespace: default
       nodeSelector: {}
-      podAnnotations: "{{ podAnnotations }}"
-      metadata:
-        labels:
-          app: "{{ application }}"
-          environment: staging
+      podAnnotations: "{{ podAnnotationsStaging }}"
       provider: kubernetes
       region: default
       replicaSetAnnotations: {}
@@ -441,17 +441,13 @@ stages:
       namespace: default
       nodeSelector: {}
       podAnnotations: "{{ podAnnotations }}"
-      metadata:
-        labels:
-          app: "{{ application }}"
-          environment: production
       provider: kubernetes
       region: default
       replicaSetAnnotations: {}
       scalingPolicy:
         cpuUtilization:
           target: 40
-      stack: production
+      stack: prod
       strategy: ""
       targetSize: 3
       terminationGracePeriodSeconds: 30
