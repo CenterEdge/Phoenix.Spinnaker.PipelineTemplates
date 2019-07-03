@@ -137,7 +137,7 @@ stages:
             configMapSource:
               configMapName: waiver-upload-timeout
               key: timeout
-            name: WaiverUploadOptions__KeepAliveTimeout
+          name: WaiverUploadOptions__KeepAliveTimeout
         imageDescription:
           account: gcr-phoenix
           fromTrigger: true
@@ -347,7 +347,7 @@ stages:
             configMapSource:
               configMapName: waiver-upload-timeout
               key: timeout
-            name: WaiverUploadOptions__KeepAliveTimeout
+          name: WaiverUploadOptions__KeepAliveTimeout
         imageDescription:
           account: gcr-phoenix
           fromTrigger: true
