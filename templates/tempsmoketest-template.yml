@@ -125,6 +125,11 @@ stages:
               key: secret
               secretName: jwt-options
           name: JwtOptions__Secret
+        - envSource:
+            configMapSource:
+              configMapName: waiver-upload-timeout
+              key: timeout
+            name: WaiverUploadOptions__KeepAliveTimeout
         imageDescription:
           account: gcr-phoenix
           imageId: "{{ gcrimage }}"

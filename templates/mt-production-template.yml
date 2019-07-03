@@ -97,6 +97,11 @@ stages:
               key: default-pass
               secretName: rabbitmq-config
           name: RabbitMQ__Password
+        - envSource:
+            configMapSource:
+              configMapName: waiver-upload-timeout
+              key: timeout
+            name: WaiverUploadOptions__KeepAliveTimeout
         imageDescription:
           account: gcr-phoenix
           fromTrigger: true
@@ -286,6 +291,11 @@ stages:
               key: default-pass
               secretName: rabbitmq-config
           name: RabbitMQ__Password
+        - envSource:
+            configMapSource:
+              configMapName: waiver-upload-timeout
+              key: timeout
+            name: WaiverUploadOptions__KeepAliveTimeout
         imageDescription:
           account: gcr-phoenix
           fromTrigger: true
