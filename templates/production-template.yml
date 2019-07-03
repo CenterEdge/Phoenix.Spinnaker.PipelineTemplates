@@ -133,6 +133,11 @@ stages:
               key: key
               secretName: feature-flag-key
           name: LaunchDarklyOptions__SdkKey
+        - envSource:
+            configMapSource:
+              configMapName: waiver-upload-timeout
+              key: timeout
+            name: WaiverUploadOptions__KeepAliveTimeout
         imageDescription:
           account: gcr-phoenix
           fromTrigger: true
@@ -338,6 +343,11 @@ stages:
               key: key
               secretName: feature-flag-key
           name: LaunchDarklyOptions__SdkKey
+        - envSource:
+            configMapSource:
+              configMapName: waiver-upload-timeout
+              key: timeout
+            name: WaiverUploadOptions__KeepAliveTimeout
         imageDescription:
           account: gcr-phoenix
           fromTrigger: true
