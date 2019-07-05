@@ -135,7 +135,7 @@ stages:
           name: LaunchDarklyOptions__SdkKey
         - envSource:
             configMapSource:
-              configMapName: waiver-upload-timeout
+              configMapName: waiver-upload-options
               key: timeout
           name: WaiverUploadOptions__KeepAliveTimeout
         imageDescription:
@@ -200,6 +200,16 @@ stages:
           value: "{{ statsdSampleRate }}"
         - name: SERVICE_NAME
           value: "smoke.{{ application }}"
+        - envSource:
+            configMapSource:
+              configMapName: waiver-upload-options
+              key: timeout
+          name: WaiverUploadOptions__KeepAliveTimeout
+        - envSource:
+            configMapSource:
+              configMapName: waiver-upload-options
+              key: max_size
+          name: WaiverUploadOptions__MaxRequestSize
         imageDescription:
           account: gcr-phoenix
           imageId: us.gcr.io/phoenix-177420/nginx-proxy:14
@@ -345,7 +355,7 @@ stages:
           name: LaunchDarklyOptions__SdkKey
         - envSource:
             configMapSource:
-              configMapName: waiver-upload-timeout
+              configMapName: waiver-upload-options
               key: timeout
           name: WaiverUploadOptions__KeepAliveTimeout
         imageDescription:
@@ -410,6 +420,16 @@ stages:
           value: "{{ statsdSampleRate }}"
         - name: SERVICE_NAME
           value: "prod.{{ application }}"
+        - envSource:
+            configMapSource:
+              configMapName: waiver-upload-options
+              key: timeout
+          name: WaiverUploadOptions__KeepAliveTimeout
+        - envSource:
+            configMapSource:
+              configMapName: waiver-upload-options
+              key: max_size
+          name: WaiverUploadOptions__MaxRequestSize
         imageDescription:
           account: gcr-phoenix
           imageId: us.gcr.io/phoenix-177420/nginx-proxy:14

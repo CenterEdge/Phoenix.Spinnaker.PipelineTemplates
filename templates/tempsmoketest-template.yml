@@ -127,7 +127,7 @@ stages:
           name: JwtOptions__Secret
         - envSource:
             configMapSource:
-              configMapName: waiver-upload-timeout
+              configMapName: waiver-upload-options
               key: timeout
           name: WaiverUploadOptions__KeepAliveTimeout
         imageDescription:
@@ -194,6 +194,16 @@ stages:
           value: "{{ statsdSampleRate }}"
         - name: SERVICE_NAME
           value: "staging.{{ application }}"
+        - envSource:
+            configMapSource:
+              configMapName: waiver-upload-options
+              key: timeout
+          name: WaiverUploadOptions__KeepAliveTimeout
+        - envSource:
+            configMapSource:
+              configMapName: waiver-upload-options
+              key: max_size
+          name: WaiverUploadOptions__MaxRequestSize
         imageDescription:
           account: gcr-phoenix
           imageId: us.gcr.io/phoenix-177420/nginx-proxy:14
