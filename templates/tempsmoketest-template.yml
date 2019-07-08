@@ -196,10 +196,10 @@ stages:
           value: "staging.{{ application }}"
         imageDescription:
           account: gcr-phoenix
-          imageId: us.gcr.io/phoenix-177420/nginx-proxy:14
+          imageId: us.gcr.io/phoenix-177420/nginx-proxy:17
           registry: us.gcr.io
           repository: phoenix-177420/nginx-proxy
-          tag: "14"
+          tag: "17"
         imagePullPolicy: IFNOTPRESENT
         limits: {}
         name: nginx-proxy
