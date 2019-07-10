@@ -41,7 +41,11 @@ variables:
 - name: podAnnotations
   type: object
   defaultValue: {}
-  description: The annotations to assign to pods
+  description: The annotations to assign to production pods
+- name: podAnnotationsStaging
+  type: object
+  defaultValue: {}
+  description: The annotations to assign to staging pods
 - name: product
   description: The name of the product this deployment belongs to
   defaultValue: Phoenix
