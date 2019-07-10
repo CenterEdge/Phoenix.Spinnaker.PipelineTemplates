@@ -15,6 +15,8 @@ pipeline:
     smoketestjob: Phoenix/job/Services/job/Phoenix.Service.Employees/job/Phoenix.Service.Employees.Smoke
     gcrrepo: phoenix-177420/phoenix-service-employees
     gcrimage: us.gcr.io/phoenix-177420/phoenix-service-employees
+    podAnnotations: "{ environment: prod }"
+    podAnnotationsStaging: "{ environment: staging }"
   metadata:
     description: The Employees Production Pipeline Config
     name: Employees-Production
