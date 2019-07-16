@@ -63,7 +63,7 @@ variables:
   defaultValue: 1024Mi
 - name: statsdSampleRate
   description: The percentage of requests to log to statsd. Set to 0 to disable
-  defaultValue: 1
+  defaultValue: 100
 - name: sdkversion
   description: The sdk version to use when testing
   defaultValue: "${#stage( 'FindImage' )['context']['amiDetails'][0]['tag']} }"
