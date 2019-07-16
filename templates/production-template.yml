@@ -216,10 +216,10 @@ stages:
           name: WaiverUploadOptions__MaxRequestSize
         imageDescription:
           account: gcr-phoenix
-          imageId: us.gcr.io/phoenix-177420/nginx-proxy:18
+          imageId: us.gcr.io/phoenix-177420/nginx-proxy:19
           registry: us.gcr.io
           repository: phoenix-177420/nginx-proxy
-          tag: "18"
+          tag: "19"
         imagePullPolicy: IFNOTPRESENT
         limits: {}
         name: phoenix-177420-nginx-proxy
@@ -409,7 +409,7 @@ stages:
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 1
-        requests: 
+        requests:
           cpu: "{{ requestcpu }}"
           memory: "{{ requestmem }}"
         volumeMounts: []
@@ -436,10 +436,10 @@ stages:
           name: WaiverUploadOptions__MaxRequestSize
         imageDescription:
           account: gcr-phoenix
-          imageId: us.gcr.io/phoenix-177420/nginx-proxy:18
+          imageId: us.gcr.io/phoenix-177420/nginx-proxy:19
           registry: us.gcr.io
           repository: phoenix-177420/nginx-proxy
-          tag: "18"
+          tag: "19"
         imagePullPolicy: IFNOTPRESENT
         limits:
           cpu: "{{ maxcpu }}"
@@ -449,7 +449,7 @@ stages:
         - containerPort: 80
           name: http
           protocol: TCP
-        requests: 
+        requests:
           cpu: "{{ requestcpu }}"
           memory: "{{ requestmem }}"
         volumeMounts: []
