@@ -11,6 +11,7 @@ pipeline:
     clustername: stations-staging-temp
     gcrrepo: phoenix-177420/phoenix-service-stations
     gcrimage: us.gcr.io/phoenix-177420/phoenix-service-stations:latest
+    podAnnotations: "{ environment: staging }"
   metadata:
     description: A Temporary Smoke Test Configuration
     name: Stations-TempSmokeTest

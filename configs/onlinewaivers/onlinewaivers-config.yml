@@ -11,6 +11,7 @@ pipeline:
     clustername: onlinewaivers-prod-ui
     gcrrepo: phoenix-177420/phoenix-onlinewaivers
     gcrimage: us.gcr.io/phoenix-177420/phoenix-onlinewaivers
+    podAnnotations: "{ environment: prod }"
   metadata:
     description: The Online Waivers Production Pipeline Config
     name: OnlineWaivers-Production

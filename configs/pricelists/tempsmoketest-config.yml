@@ -11,6 +11,7 @@ pipeline:
     clustername: pricelists-staging-temp
     gcrrepo: phoenix-177420/phoenix-service-pricelists
     gcrimage: us.gcr.io/phoenix-177420/phoenix-service-pricelists:latest
+    podAnnotations: "{ environment: staging }"
   metadata:
     description: A Temporary Smoke Test Configuration
     name: PriceLists-TempSmokeTest

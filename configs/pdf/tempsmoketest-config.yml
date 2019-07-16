@@ -11,6 +11,7 @@ pipeline:
     clustername: pdf-staging-temp
     gcrrepo: phoenix-177420/phoenix-service-pdf
     gcrimage: us.gcr.io/phoenix-177420/phoenix-service-pdf:latest
+    podAnnotations: "{ environment: staging }"
   metadata:
     description: A Temporary Smoke Test Configuration
     name: Pdf-TempSmokeTest

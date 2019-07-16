@@ -11,6 +11,7 @@ pipeline:
     clustername: mashtub2-staging-temp
     gcrrepo: phoenix-177420/phoenix-mashtub2
     gcrimage: us.gcr.io/phoenix-177420/phoenix-mashtub2:latest
+    podAnnotations: "{ environment: staging }"
   metadata:
     description: A Temporary Smoke Test Configuration
     name: Mashtub2-TempSmokeTest
