@@ -251,7 +251,7 @@ stages:
       - "{{ stagingloadbalancer }}"
       namespace: default
       nodeSelector: {}
-      podAnnotations: "{{ podAnnotations }}"
+      podAnnotations: "{{ podAnnotationsStaging }}"
       provider: kubernetes
       region: default
       replicaSetAnnotations: {}
