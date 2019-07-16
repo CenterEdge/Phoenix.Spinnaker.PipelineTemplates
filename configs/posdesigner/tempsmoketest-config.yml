@@ -11,6 +11,7 @@ pipeline:
     clustername: posdesigner-staging-temp
     gcrrepo: phoenix-177420/phoenix-service-posdesigner
     gcrimage: us.gcr.io/phoenix-177420/phoenix-service-posdesigner:latest
+    podAnnotations: "{ environment: staging }"
   metadata:
     description: A Temporary Smoke Test Configuration
     name: POSDesigner-TempSmokeTest

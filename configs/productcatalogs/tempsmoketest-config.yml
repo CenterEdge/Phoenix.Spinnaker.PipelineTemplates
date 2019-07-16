@@ -11,6 +11,7 @@ pipeline:
     clustername: productcatalogs-staging-temp
     gcrrepo: phoenix-177420/phoenix-service-productcatalogs
     gcrimage: us.gcr.io/phoenix-177420/phoenix-service-productcatalogs:latest
+    podAnnotations: "{ environment: staging }"
   metadata:
     description: A Temporary Smoke Test Configuration
     name: ProductCatalogs-TempSmokeTest

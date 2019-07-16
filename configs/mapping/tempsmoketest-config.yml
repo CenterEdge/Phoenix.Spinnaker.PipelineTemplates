@@ -11,6 +11,7 @@ pipeline:
     clustername: mapping-staging-temp
     gcrrepo: phoenix-177420/phoenix-service-mapping
     gcrimage: us.gcr.io/phoenix-177420/phoenix-service-mapping:latest
+    podAnnotations: "{ environment: staging }"
   metadata:
     description: A Temporary Smoke Test Configuration
     name: Mapping-TempSmokeTest

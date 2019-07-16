@@ -11,6 +11,7 @@ pipeline:
     clustername: transactions-staging-temp
     gcrrepo: phoenix-177420/phoenix-service-transactions
     gcrimage: us.gcr.io/phoenix-177420/phoenix-service-transactions:latest
+    podAnnotations: "{ environment: staging }"
   metadata:
     description: A Temporary Smoke Test Configuration
     name: Transactions-TempSmokeTest

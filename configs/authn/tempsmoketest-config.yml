@@ -11,7 +11,7 @@ pipeline:
     clustername: authn-staging-temp
     gcrrepo: phoenix-177420/phoenix-service-authentication
     gcrimage: us.gcr.io/phoenix-177420/phoenix-service-authentication:latest
-    podAnnotations: "{ iam.amazonaws.com/role: PhoenixAuthenticationService }"
+    podAnnotations: "{ iam.amazonaws.com/role: PhoenixAuthenticationService, environment: staging }"
   metadata:
     description: A Temporary Smoke Test Configuration
     name: Authentication-TempSmokeTest

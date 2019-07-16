@@ -11,6 +11,7 @@ pipeline:
     clustername: actsched-staging-temp
     gcrrepo: phoenix-177420/phoenix-service-activityscheduling
     gcrimage: us.gcr.io/phoenix-177420/phoenix-service-activityscheduling:latest
+    podAnnotations: "{ environment: staging }"
   metadata:
     description: A Temporary Smoke Test Configuration
     name: ActivityScheduling-TempSmokeTest
