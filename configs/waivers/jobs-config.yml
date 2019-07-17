@@ -1,0 +1,37 @@
+schema: "1"
+pipeline:
+  application: waivers
+  name: Waivers Production
+  id: phnx-waivers-prod-jobs
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/PHNX-2941/templates/production-template.yml
+  variables:
+    application: waivers
+    loadbalancer: waivers-prod-jobs
+    clustername: waivers-prod-jobs
+    stagingloadbalancer: waivers-staging-jobs
+    stagingclustername: waivers-staging-jobs
+    imagenamepattern: .*waivers.*
+    smoketestjob: Phoenix/job/Services/job/Phoenix.Service.Waivers/job/Phoenix.Service.Waivers.Smoke
+    gcrrepo: phoenix-177420/phoenix-service-waivers
+    gcrimage: us.gcr.io/phoenix-177420/phoenix-service-waivers
+    podAnnotations: "{ iam.amazonaws.com/role: PhoenixWaiversSvc, environment: prod }"
+    podAnnotationsStaging: "{ iam.amazonaws.com/role: PhoenixWaiversSvc, environment: staging }"
+    maxmem: 4096Mi
+    processBulkJobs: true
+  metadata:
+    description: The Waivers Production Jobs Pipeline Config
+    name: Waivers-Production-Jobs
+    owner: gbaker@centeredgesoftware.com
+    scopes:
+    - waivers
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications']
+  triggers:
+  - account: gcr-phoenix
+    enabled: true
+    organization: phoenix-177420
+    registry: us.gcr.io
+    repository: phoenix-177420/phoenix-service-waivers
+    runAsUser: phoenix-svc-account
+    type: docker

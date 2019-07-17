@@ -10,7 +10,7 @@ configuration:
     level: pipeline
     message:
       pipeline.failed:
-        text: "Pipeline Failure...@channel"
+        text: "Pipeline Failure... @channel"
     name: slack0
     type: slack
     when:
@@ -68,6 +68,9 @@ variables:
 - name: statsdSampleRate
   description: The percentage of requests to log to statsd. Set to 0 to disable
   defaultValue: 100
+- name: processBulkJobs
+  description: Whether or not this pod should process bulk job workloads
+  defaultValue: false
 stages:
 - config:
     clusters:
@@ -142,6 +145,8 @@ stages:
               configMapName: waiver-upload-options
               key: timeout
           name: WaiverUploadOptions__KeepAliveTimeout
+        - name: JobOptions__ProcessBulkJobs
+          value: "{{processBulkJobs}}"
         imageDescription:
           account: gcr-phoenix
           fromTrigger: true
