@@ -228,7 +228,7 @@ stages:
       scalingPolicy:
         cpuUtilization:
           target: 40
-      stack: prod
+      stack: jobs
       strategy: ""
       targetSize: 3
       terminationGracePeriodSeconds: 30
