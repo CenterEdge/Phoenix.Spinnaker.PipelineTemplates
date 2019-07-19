@@ -12,7 +12,7 @@ pipeline:
     stagingloadbalancer: waivers-staging-api
     stagingclustername: waivers-staging-api
     jobsloadbalancer: waivers-prod-jobs
-    jobsclustername: waivers-prod-jobs
+    jobsclustername: waivers-jobs-api
     imagenamepattern: .*waivers.*
     smoketestjob: Phoenix/job/Services/job/Phoenix.Service.Waivers/job/Phoenix.Service.Waivers.Smoke
     gcrrepo: phoenix-177420/phoenix-service-waivers
@@ -239,8 +239,26 @@ stages:
       type: expression
   id: phoenix-production-jobs-deploy
   inheritanceControl: {}
-  inject:
-    after:
-    - phoenix-production-deploy
+  dependsOn:
+  - phoenix-scriptedpipelinetest-smoketest
+  inject: {}
   name: Deploy Production Jobs
   type: deploy
+- config:
+    cloudProvider: kubernetes
+    cloudProviderType: kubernetes
+    cluster: "{{ jobsclustername }}"
+    credentials: phoenix
+    interestingHealthProviderNames:
+    - KubernetesService
+    namespaces:
+    - default
+    preferLargerOverNewer: "false"
+    remainingEnabledServerGroups: 1
+  dependsOn:
+  - phoenix-production-jobs-deploy
+  id: phoenix-production-jobs-disablecluster
+  inheritanceControl: {}
+  inject: {}
+  name: Disable Cluster
+  type: disableCluster
