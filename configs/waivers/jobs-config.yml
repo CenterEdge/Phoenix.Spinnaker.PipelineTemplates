@@ -47,7 +47,6 @@ stages:
         max: 9
         min: 2
       cloudProvider: kubernetes
-      cluster: "{{jobsclustername}}"
       containers:
       - args: []
         command: []
