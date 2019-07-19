@@ -69,7 +69,7 @@ variables:
   description: The percentage of requests to log to statsd. Set to 0 to disable
   defaultValue: 100
 - name: processBulkJobs
-  description: Whether or not this pod should process bulk job workloads
+  description: Whether or not this service should process bulk job workloads
   defaultValue: false
 stages:
 - config:
@@ -146,7 +146,7 @@ stages:
               key: timeout
           name: WaiverUploadOptions__KeepAliveTimeout
         - name: JobOptions__ProcessBulkJobs
-          value: "{{processBulkJobs}}"
+          value: false
         imageDescription:
           account: gcr-phoenix
           fromTrigger: true
