@@ -130,6 +130,8 @@ stages:
               configMapName: waiver-upload-options
               key: timeout
           name: WaiverUploadOptions__KeepAliveTimeout
+        - name: JobOptions__ProcessBulkJobs
+          value: false
         imageDescription:
           account: gcr-phoenix
           imageId: "{{ gcrimage }}"
