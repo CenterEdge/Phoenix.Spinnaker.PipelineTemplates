@@ -10,7 +10,7 @@ configuration:
     level: pipeline
     message:
       pipeline.failed:
-        text: "Pipeline Failure...@channel"
+        text: "Pipeline Failure... @channel"
     name: slack0
     type: slack
     when:
@@ -142,6 +142,8 @@ stages:
               configMapName: waiver-upload-options
               key: timeout
           name: WaiverUploadOptions__KeepAliveTimeout
+        - name: JobOptions__ProcessBulkJobs
+          value: false
         imageDescription:
           account: gcr-phoenix
           fromTrigger: true
