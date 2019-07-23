@@ -4,7 +4,7 @@ pipeline:
   name: Waivers Production
   id: phnx-waivers-prod
   template:
-    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/PHNX-2941/templates/production-template.yml
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/production-template.yml
   variables:
     application: waivers
     loadbalancer: waivers-prod-api
