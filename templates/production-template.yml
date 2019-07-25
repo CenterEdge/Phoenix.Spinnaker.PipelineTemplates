@@ -218,10 +218,10 @@ stages:
           name: WaiverUploadOptions__MaxRequestSize
         imageDescription:
           account: gcr-phoenix
-          imageId: us.gcr.io/phoenix-177420/nginx-proxy:19
+          imageId: us.gcr.io/phoenix-177420/nginx-proxy:23
           registry: us.gcr.io
           repository: phoenix-177420/nginx-proxy
-          tag: "19"
+          tag: "23"
         imagePullPolicy: IFNOTPRESENT
         limits: {}
         name: phoenix-177420-nginx-proxy
@@ -438,10 +438,10 @@ stages:
           name: WaiverUploadOptions__MaxRequestSize
         imageDescription:
           account: gcr-phoenix
-          imageId: us.gcr.io/phoenix-177420/nginx-proxy:19
+          imageId: us.gcr.io/phoenix-177420/nginx-proxy:23
           registry: us.gcr.io
           repository: phoenix-177420/nginx-proxy
-          tag: "19"
+          tag: "23"
         imagePullPolicy: IFNOTPRESENT
         limits:
           cpu: "{{ maxcpu }}"
