@@ -268,3 +268,20 @@ stages:
   inject: {}
   name: Disable Cluster
   type: disableCluster
+- config:
+    allowDeleteActive: false
+    cloudProvider: kubernetes
+    cloudProviderType: kubernetes
+    cluster: "{{ jobsclustername }}"
+    credentials: phoenix
+    namespaces:
+    - default
+    retainLargerOverNewer: "false"
+    shrinkToSize: 2
+  dependsOn:
+  - phoenix-production-jobs-disablecluster
+  id: phoenix-production-jobs-shrinkcluster
+  inheritanceControl: {}
+  inject: {}
+  name: Shrink Cluster
+  type: shrinkCluster
