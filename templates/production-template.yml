@@ -80,6 +80,12 @@ stages:
         envVars:
         - name: ASPNETCORE_ENVIRONMENT
           value: Staging
+        - name: Statsd__Config__StatsdServerName
+          envSource:
+            fieldRef:
+              fieldPath: status.hostIP
+        - name: Statsd__Enabled
+          value: "true"
         - envSource:
             configMapSource:
               configMapName: businessentities-api
@@ -204,12 +210,6 @@ stages:
               fieldPath: status.hostIP
         - name: STATSD_SAMPLE_RATE
           value: "{{ statsdSampleRate }}"
-        - name: Statsd__Config__StatsdServerName
-          envSource:
-            fieldRef:
-              fieldPath: status.hostIP
-        - name: Statsd__Enabled
-          value: "true"
         - name: SERVICE_NAME
           value: "smoke.{{ application }}"
         - envSource:
@@ -308,6 +308,12 @@ stages:
         envVars:
         - name: ASPNETCORE_ENVIRONMENT
           value: Production
+        - name: Statsd__Config__StatsdServerName
+          envSource:
+            fieldRef:
+              fieldPath: status.hostIP
+        - name: Statsd__Enabled
+          value: "true"
         - envSource:
             configMapSource:
               configMapName: businessentities-api
@@ -430,12 +436,6 @@ stages:
               fieldPath: status.hostIP
         - name: STATSD_SAMPLE_RATE
           value: "{{ statsdSampleRate }}"
-        - name: Statsd__Config__StatsdServerName
-          envSource:
-            fieldRef:
-              fieldPath: status.hostIP
-        - name: Statsd__Enabled
-          value: "true"
         - name: SERVICE_NAME
           value: "prod.{{ application }}"
         - envSource:
