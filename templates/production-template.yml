@@ -68,6 +68,14 @@ variables:
 - name: statsdSampleRate
   description: The percentage of requests to log to statsd. Set to 0 to disable
   defaultValue: 100
+- name: shawarmaEnabled
+  description: Enables the Shawarma sidecar injector, linked to the configured load balancer
+  defaultValue: false
+  type: boolean
+- name: shawarmaStaging
+  description: Enables the Shawarma sidecar injector for staging, only applicable if shawarmaEnabled is also true
+  defaultValue: true
+  type: boolean
 stages:
 - config:
     clusters:
@@ -254,7 +262,14 @@ stages:
       - "{{ stagingloadbalancer }}"
       namespace: default
       nodeSelector: {}
-      podAnnotations: "{{ podAnnotationsStaging }}"
+      podAnnotations: |
+        {% if not shawarmaEnabled or not shawarmaStaging -%}
+        {{ podAnnotationsStaging }}
+        {% elif podAnnotationsStaging == '{}' -%}
+        {"shawarma.centeredge.io/service-name": "{{ stagingloadbalancer }}"}
+        {% else -%}
+        {{ podAnnotationsStaging.substring(0, podAnnotationsStaging.length()-1) }}, "shawarma.centeredge.io/service-name": "{{ stagingloadbalancer }}"}
+        {%- endif %}
       provider: kubernetes
       region: default
       replicaSetAnnotations: {}
@@ -484,7 +499,14 @@ stages:
       - "{{ loadbalancer }}"
       namespace: default
       nodeSelector: {}
-      podAnnotations: "{{ podAnnotations }}"
+      podAnnotations: |
+        {% if not shawarmaEnabled -%}
+        {{ podAnnotations }}
+        {% elif podAnnotations == '{}' -%}
+        {"shawarma.centeredge.io/service-name": "{{ loadbalancer }}"}
+        {% else -%}
+        {{ podAnnotations.substring(0, podAnnotations.length()-1) }}, "shawarma.centeredge.io/service-name": "{{ loadbalancer }}"}
+        {%- endif %}
       provider: kubernetes
       region: default
       replicaSetAnnotations: {}

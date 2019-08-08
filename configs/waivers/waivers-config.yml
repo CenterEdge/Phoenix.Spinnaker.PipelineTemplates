@@ -21,6 +21,7 @@ pipeline:
     podAnnotationsStaging: "{ iam.amazonaws.com/role: PhoenixWaiversSvc, environment: staging }"
     podAnnotationsProdJobs: "{ iam.amazonaws.com/role: PhoenixWaiversSvc, environment: prod }"
     maxmem: 4096Mi
+    shawarmaEnabled: true
   metadata:
     description: The Waivers Production Pipeline Config
     name: Waivers-Production
@@ -226,7 +227,14 @@ stages:
       - "{{ jobsloadbalancer }}"
       namespace: default
       nodeSelector: {}
-      podAnnotations: "{{ podAnnotationsProdJobs }}"
+      podAnnotations: |
+        {% if not shawarmaEnabled -%}
+        {{ podAnnotationsProdJobs }}
+        {% elif podAnnotationsProdJobs == '{}' -%}
+        {"shawarma.centeredge.io/service-name": "{{ jobsloadbalancer }}"}
+        {% else -%}
+        {{ podAnnotationsProdJobs.substring(0, podAnnotationsProdJobs.length()-1) }}, "shawarma.centeredge.io/service-name": "{{ jobsloadbalancer }}"}
+        {%- endif %}
       provider: kubernetes
       region: default
       replicaSetAnnotations: {}
