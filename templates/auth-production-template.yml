@@ -80,6 +80,12 @@ stages:
         envVars:
         - name: ASPNETCORE_ENVIRONMENT
           value: Staging
+        - name: Statsd__Config__StatsdServerName
+          envSource:
+            fieldRef:
+              fieldPath: status.hostIP
+        - name: Statsd__Enabled
+          value: "true"
         - envSource:
             configMapSource:
               configMapName: businessentities-api
@@ -305,6 +311,12 @@ stages:
         envVars:
         - name: ASPNETCORE_ENVIRONMENT
           value: Production
+        - name: Statsd__Config__StatsdServerName
+          envSource:
+            fieldRef:
+              fieldPath: status.hostIP
+        - name: Statsd__Enabled
+          value: "true"
         - envSource:
             configMapSource:
               configMapName: businessentities-api
