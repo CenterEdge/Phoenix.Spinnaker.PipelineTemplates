@@ -73,233 +73,6 @@ stages:
     clusters:
     - account: phoenix
       application: "{{ application }}"
-      cloudProvider: kubernetes
-      containers:
-      - args: []
-        command: []
-        envVars:
-        - name: ASPNETCORE_ENVIRONMENT
-          value: Staging
-        - name: Statsd__Config__StatsdServerName
-          envSource:
-            fieldRef:
-              fieldPath: status.hostIP
-        - name: Statsd__Enabled
-          value: "true"
-        - envSource:
-            configMapSource:
-              configMapName: businessentities-api
-              key: url
-          name: BusinessEntities__Host
-        - envSource:
-            secretSource:
-              key: url
-              secretName: couchbase-primary
-          name: Couchbase__Servers__0
-        - name: ASPNETCORE_URLS
-          value: http://localhost:8080/
-        - envSource:
-            secretSource:
-              key: username
-              secretName: couchbase-primary
-          name: Couchbase__Username
-        - envSource:
-            secretSource:
-              key: password
-              secretName: couchbase-primary
-          name: Couchbase__Password
-        - envSource:
-            configMapSource:
-              configMapName: rabbitmq
-              key: host
-          name: RabbitMQ__Hosts__0__Host
-        - envSource:
-            configMapSource:
-              configMapName: rabbitmq
-              key: username
-          name: RabbitMQ__Username
-        - envSource:
-            secretSource:
-              key: default-pass
-              secretName: rabbitmq-config
-          name: RabbitMQ__Password
-        - envSource:
-            secretSource:
-              key: clientId
-              secretName: cognito-creds
-          name: COGNITO__ClientId
-        - envSource:
-            secretSource:
-              key: clientSecret
-              secretName: cognito-creds
-          name: COGNITO__ClientSecret
-        - envSource:
-            secretSource:
-              key: poolId
-              secretName: cognito-creds
-          name: COGNITO__UserPoolId
-        - envSource:
-            secretSource:
-              key: region
-              secretName: cognito-creds
-          name: COGNITO__Region
-        - envSource:
-            secretSource:
-              key: key
-              secretName: feature-flag-key
-          name: LaunchDarklyOptions__SdkKey
-        - envSource:
-            secretSource:
-              key: secret
-              secretName: jwt-options
-          name: JwtOptions__Secret
-        imageDescription:
-          account: gcr-phoenix
-          fromTrigger: true
-          imageId: "{{ gcrimage }}"
-          registry: us.gcr.io
-          repository: "{{ gcrrepo }}"
-        imagePullPolicy: IFNOTPRESENT
-        limits: {}
-        livenessProbe:
-          failureThreshold: 3
-          handler:
-            execAction:
-              commands: []
-            httpGetAction:
-              path: /health
-              port: 80
-              uriScheme: HTTP
-            tcpSocketAction:
-              port: 80
-            type: HTTP
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          successThreshold: 1
-          timeoutSeconds: 1
-        name: "phoenix-177420-phoenix-service-{{ application }}"
-        ports:
-        - containerPort: 8080
-          name: http
-          protocol: TCP
-        readinessProbe:
-          failureThreshold: 3
-          handler:
-            execAction:
-              commands: []
-            httpGetAction:
-              path: /health?type=ready
-              port: 80
-              uriScheme: HTTP
-            tcpSocketAction:
-              port: 80
-            type: HTTP
-          initialDelaySeconds: 15
-          periodSeconds: 5
-          successThreshold: 1
-          timeoutSeconds: 1
-        volumeMounts: []
-      - args: []
-        command: []
-        envVars:
-        - name: API_GATEWAY_KEY
-          envSource:
-            secretSource:
-              key: key
-              secretName: api-gateway
-        - name: STATSD_SERVER
-          envSource:
-            fieldRef:
-              fieldPath: status.hostIP
-        - name: STATSD_SAMPLE_RATE
-          value: "{{ statsdSampleRate }}"
-        - name: SERVICE_NAME
-          value: "smoke.{{ application }}"
-        - envSource:
-            configMapSource:
-              configMapName: waiver-upload-options
-              key: timeout
-          name: WaiverUploadOptions__KeepAliveTimeout
-        - envSource:
-            configMapSource:
-              configMapName: waiver-upload-options
-              key: max_size
-          name: WaiverUploadOptions__MaxRequestSize
-        imageDescription:
-          account: gcr-phoenix
-          imageId: us.gcr.io/phoenix-177420/nginx-proxy:23
-          registry: us.gcr.io
-          repository: phoenix-177420/nginx-proxy
-          tag: "23"
-        imagePullPolicy: IFNOTPRESENT
-        limits: {}
-        name: phoenix-177420-nginx-proxy
-        ports:
-        - containerPort: 80
-          name: http
-          protocol: TCP
-        requests: {}
-        volumeMounts: []
-      deployment:
-        deploymentStrategy:
-          rollingUpdate:
-            maxSurge: 1
-            maxUnavailable: 1
-          type: RollingUpdate
-        enabled: false
-        minReadySeconds: 0
-      dnsPolicy: ClusterFirst
-      freeFormDetails: api
-      interestingHealthProviderNames:
-      - KubernetesContainer
-      - KubernetesPod
-      loadBalancers:
-      - "{{ stagingloadbalancer }}"
-      namespace: default
-      nodeSelector: {}
-      podAnnotations: "{{ podAnnotationsStaging }}"
-      provider: kubernetes
-      region: default
-      replicaSetAnnotations: {}
-      stack: staging
-      strategy: ""
-      targetSize: 1
-      terminationGracePeriodSeconds: 30
-      volumeSources: []
-    overrideTimeout: true
-    stageTimeoutMs: 600000
-  id: deploy
-  inheritanceControl: {}
-  inject: {}
-  name: Deploy
-  type: deploy
-- config:
-    waitTime: 30
-  dependsOn:
-  - deploy
-  id: healthchecks-wait
-  inheritanceControl: {}
-  inject: {}
-  name: Wait for ALB Health Checks
-  type: wait
-- config:
-    completeOtherBranchesThenFail: false
-    continuePipeline: true
-    failPipeline: false
-    job: "{{ smoketestjob }}"
-    master: primary-jenkins
-    parameters: "{{ smoketestparams }}"
-  dependsOn:
-  - healthchecks-wait
-  id: phoenix-scriptedpipelinetest-smoketest
-  inheritanceControl: {}
-  inject: {}
-  name: Smoke Test
-  type: jenkins
-- config:
-    clusters:
-    - account: phoenix
-      application: "{{ application }}"
       capacity:
         desired: 2
         max: 9
@@ -506,11 +279,7 @@ stages:
       volumeSources: []
     overrideTimeout: true
     stageTimeoutMs: 600000
-    stageEnabled:
-      expression: "#stage('Smoke Test')['context']['buildInfo']['result']=='SUCCESS'"
-      type: expression
-  dependsOn:
-  - phoenix-scriptedpipelinetest-smoketest
+    stageEnabled: true
   id: phoenix-production-deploy
   inheritanceControl: {}
   inject: {}
@@ -552,24 +321,6 @@ stages:
   name: Shrink Cluster
   type: shrinkCluster
 - config:
-    cloudProvider: kubernetes
-    cloudProviderType: kubernetes
-    cluster: "{{ stagingclustername }}"
-    clusters: []
-    credentials: phoenix
-    interestingHealthProviderNames:
-    - KubernetesService
-    namespaces:
-    - default
-    target: current_asg_dynamic
-  dependsOn:
-  - phoenix-production-deploy
-  id: destroy-staging-server-group
-  inheritanceControl: {}
-  inject: {}
-  name: Destroy Staging Server Group
-  type: destroyServerGroup
-- config:
     alias: preconfiguredWebhook
     parameterValues:
       alertType: info
@@ -578,8 +329,6 @@ stages:
       text: "Start Deploy of {{ application }} to {{ clustername }}"
       title: "Start Deploy of {{ application }} to {{ clustername }}"
     statusUrlResolution: getMethod
-  dependsOn:
-  - phoenix-scriptedpipelinetest-smoketest
   id: pipelineevent-start-deployment
   inheritanceControl: {}
   inject: {}
@@ -624,19 +373,3 @@ stages:
   inject: {}
   name: Publish Failed Event
   type: datadogEvent
-- config:
-    stageEnabled:
-      expression: "#stage('Smoke Test')['context']['buildInfo']['result']!='SUCCESS'"
-      type: expression
-    preconditions:
-    - context:
-        expression: "#stage('Smoke Test')['context']['buildInfo']['result']"
-      failPipeline: true
-      type: expression
-  dependsOn:
-  - destroy-staging-server-group
-  id: check-smoketest-failure
-  inheritanceControl: {}
-  inject: {}
-  name: Check Smoke Test Failure
-  type: checkPreconditions
