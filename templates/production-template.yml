@@ -172,7 +172,7 @@ stages:
             execAction:
               commands: []
             httpGetAction:
-              path: /health
+              path: /health?type=ready
               port: 80
               uriScheme: HTTP
             tcpSocketAction:
