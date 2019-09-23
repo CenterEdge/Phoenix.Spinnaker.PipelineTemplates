@@ -1,5 +1,5 @@
 schema: "1"
-id: phoenix-emergency-production-template
+id: phoenix-auth-production-template
 protect: false
 configuration:
   concurrentExecutions:
@@ -10,7 +10,7 @@ configuration:
     level: pipeline
     message:
       pipeline.failed:
-        text: "Pipeline Failure... @channel"
+        text: "Pipeline Failure...@channel"
     name: slack0
     type: slack
     when:
@@ -50,10 +50,6 @@ variables:
 - name: statsdSampleRate
   description: The percentage of requests to log to statsd. Set to 0 to disable
   defaultValue: 100
-- name: shawarmaEnabled
-  description: Enables the Shawarma sidecar injector, linked to the configured load balancer
-  defaultValue: false
-  type: boolean
 stages:
 - config:
     instructions: Confirm that this microservice should be deployed without running smoke tests
@@ -65,9 +61,6 @@ stages:
   name: Manual Judgment
   type: manualJudgment
 - config:
-    stageEnabled:
-      expression: "#judgment('Manual Judgment').equals('Approve')"
-      type: expression
     clusters:
     - account: phoenix
       application: "{{ application }}"
@@ -93,21 +86,6 @@ stages:
               configMapName: businessentities-api
               key: url
           name: BusinessEntities__Host
-        - envSource:
-            configMapSource:
-              configMapName: mappings-api
-              key: url
-          name: Mappings__Host
-        - envSource:
-            configMapSource:
-              configMapName: productcatalogs-api
-              key: url
-          name: ProductCatalogs__Host
-        - envSource:
-            configMapSource:
-              configMapName: pdf-api
-              key: url
-          name: HtmlToPdf__Host
         - envSource:
             secretSource:
               key: url
@@ -142,17 +120,37 @@ stages:
           name: RabbitMQ__Password
         - envSource:
             secretSource:
+              key: clientId
+              secretName: cognito-creds
+          name: COGNITO__ClientId
+        - envSource:
+            secretSource:
+              key: clientSecret
+              secretName: cognito-creds
+          name: COGNITO__ClientSecret
+        - envSource:
+            secretSource:
+              key: poolId
+              secretName: cognito-creds
+          name: COGNITO__UserPoolId
+        - envSource:
+            secretSource:
+              key: region
+              secretName: cognito-creds
+          name: COGNITO__Region
+        - envSource:
+            secretSource:
               key: key
               secretName: feature-flag-key
           name: LaunchDarklyOptions__SdkKey
         - envSource:
-            configMapSource:
-              configMapName: waiver-upload-options
-              key: timeout
-          name: WaiverUploadOptions__KeepAliveTimeout
+            secretSource:
+              key: secret
+              secretName: jwt-options
+          name: JwtOptions__Secret
         imageDescription:
-          fromTrigger: true
           account: gcr-phoenix
+          fromTrigger: true
           imageId: "{{ gcrimage }}"
           registry: us.gcr.io
           repository: "{{ gcrrepo }}"
@@ -258,14 +256,7 @@ stages:
       - "{{ loadbalancer }}"
       namespace: default
       nodeSelector: {}
-      podAnnotations: |
-        {% if not shawarmaEnabled -%}
-        {{ podAnnotations }}
-        {% elif podAnnotations == '{}' -%}
-        {"shawarma.centeredge.io/service-name": "{{ loadbalancer }}"}
-        {% else -%}
-        {{ podAnnotations.substring(0, podAnnotations.length()-1) }}, "shawarma.centeredge.io/service-name": "{{ loadbalancer }}"}
-        {%- endif %}
+      podAnnotations: "{{ podAnnotations }}"
       provider: kubernetes
       region: default
       replicaSetAnnotations: {}
@@ -279,6 +270,9 @@ stages:
       volumeSources: []
     overrideTimeout: true
     stageTimeoutMs: 600000
+    stageEnabled:
+      expression: "#judgment('Manual Judgment').equals('Approve')"
+      type: expression
   dependsOn:
   - phoenix-production-manualjudgment
   id: phoenix-production-deploy
