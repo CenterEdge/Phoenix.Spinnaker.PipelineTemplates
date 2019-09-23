@@ -140,7 +140,6 @@ stages:
           name: WaiverUploadOptions__KeepAliveTimeout
         imageDescription:
           account: gcr-phoenix
-          fromTrigger: true
           imageId: "{{ gcrimage }}"
           registry: us.gcr.io
           repository: "{{ gcrrepo }}"
