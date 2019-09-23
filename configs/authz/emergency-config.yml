@@ -1,0 +1,30 @@
+schema: "1"
+pipeline:
+  application: authz
+  name: Emergency Authorization Production
+  id: phnx-emergency-authorization-prod
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/emergency-auth-production-template.yml
+  variables:
+    application: authz
+    loadbalancer: authz-prod-api
+    clustername: authz-prod-api
+    gcrrepo: phoenix-177420/phoenix-service-authorization
+    gcrimage: us.gcr.io/phoenix-177420/phoenix-service-authorization
+    podAnnotations: "{ iam.amazonaws.com/role: PhoenixAuthenticationService, environment: prod }"
+  metadata:
+    description: The Emergency Authorization Production Pipeline Config
+    name: Emergency-Authorization-Production
+    owner: gbrown@centeredgesoftware.com
+    scopes:
+    - authz
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications']
+  triggers:
+  - account: gcr-phoenix
+    enabled: false
+    organization: phoenix-177420
+    registry: us.gcr.io
+    repository: phoenix-177420/phoenix-service-authorization
+    runAsUser: phoenix-svc-account
+    type: docker

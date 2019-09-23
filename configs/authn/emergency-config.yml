@@ -1,0 +1,30 @@
+schema: "1"
+pipeline:
+  application: authn
+  name: Emergency Authentication Production
+  id: phnx-emergency-authentication-prod
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/emergency-auth-production-template.yml
+  variables:
+    application: authn
+    loadbalancer: authn-prod-api
+    clustername: authn-prod-api
+    gcrrepo: phoenix-177420/phoenix-service-authentication
+    gcrimage: us.gcr.io/phoenix-177420/phoenix-service-authentication
+    podAnnotations: "{ iam.amazonaws.com/role: PhoenixAuthenticationService, environment: prod }"
+  metadata:
+    description: The Emergency Authentication Production Pipeline Config
+    name: Emergency-Authentication-Production
+    owner: gbrown@centeredgesoftware.com
+    scopes:
+    - authn
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications']
+  triggers:
+  - account: gcr-phoenix
+    enabled: false
+    organization: phoenix-177420
+    registry: us.gcr.io
+    repository: phoenix-177420/phoenix-service-authentication
+    runAsUser: phoenix-svc-account
+    type: docker
