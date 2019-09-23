@@ -66,7 +66,7 @@ stages:
   type: manualJudgment
 - config:
     stageEnabled:
-      expression: "#stage('Manual Judgment').equals('Approve')"
+      expression: "#judgment('Manual Judgment').equals('Approve')"
       type: expression
     clusters:
     - account: phoenix
