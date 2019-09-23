@@ -1,0 +1,30 @@
+schema: "1"
+pipeline:
+  application: transactions
+  name: Emergency Transactions Production
+  id: phnx-emergency-transactions-prod
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/emergency-production-template.yml
+  variables:
+    application: transactions
+    loadbalancer: transactions-prod-api
+    clustername: transactions-prod-api
+    gcrrepo: phoenix-177420/phoenix-service-transactions
+    gcrimage: us.gcr.io/phoenix-177420/phoenix-service-transactions
+    podAnnotations: "{ environment: prod }"
+  metadata:
+    description: The Emergency Transactions Production Pipeline Config
+    name: Emergency-Transactions-Production
+    owner: gbrown@centeredgesoftware.com
+    scopes:
+    - transactions
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications']
+  triggers:
+  - account: gcr-phoenix
+    enabled: false
+    organization: phoenix-177420
+    registry: us.gcr.io
+    repository: phoenix-177420/phoenix-service-transactions
+    runAsUser: phoenix-svc-account
+    type: docker

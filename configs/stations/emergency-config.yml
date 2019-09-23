@@ -1,0 +1,30 @@
+schema: "1"
+pipeline:
+  application: stations
+  name: Emergency Stations Production
+  id: phnx-emergency-stations-prod
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/emergency-production-template.yml
+  variables:
+    application: stations
+    loadbalancer: stations-prod-api
+    clustername: stations-prod-api
+    gcrrepo: phoenix-177420/phoenix-service-stations
+    gcrimage: us.gcr.io/phoenix-177420/phoenix-service-stations
+    podAnnotations: "{ environment: prod }"
+  metadata:
+    description: The Emergency Stations Production Pipeline Config
+    name: Emergency-Stations-Production
+    owner: gbrown@centeredgesoftware.com
+    scopes:
+    - stations
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications']
+  triggers:
+  - account: gcr-phoenix
+    enabled: false
+    organization: phoenix-177420
+    registry: us.gcr.io
+    repository: phoenix-177420/phoenix-service-stations
+    runAsUser: phoenix-svc-account
+    type: docker

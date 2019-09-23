@@ -1,0 +1,30 @@
+schema: "1"
+pipeline:
+  application: posdesigner
+  name: Emergency POSDesigner Production
+  id: phnx-emergency-posdesigner-prod
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/emergency-production-template.yml
+  variables:
+    application: posdesigner
+    loadbalancer: posdesigner-prod-api
+    clustername: posdesigner-prod-api
+    gcrrepo: phoenix-177420/phoenix-service-posdesigner
+    gcrimage: us.gcr.io/phoenix-177420/phoenix-service-posdesigner
+    podAnnotations: "{ environment: prod }"
+  metadata:
+    description: The Emergency POSDesigner Production Pipeline Config
+    name: Emergency-POSDesigner-Production
+    owner: gbrown@centeredgesoftware.com
+    scopes:
+    - posdesigner
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications']
+  triggers:
+  - account: gcr-phoenix
+    enabled: false
+    organization: phoenix-177420
+    registry: us.gcr.io
+    repository: phoenix-177420/phoenix-service-posdesigner
+    runAsUser: phoenix-svc-account
+    type: docker
