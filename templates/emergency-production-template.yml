@@ -151,6 +151,7 @@ stages:
               key: timeout
           name: WaiverUploadOptions__KeepAliveTimeout
         imageDescription:
+          fromTrigger: true
           account: gcr-phoenix
           imageId: "{{ gcrimage }}"
           registry: us.gcr.io
