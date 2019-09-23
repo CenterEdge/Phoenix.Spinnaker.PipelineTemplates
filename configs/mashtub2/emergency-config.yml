@@ -1,0 +1,33 @@
+schema: "1"
+pipeline:
+  application: mashtub2
+  name: Emergency Mashtub2 Production
+  id: phoenix-emergency-mashtub2-prod
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/emergency-mt-production-template.yml
+  variables:
+    application: mashtub2
+    loadbalancer: mashtub2-prod-api
+    clustername: mashtub2-prod-api
+    sdkversion: "${#stage( 'FindImage' )[\"context\"][\"amiDetails\"][0][\"tag\"]}"
+    gcrrepo: phoenix-177420/phoenix-mashtub2
+    gcrimage: us.gcr.io/phoenix-177420/phoenix-mashtub2
+    requestcpu: 250m
+    maxcpu: 500m
+    podAnnotations: "{ environment: prod }"
+  metadata:
+    description: The Emergency Mashtub2 Production Pipeline Config
+    name: Emergency-Mashtub2-Production
+    owner: gbrown@centeredgesoftware.com
+    scopes:
+    - mashtub2
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications']
+  triggers:
+  - account: gcr-phoenix
+    enabled: false
+    organization: phoenix-177420
+    registry: us.gcr.io
+    repository: phoenix-177420/phoenix-mashtub2
+    runAsUser: phoenix-svc-account
+    type: docker
