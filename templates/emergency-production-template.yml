@@ -58,15 +58,15 @@ stages:
 - config:
     instructions: Confirm that this microservice should be deployed without running smoke tests
     isNew: true
-    judgementInputs:
+    judgmentInputs:
     - value: Approve
     - value: Deny
-  id: phoenix-production-manualjudgement
-  name: Manual Judgement
-  type: manualJudgement
+  id: phoenix-production-manualjudgment
+  name: Manual Judgment
+  type: manualJudgment
 - config:
     stageEnabled:
-      expression: "#stage('Manual Judgement').equals('Approve')"
+      expression: "#stage('Manual Judgment').equals('Approve')"
       type: expression
     clusters:
     - account: phoenix
@@ -280,7 +280,7 @@ stages:
     overrideTimeout: true
     stageTimeoutMs: 600000
   dependsOn:
-  - phoenix-production-manualjudgement
+  - phoenix-production-manualjudgment
   id: phoenix-production-deploy
   inheritanceControl: {}
   inject: {}
