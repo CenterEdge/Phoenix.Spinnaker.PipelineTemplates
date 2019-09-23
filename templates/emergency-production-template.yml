@@ -55,13 +55,13 @@ variables:
   defaultValue: false
   type: boolean
 stages:
-- instructions: Confirm that this microservice should be deployed without running smoke tests
-  isNew: true
-  judgementInputs:
-  - value: Approve
-  - value: Deny
+- config:
+    instructions: Confirm that this microservice should be deployed without running smoke tests
+    isNew: true
+    judgementInputs:
+    - value: Approve
+    - value: Deny
   id: phoenix-production-manualjudgement
-  failPipeline: true
   name: Manual Judgement
   type: manualJudgement
 - config:
