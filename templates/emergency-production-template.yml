@@ -55,14 +55,13 @@ variables:
   defaultValue: false
   type: boolean
 stages:
-- config:
-  id: phoenix-production-manualjudgement
-  failPipeline: true
-  instructions: Confirm that this microservice should be deployed without running smoke tests
+- instructions: Confirm that this microservice should be deployed without running smoke tests
   isNew: true
   judgementInputs:
   - value: Approve
   - value: Deny
+  id: phoenix-production-manualjudgement
+  failPipeline: true
   name: Manual Judgement
   type: manualJudgement
 - config:
@@ -279,6 +278,8 @@ stages:
       volumeSources: []
     overrideTimeout: true
     stageTimeoutMs: 600000
+  dependsOn:
+  - phoenix-production-manualjudgement
   id: phoenix-production-deploy
   inheritanceControl: {}
   inject: {}
