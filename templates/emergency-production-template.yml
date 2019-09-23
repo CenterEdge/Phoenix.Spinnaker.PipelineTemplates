@@ -56,14 +56,15 @@ variables:
   type: boolean
 stages:
 - config:
-    failPipeline: true
-    instructions: Confirm that this microservice should be deployed without running smoke tests
-    isNew: true
-    judgementInputs:
-    - value: Approve
-    - value: Deny
-    name: Manual Judgement
-    type: manualJudgement
+  id: phoenix-production-manualjudgement
+  failPipeline: true
+  instructions: Confirm that this microservice should be deployed without running smoke tests
+  isNew: true
+  judgementInputs:
+  - value: Approve
+  - value: Deny
+  name: Manual Judgement
+  type: manualJudgement
 - config:
     stageEnabled:
       expression: "#stage('Manual Judgement').equals('Approve')"
