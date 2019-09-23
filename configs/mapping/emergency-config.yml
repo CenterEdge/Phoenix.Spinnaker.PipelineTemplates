@@ -1,0 +1,30 @@
+schema: "1"
+pipeline:
+  application: mapping
+  name: Emergency Mapping Production
+  id: phnx-emergency-mapping-prod
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/emergency-production-template.yml
+  variables:
+    application: mapping
+    loadbalancer: mapping-prod-api
+    clustername: mapping-prod-api
+    gcrrepo: phoenix-177420/phoenix-service-mapping
+    gcrimage: us.gcr.io/phoenix-177420/phoenix-service-mapping
+    podAnnotations: "{ environment: prod }"
+  metadata:
+    description: The Emergency Mapping Production Pipeline Config
+    name: Emergency-Mapping-Production
+    owner: gbrown@centeredgesoftware.com
+    scopes:
+    - mapping
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications']
+  triggers:
+  - account: gcr-phoenix
+    enabled: false
+    organization: phoenix-177420
+    registry: us.gcr.io
+    repository: phoenix-177420/phoenix-service-mapping
+    runAsUser: phoenix-svc-account
+    type: docker

@@ -1,0 +1,30 @@
+schema: "1"
+pipeline:
+  application: pricelists
+  name: Emergency PriceLists Production
+  id: phnx-emergency-pricelists-prod
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/emergency-production-template.yml
+  variables:
+    application: pricelists
+    loadbalancer: pricelists-prod-api
+    clustername: pricelists-prod-api
+    gcrrepo: phoenix-177420/phoenix-service-pricelists
+    gcrimage: us.gcr.io/phoenix-177420/phoenix-service-pricelists
+    podAnnotations: "{ environment: prod }"
+  metadata:
+    description: The Emergency PriceLists Production Pipeline Config
+    name: Emergency-PriceLists-Production
+    owner: gbrown@centeredgesoftware.com
+    scopes:
+    - pricelists
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications']
+  triggers:
+  - account: gcr-phoenix
+    enabled: false
+    organization: phoenix-177420
+    registry: us.gcr.io
+    repository: phoenix-177420/phoenix-service-pricelists
+    runAsUser: phoenix-svc-account
+    type: docker
