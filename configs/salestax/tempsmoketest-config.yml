@@ -1,0 +1,23 @@
+schema: "1"
+pipeline:
+  application: salestax
+  name: Temp Smoke Test
+  id: phoenix-salestax-tempsmoketest
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/tempsmoketest-template.yml
+  variables:
+    application: salestax
+    loadbalancer: salestax-staging-api
+    clustername: salestax-staging-temp
+    gcrrepo: phoenix-177420/phoenix-service-salestax
+    gcrimage: us.gcr.io/phoenix-177420/phoenix-service-salestax:latest
+    podAnnotations: "{ environment: staging }"
+  metadata:
+    description: A Temporary Smoke Test Configuration
+    name: SalesTax-TempSmokeTest
+    owner: gbaker@centeredgesoftware.com
+    scopes:
+    - salestax
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications']
+  triggers: []
