@@ -1,0 +1,20 @@
+schema: "1"
+pipeline:
+  application: salestax
+  name: SalesTax Cluster Cleanup
+  id: phnx-salestax-cleanup
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/cluster-cleanup-template.yml
+  variables:
+    prodclustername: salestax-prod-api
+    stagingclustername: salestax-staging-api
+    tempclustername: salestax-staging-temp
+    imagenamepattern: .*salestax.*
+  metadata:
+    description: The SalesTax Production Cluster Cleanup Config
+    name: SalesTax-ClusterCleanup
+    owner: gbaker@centeredgesoftware.com
+    scopes:
+    - salestax
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications', 'triggers']
