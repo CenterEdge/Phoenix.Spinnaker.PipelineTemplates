@@ -1,0 +1,20 @@
+schema: "1"
+pipeline:
+  application: pictures
+  name: Pictures Cluster Cleanup
+  id: phnx-pictures-cleanup
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/cluster-cleanup-template.yml
+  variables:
+    prodclustername: pictures-prod-api
+    stagingclustername: pictures-staging-api
+    tempclustername: pictures-staging-temp
+    imagenamepattern: .*pictures.*
+  metadata:
+    description: The Pictures Production Cluster Cleanup Config
+    name: Pictures-ClusterCleanup
+    owner: gbaker@centeredgesoftware.com
+    scopes:
+    - pictures
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications', 'triggers']

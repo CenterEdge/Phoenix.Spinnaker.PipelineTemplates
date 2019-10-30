@@ -1,0 +1,30 @@
+schema: "1"
+pipeline:
+  application: pictures
+  name: Emergency Pictures Production
+  id: phnx-emergency-pictures-prod
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/emergency-production-template.yml
+  variables:
+    application: pictures
+    loadbalancer: pictures-prod-api
+    clustername: pictures-prod-api
+    gcrrepo: phoenix-177420/phoenix-service-pictures
+    gcrimage: us.gcr.io/phoenix-177420/phoenix-service-pictures
+    podAnnotations: "{ iam.amazonaws.com/role: PhoenixPicturesSvc, environment: prod }"
+  metadata:
+    description: The Emergency Pictures Production Pipeline Config
+    name: Emergency-Pictures-Production
+    owner: gbrown@centeredgesoftware.com
+    scopes:
+    - pictures
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications']
+  triggers:
+  - account: gcr-phoenix
+    enabled: false
+    organization: phoenix-177420
+    registry: us.gcr.io
+    repository: phoenix-177420/phoenix-service-pictures
+    runAsUser: phoenix-svc-account
+    type: docker
