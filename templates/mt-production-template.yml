@@ -279,7 +279,7 @@ stages:
     - account: phoenix
       application: "{{ application }}"
       capacity:
-        desired: 2
+        desired: 3
         max: 9
         min: 3
       cloudProvider: kubernetes
