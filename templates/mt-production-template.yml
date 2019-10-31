@@ -54,13 +54,13 @@ variables:
   defaultValue: 100m
 - name: requestmem
   description: The amount of Memory requested
-  defaultValue: 512Mi
+  defaultValue: 1024Mi
 - name: maxcpu
   description: The CPU limit for a given pod
   defaultValue: 200m
 - name: maxmem
   description: The Memory limit for a pod
-  defaultValue: 1024Mi
+  defaultValue: 2048Mi
 - name: statsdSampleRate
   description: The percentage of requests to log to statsd. Set to 0 to disable
   defaultValue: 100
@@ -281,7 +281,7 @@ stages:
       capacity:
         desired: 2
         max: 9
-        min: 2
+        min: 3
       cloudProvider: kubernetes
       containers:
       - args: []
