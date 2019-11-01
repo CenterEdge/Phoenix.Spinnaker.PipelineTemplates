@@ -1,0 +1,35 @@
+schema: "1"
+pipeline:
+  application: Pictures
+  name: Pictures Production
+  id: phnx-pictures-prod
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/production-template.yml
+  variables:
+    application: pictures
+    loadbalancer: pictures-prod-api
+    clustername: pictures-prod-api
+    stagingloadbalancer: pictures-staging-api
+    stagingclustername: pictures-staging-api
+    imagenamepattern: .*pictures.*
+    smoketestjob: Phoenix/job/Services/job/Phoenix.Service.Pictures/job/Phoenix.Service.Pictures.Smoke
+    gcrrepo: phoenix-177420/phoenix-service-pictures
+    gcrimage: us.gcr.io/phoenix-177420/phoenix-service-pictures
+    podAnnotations: "{ iam.amazonaws.com/role: PhoenixPicturesSvc, environment: prod }"
+    podAnnotationsStaging: "{ iam.amazonaws.com/role: PhoenixPicturesSvc, environment: staging }"
+  metadata:
+    description: The Pictures Production Pipeline Config
+    name: Pictures-Production
+    owner: gbaker@centeredgesoftware.com
+    scopes:
+    - pictures
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications']
+  triggers:
+  - account: gcr-phoenix
+    enabled: true
+    organization: phoenix-177420
+    registry: us.gcr.io
+    repository: phoenix-177420/phoenix-service-pictures
+    runAsUser: phoenix-svc-account
+    type: docker
