@@ -30,7 +30,7 @@ variables:
   description: The GCR repository to connect to
 - name: podAnnotations
   type: object
-  defaultValue: {}
+  defaultValue: {"check_names='[\"nginx\"]',init_configs='[{}]',instances='[{\"nginx_status_url\": \"http://%%host%%:/nginx_status\",\"tags\":[\"app:{{ application }}\",\"product:phoenix\",\"environment:production\"]"}
   description: The annotations to assign to production pods
 - name: product
   description: The name of the product this deployment belongs to
@@ -222,10 +222,10 @@ stages:
           name: WaiverUploadOptions__MaxRequestSize
         imageDescription:
           account: gcr-phoenix
-          imageId: us.gcr.io/phoenix-177420/nginx-proxy:23
+          imageId: us.gcr.io/phoenix-177420/nginx-proxy:24
           registry: us.gcr.io
           repository: phoenix-177420/nginx-proxy
-          tag: "23"
+          tag: "24"
         imagePullPolicy: IFNOTPRESENT
         limits:
           cpu: "{{ maxcpu }}"

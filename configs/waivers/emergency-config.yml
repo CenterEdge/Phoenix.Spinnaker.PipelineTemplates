@@ -13,7 +13,7 @@ pipeline:
     jobsclustername: waivers-jobs-api
     gcrrepo: phoenix-177420/phoenix-service-waivers
     gcrimage: us.gcr.io/phoenix-177420/phoenix-service-waivers
-    podAnnotations: "{ iam.amazonaws.com/role: PhoenixWaiversSvc, environment: prod }"
+    podAnnotations: {"check_names='[\"nginx\"]',init_configs='[{}]',instances='[{\"nginx_status_url\": \"http://%%host%%:/nginx_status\",\"tags\":[\"app:{{ application }}\",\"product:phoenix\",\"environment:production\"]",iam.amazonaws.com/role: PhoenixWaiversSvc, environment: prod}
     podAnnotationsProdJobs: "{ iam.amazonaws.com/role: PhoenixWaiversSvc, environment: prod }"
     maxmem: 4096Mi
     shawarmaEnabled: true
@@ -188,10 +188,10 @@ stages:
           name: WaiverUploadOptions__MaxRequestSize
         imageDescription:
           account: gcr-phoenix
-          imageId: us.gcr.io/phoenix-177420/nginx-proxy:19
+          imageId: us.gcr.io/phoenix-177420/nginx-proxy:24
           registry: us.gcr.io
           repository: phoenix-177420/nginx-proxy
-          tag: "19"
+          tag: "24"
         imagePullPolicy: IFNOTPRESENT
         limits:
           cpu: "{{ maxcpu }}"
