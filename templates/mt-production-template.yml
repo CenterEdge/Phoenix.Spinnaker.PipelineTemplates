@@ -54,13 +54,13 @@ variables:
   defaultValue: 100m
 - name: requestmem
   description: The amount of Memory requested
-  defaultValue: 1024Mi
+  defaultValue: 512Mi
 - name: maxcpu
   description: The CPU limit for a given pod
   defaultValue: 200m
 - name: maxmem
   description: The Memory limit for a pod
-  defaultValue: 2048Mi
+  defaultValue: 1024Mi
 - name: statsdSampleRate
   description: The percentage of requests to log to statsd. Set to 0 to disable
   defaultValue: 100
@@ -279,9 +279,9 @@ stages:
     - account: phoenix
       application: "{{ application }}"
       capacity:
-        desired: 3
+        desired: 2
         max: 9
-        min: 3
+        min: 2
       cloudProvider: kubernetes
       containers:
       - args: []
@@ -481,7 +481,7 @@ stages:
     namespaces:
     - default
     retainLargerOverNewer: "false"
-    shrinkToSize: 3
+    shrinkToSize: 2
   dependsOn:
   - phoenix-production-disablecluster
   id: phoenix-production-shrinkcluster
