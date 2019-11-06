@@ -41,7 +41,7 @@ variables:
 - name: podAnnotations
   type: object
 #  defaultValue: "{check_names: '[nginx]',init_configs: '[{}]',instances: '[{nginx_status_url: http://%%host%%:/nginx_status,tags: [app: {{ application }},product: phoenix,environment: production]}]'}"
-  defaultValue: "{check_names: '[nginx]'}"
+  defaultValue: "{check_names: nginx}"
   description: The annotations to assign to production pods
 - name: podAnnotationsStaging
   type: object
