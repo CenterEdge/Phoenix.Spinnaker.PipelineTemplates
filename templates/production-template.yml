@@ -111,6 +111,11 @@ stages:
           name: ProductCatalogs__Host
         - envSource:
             configMapSource:
+              configMapName: stations-api
+              key: url
+          name: Stations__Host
+        - envSource:
+            configMapSource:
               configMapName: pdf-api
               key: url
           name: HtmlToPdf__Host
@@ -344,6 +349,11 @@ stages:
               configMapName: productcatalogs-api
               key: url
           name: ProductCatalogs__Host
+        - envSource:
+            configMapSource:
+              configMapName: stations-api
+              key: url
+          name: Stations__Host
         - envSource:
             configMapSource:
               configMapName: pdf-api
