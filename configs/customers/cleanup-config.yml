@@ -1,0 +1,20 @@
+schema: "1"
+pipeline:
+  application: customers
+  name: Customers Cluster Cleanup
+  id: phnx-customers-cleanup
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/cluster-cleanup-template.yml
+  variables:
+    prodclustername: customers-prod-api
+    stagingclustername: customers-staging-api
+    tempclustername: customers-staging-temp
+    imagenamepattern: .*customers.*
+  metadata:
+    description: The Customers Production Cluster Cleanup Config
+    name: Customers-ClusterCleanup
+    owner: gbaker@centeredgesoftware.com
+    scopes:
+    - customers
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications', 'triggers']

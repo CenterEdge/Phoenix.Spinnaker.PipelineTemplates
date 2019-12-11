@@ -1,0 +1,30 @@
+schema: "1"
+pipeline:
+  application: customers
+  name: Emergency Customers Production
+  id: phnx-emergency-customers-prod
+  template:
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/emergency-production-template.yml
+  variables:
+    application: customers
+    loadbalancer: customers-prod-api
+    clustername: customers-prod-api
+    gcrrepo: phoenix-177420/phoenix-service-customers
+    gcrimage: us.gcr.io/phoenix-177420/phoenix-service-customers
+    podAnnotations: "{ environment: prod }"
+  metadata:
+    description: The Emergency Customers Production Pipeline Config
+    name: Emergency-Customers-Production
+    owner: gbrown@centeredgesoftware.com
+    scopes:
+    - customers
+configuration:
+  inherit: ['concurrentExecutions', 'parameters', 'notifications']
+  triggers:
+  - account: gcr-phoenix
+    enabled: false
+    organization: phoenix-177420
+    registry: us.gcr.io
+    repository: phoenix-177420/phoenix-service-customers
+    runAsUser: phoenix-svc-account
+    type: docker
