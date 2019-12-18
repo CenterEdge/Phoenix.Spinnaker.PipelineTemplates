@@ -40,7 +40,7 @@ stages:
     namespaces:
     - default
     retainLargerOverNewer: "false"
-    shrinkToSize: 1
+    shrinkToSize: 2
   id: shrinkCluster1
   inheritanceControl: {}
   inject: {}
