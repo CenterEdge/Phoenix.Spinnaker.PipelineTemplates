@@ -12,6 +12,7 @@ pipeline:
     gcrrepo: phoenix-177420/phoenix-service-cardprocessing
     gcrimage: us.gcr.io/phoenix-177420/phoenix-service-cardprocessing
     podAnnotations: "{ environment: prod }"
+    shawarmaEnabled: true
   metadata:
     description: The Emergency CardProcessing Production Pipeline Config
     name: Emergency-CardProcessing-Production
