@@ -40,9 +40,9 @@ stages:
           value: Staging
         - envSource:
             secretSource:
-              key: url
+              key: connectionString
               secretName: couchbase-primary
-          name: Couchbase__Servers__0
+          name: Couchbase__ConnectionString
         - name: ASPNETCORE_URLS
           value: http://localhost:8080/
         - envSource:
