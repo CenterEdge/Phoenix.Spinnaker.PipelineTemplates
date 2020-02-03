@@ -328,6 +328,10 @@ stages:
         envVars:
         - name: ASPNETCORE_ENVIRONMENT
           value: Production
+        - name: TriPosCloudOptions__LaneManagementHost
+          value: https://tripos.worldpay.com/cloudapi/
+        - name: TriPosCloudOptions__TransactionsHost
+          value: https://tripos.worldpay.com/api/
         - name: Statsd__Config__StatsdServerName
           envSource:
             fieldRef:
