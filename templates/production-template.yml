@@ -331,7 +331,7 @@ stages:
         - name: TriPosCloudOptions__LaneManagementHost
           value: https://tripos.worldpay.com/cloudapi/
         - name: TriPosCloudOptions__TransactionsHost
-          value: https://tripos.worldpay.com/api/
+          value: https://tripos.worldpay.com/
         - name: Statsd__Config__StatsdServerName
           envSource:
             fieldRef:
