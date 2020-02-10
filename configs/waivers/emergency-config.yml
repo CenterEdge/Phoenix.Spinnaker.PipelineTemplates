@@ -77,9 +77,9 @@ stages:
           name: HtmlToPdf__Host
         - envSource:
             secretSource:
-              key: url
+              key: connectionString
               secretName: couchbase-primary
-          name: Couchbase__Servers__0
+          name: Couchbase__ConnectionString
         - envSource:
             secretSource:
               key: username
