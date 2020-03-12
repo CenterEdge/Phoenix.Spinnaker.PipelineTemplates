@@ -194,7 +194,7 @@
 			"initialDelaySeconds": 5,
 			"periodSeconds": 10,
 			"successThreshold": 1,
-			"timeoutSeconds": 1
+			"timeoutSeconds": 5
 		   },
 		   "name": "${ templateVariables.gcrAccountName }-${ templateVariables.gcrImageName == '*' ? 'phoenix-service-' + templateVariables.appName : templateVariables.gcrImageName }",
 		   "ports": [
@@ -223,7 +223,7 @@
 			"initialDelaySeconds": 15,
 			"periodSeconds": 5,
 			"successThreshold": 1,
-			"timeoutSeconds": 1
+			"timeoutSeconds": 5
 		   },
 		   "requests": {},
 		   "volumeMounts": []
