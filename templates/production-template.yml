@@ -186,7 +186,7 @@ stages:
           initialDelaySeconds: 5
           periodSeconds: 10
           successThreshold: 1
-          timeoutSeconds: 1
+          timeoutSeconds: 5
         name: "phoenix-177420-phoenix-service-{{ application }}"
         ports:
         - containerPort: 8080
@@ -207,7 +207,7 @@ stages:
           initialDelaySeconds: 15
           periodSeconds: 5
           successThreshold: 1
-          timeoutSeconds: 1
+          timeoutSeconds: 5
         volumeMounts: []
       - args: []
         command: []
@@ -430,7 +430,7 @@ stages:
           initialDelaySeconds: 5
           periodSeconds: 10
           successThreshold: 1
-          timeoutSeconds: 1
+          timeoutSeconds: 5
         name: "phoenix-{{ application }}-image"
         ports:
         - containerPort: 8080
@@ -451,7 +451,7 @@ stages:
           initialDelaySeconds: 15
           periodSeconds: 10
           successThreshold: 1
-          timeoutSeconds: 1
+          timeoutSeconds: 5
         requests:
           cpu: "{{ requestcpu }}"
           memory: "{{ requestmem }}"
