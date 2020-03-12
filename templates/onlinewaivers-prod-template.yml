@@ -71,7 +71,7 @@ stages:
           initialDelaySeconds: 5
           periodSeconds: 10
           successThreshold: 1
-          timeoutSeconds: 1
+          timeoutSeconds: 5
         name: phoenix-177420-phoenix-onlinewaivers
         ports:
         - containerPort: 80
@@ -92,7 +92,7 @@ stages:
           initialDelaySeconds: 10
           periodSeconds: 10
           successThreshold: 1
-          timeoutSeconds: 1
+          timeoutSeconds: 5
         requests:
           cpu: 50m
           memory: 128Mi
