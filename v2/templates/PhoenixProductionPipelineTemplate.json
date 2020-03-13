@@ -883,7 +883,7 @@
 		{
 		 "cloudProvider": "kubernetes",
 		 "context": {
-		  "expression": "#stage('Smoke Test')['context']['buildInfo']['result']"
+		  "expression": "#stage('Smoke Tests')['context']['buildInfo']['result']"
 		 },
 		 "failPipeline": true,
 		 "type": "expression"
