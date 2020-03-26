@@ -113,6 +113,11 @@ stages:
               secretName: rabbitmq-config
           name: RabbitMQ__Password
         - envSource:
+            secretSource:
+              key: key
+              secretName: feature-flag-key
+          name: LaunchDarklyOptions__SdkKey
+        - envSource:
             configMapSource:
               configMapName: waiver-upload-options
               key: timeout
