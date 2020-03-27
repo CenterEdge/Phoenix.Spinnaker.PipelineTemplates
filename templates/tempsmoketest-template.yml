@@ -132,8 +132,13 @@ stages:
           name: JwtOptions__Secret
         - envSource:
             configMapSource:
-              configMapName: waiver-upload-options
-              key: timeout
+              configMapName: timeouts
+              key: keepalive
+          name: TimeoutOptions__KeepAliveTimeout
+        - envSource:
+            configMapSource:
+              configMapName: timeouts
+              key: keepalive
           name: WaiverUploadOptions__KeepAliveTimeout
         - name: JobOptions__ProcessBulkJobs
           value: false
