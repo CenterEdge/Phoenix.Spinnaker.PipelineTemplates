@@ -17,6 +17,7 @@ pipeline:
     gcrimage: us.gcr.io/phoenix-177420/phoenix-service-employees
     podAnnotations: "{ environment: prod }"
     podAnnotationsStaging: "{ environment: staging }"
+    shawarmaEnabled: true
   metadata:
     description: The Employees Production Pipeline Config
     name: Employees-Production
