@@ -114,8 +114,13 @@ stages:
           name: LaunchDarklyOptions__SdkKey
         - envSource:
             configMapSource:
-              configMapName: waiver-upload-options
-              key: timeout
+              configMapName: timeouts
+              key: keepalive
+          name: TimeoutOptions__KeepAliveTimeout
+        - envSource:
+            configMapSource:
+              configMapName: timeouts
+              key: keepalive
           name: WaiverUploadOptions__KeepAliveTimeout
         - name: JobOptions__ProcessBulkJobs
           value: true
@@ -183,9 +188,19 @@ stages:
           value: "prod.{{ application }}"
         - envSource:
             configMapSource:
-              configMapName: waiver-upload-options
-              key: timeout
-          name: WaiverUploadOptions__KeepAliveTimeout
+              configMapName: timeouts
+              key: connect_read_write
+          name: TimeoutOptions__ConnectTimeout
+        - envSource:
+            configMapSource:
+              configMapName: timeouts
+              key: connect_read_write
+          name: TimeoutOptions__ReadTimeout
+        - envSource:
+            configMapSource:
+              configMapName: timeouts
+              key: connect_read_write
+          name: TimeoutOptions__SendTimeout
         - envSource:
             configMapSource:
               configMapName: waiver-upload-options
@@ -193,10 +208,10 @@ stages:
           name: WaiverUploadOptions__MaxRequestSize
         imageDescription:
           account: gcr-phoenix
-          imageId: us.gcr.io/phoenix-177420/nginx-proxy:26
+          imageId: us.gcr.io/phoenix-177420/nginx-proxy:27
           registry: us.gcr.io
           repository: phoenix-177420/nginx-proxy
-          tag: "26"
+          tag: "27"
         imagePullPolicy: IFNOTPRESENT
         limits:
           cpu: "{{ maxcpu }}"

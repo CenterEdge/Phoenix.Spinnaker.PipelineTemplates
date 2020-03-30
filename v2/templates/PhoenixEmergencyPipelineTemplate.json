@@ -343,14 +343,34 @@
 			 "value": "prod.${ templateVariables.appName }"
 			},
 			{
-			 "envSource": {
-			  "configMapSource": {
-			   "configMapName": "waiver-upload-options",
-			   "key": "timeout",
-			   "optional": true
-			  }
-			 },
-			 "name": "WaiverUploadOptions__KeepAliveTimeout"
+				"envSource": {
+					"configMapSource": {
+						"configMapName": "timeouts",
+						"key": "connect_read_write",
+						"optional": true
+					}
+				},
+				"name": "TimeoutOptions__ConnectTimeout"
+			},
+			{
+				"envSource": {
+					"configMapSource": {
+						"configMapName": "timeouts",
+						"key": "connect_read_write",
+						"optional": true
+					}
+				},
+				"name": "TimeoutOptions__ReadTimeout"
+			},
+			{
+				"envSource": {
+					"configMapSource": {
+						"configMapName": "timeouts",
+						"key": "connect_read_write",
+						"optional": true
+					}
+				},
+				"name": "TimeoutOptions__SendTimeout"
 			},
 			{
 			 "envSource": {
@@ -377,10 +397,10 @@
 		   ],
 		   "imageDescription": {
 			"account": "gcr-phoenix",
-			"imageId": "us.gcr.io/phoenix-177420/nginx-proxy:26",
+			"imageId": "us.gcr.io/phoenix-177420/nginx-proxy:27",
 			"registry": "us.gcr.io",
 			"repository": "phoenix-177420/nginx-proxy",
-			"tag": "26"
+			"tag": "27"
 		   },
 		   "imagePullPolicy": "IFNOTPRESENT",
 		   "limits": {
