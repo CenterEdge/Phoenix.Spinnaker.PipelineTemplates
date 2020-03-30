@@ -138,6 +138,11 @@ stages:
         - envSource:
             configMapSource:
               configMapName: timeouts
+              key: connect_read_write
+          name: TimeoutOptions__WaiverUploadTimeout
+        - envSource:
+            configMapSource:
+              configMapName: timeouts
               key: keepalive
           name: WaiverUploadOptions__KeepAliveTimeout
         - name: JobOptions__ProcessBulkJobs
