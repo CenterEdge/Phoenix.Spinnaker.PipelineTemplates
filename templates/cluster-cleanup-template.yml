@@ -47,6 +47,23 @@ stages:
   name: Shrink Production Cluster
   type: shrinkCluster
 - config:
+    allowDeleteActive: false
+    cloudProvider: kubernetes
+    cloudProviderType: kubernetes
+    cluster: "{{ prodclustername }}"
+    credentials: phoenix
+    namespaces:
+    - default
+    retainLargerOverNewer: "false"
+    remainingFullSizeServerGroups: 1
+  dependsOn:
+  - shrinkCluster1
+  id: scaleDownCluster1
+  inheritanceControl: {}
+  inject: {}
+  name: Scale Down Clusters
+  type: scaleDownCluster
+- config:
     cloudProvider: kubernetes
     cloudProviderType: kubernetes
     cluster: "{{ stagingclustername }}"
