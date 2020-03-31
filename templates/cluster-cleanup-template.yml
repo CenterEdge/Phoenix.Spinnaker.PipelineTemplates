@@ -72,7 +72,8 @@ stages:
     credentials: phoenix
     failPipeline: false
     imageNamePattern: "{{ imagenamepattern }}"
-    namespaces: []
+    namespaces:
+    - default
     onlyEnabled: true
     selectionStrategy: NEWEST
   id: findImage2
@@ -90,7 +91,8 @@ stages:
     failPipeline: false
     interestingHealthProviderNames:
     - KubernetesService
-    namespaces: []
+    namespaces:
+    - default
     target: current_asg_dynamic
   dependsOn:
   - findImage2
