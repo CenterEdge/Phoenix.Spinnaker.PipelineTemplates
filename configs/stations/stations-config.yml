@@ -17,6 +17,7 @@ pipeline:
     gcrimage: us.gcr.io/phoenix-177420/phoenix-service-stations
     podAnnotations: "{ environment: prod }"
     podAnnotationsStaging: "{ environment: staging }"
+    shawarmaEnabled: true
   metadata:
     description: The Stations Production Pipeline Config
     name: Stations-Production
