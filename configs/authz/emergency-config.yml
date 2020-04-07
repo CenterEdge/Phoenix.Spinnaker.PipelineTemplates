@@ -12,6 +12,7 @@ pipeline:
     gcrrepo: phoenix-177420/phoenix-service-authorization
     gcrimage: us.gcr.io/phoenix-177420/phoenix-service-authorization
     podAnnotations: "{ iam.amazonaws.com/role: PhoenixAuthenticationService, environment: prod }"
+    shawarmaEnabled: true
   metadata:
     description: The Emergency Authorization Production Pipeline Config
     name: Emergency-Authorization-Production

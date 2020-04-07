@@ -12,6 +12,7 @@ pipeline:
     gcrrepo: phoenix-177420/phoenix-service-mapping
     gcrimage: us.gcr.io/phoenix-177420/phoenix-service-mapping
     podAnnotations: "{ environment: prod }"
+    shawarmaEnabled: true
   metadata:
     description: The Emergency Mapping Production Pipeline Config
     name: Emergency-Mapping-Production
