@@ -17,6 +17,7 @@ pipeline:
     gcrimage: us.gcr.io/phoenix-177420/phoenix-service-transactions
     podAnnotations: "{ environment: prod }"
     podAnnotationsStaging: "{ environment: staging }"
+    shawarmaEnabled: true
   metadata:
     description: The Transactions Production Pipeline Config
     name: Transactions-Production

@@ -17,6 +17,7 @@ pipeline:
     gcrimage: us.gcr.io/phoenix-177420/phoenix-service-mapping
     podAnnotations: "{ environment: prod }"
     podAnnotationsStaging: "{ environment: staging }"
+    shawarmaEnabled: true
   metadata:
     description: The Mapping Production Pipeline Config
     name: Mapping-Production
