@@ -20,6 +20,7 @@ pipeline:
     maxcpu: 500m
     podAnnotations: "{ environment: prod }"
     podAnnotationsStaging: "{ environment: staging }"
+    shawarmaEnabled: true
   metadata:
     description: The Mashtub2 Production Pipeline Config
     name: Mashtub2-Production
