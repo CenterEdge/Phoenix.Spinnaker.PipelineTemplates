@@ -15,6 +15,7 @@ pipeline:
     requestcpu: 250m
     maxcpu: 500m
     podAnnotations: "{ environment: prod }"
+    shawarmaEnabled: true
   metadata:
     description: The Emergency Mashtub2 Production Pipeline Config
     name: Emergency-Mashtub2-Production
