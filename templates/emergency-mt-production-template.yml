@@ -53,6 +53,10 @@ variables:
 - name: sdkversion
   description: The sdk version to use when testing
   defaultValue: "${#stage( 'FindImage' )['context']['amiDetails'][0]['tag']} }"
+- name: shawarmaEnabled
+  description: Enables the Shawarma sidecar injector, linked to the configured load balancer
+  defaultValue: false
+  type: boolean
 stages:
 - config:
     instructions: Confirm that this microservice should be deployed without running smoke tests
@@ -239,7 +243,14 @@ stages:
       - "{{ loadbalancer }}"
       namespace: default
       nodeSelector: {}
-      podAnnotations: "{{ podAnnotations }}"
+      podAnnotations: |
+        {% if not shawarmaEnabled -%}
+        {{ podAnnotations }}
+        {% elif podAnnotations == '{}' -%}
+        {"shawarma.centeredge.io/service-name": "{{ loadbalancer }}"}
+        {% else -%}
+        {{ podAnnotations.substring(0, podAnnotations.length()-1) }}, "shawarma.centeredge.io/service-name": "{{ loadbalancer }}"}
+        {%- endif %}
       provider: kubernetes
       region: default
       replicaSetAnnotations: {}
