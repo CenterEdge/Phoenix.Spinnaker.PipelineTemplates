@@ -177,7 +177,7 @@
 			"imageId": "us.gcr.io/${ templateVariables.gcrAccountName }/${ templateVariables.gcrImageName == '*' ? 'phoenix-service-' + templateVariables.appName : templateVariables.gcrImageName }:${ templateVariables.gcrImageVersion == '*' ? 'latest' : templateVariables.gcrImageVersion }",
 			"registry": "us.gcr.io",
 			"repository": "${ templateVariables.gcrAccountName }/${ templateVariables.gcrImageName == '*' ? 'phoenix-service-' + templateVariables.appName : templateVariables.gcrImageName }",
-			"tag": "latest"
+			"tag": "${ templateVariables.gcrImageVersion == '*' ? 'latest' : templateVariables.gcrImageVersion }"
 		   },
 		   "imagePullPolicy": "IFNOTPRESENT",
 		   "limits": {},
