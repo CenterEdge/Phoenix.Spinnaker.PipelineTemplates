@@ -39,6 +39,12 @@
       "type": "string"	
 	},
 	{
+      "defaultValue": "*",
+      "description": "The image name to pull; leave '*' to use latest",
+      "name": "gcrImageVersion",
+      "type": "string"	
+	},
+	{
       "defaultValue": "-",
       "description": "The IAM role name for the service to use; leave '-' to not use",
       "name": "iamRole",
@@ -168,7 +174,7 @@
 		   ],
 		   "imageDescription": {
 			"account": "gcr-phoenix",
-			"imageId": "us.gcr.io/${ templateVariables.gcrAccountName }/${ templateVariables.gcrImageName == '*' ? 'phoenix-service-' + templateVariables.appName : templateVariables.gcrImageName }:latest",
+			"imageId": "us.gcr.io/${ templateVariables.gcrAccountName }/${ templateVariables.gcrImageName == '*' ? 'phoenix-service-' + templateVariables.appName : templateVariables.gcrImageName }:${ templateVariables.gcrImageVersion == '*' ? 'latest' : templateVariables.gcrImageVersion }",
 			"registry": "us.gcr.io",
 			"repository": "${ templateVariables.gcrAccountName }/${ templateVariables.gcrImageName == '*' ? 'phoenix-service-' + templateVariables.appName : templateVariables.gcrImageName }",
 			"tag": "latest"
