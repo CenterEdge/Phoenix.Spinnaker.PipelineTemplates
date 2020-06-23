@@ -813,7 +813,7 @@
 	   ],
 	   "name": "Deploy Production",
 	   "stageEnabled": {
-		"expression": "#stage('Smoke Test')['context']['buildInfo']['result']=='SUCCESS'",
+		"expression": "#stage('Smoke Tests')['context']['buildInfo']['result']=='SUCCESS'",
 		"type": "expression"
 	   },
 	   "refId": "4",
@@ -956,7 +956,7 @@
 		"6"
 	   ],
 	   "stageEnabled": {
-		"expression": "#stage('Smoke Test')['context']['buildInfo']['result']!='SUCCESS'",
+		"expression": "#stage('Smoke Tests')['context']['buildInfo']['result']!='SUCCESS'",
 		"type": "expression"
 	   },
 	   "type": "checkPreconditions"
