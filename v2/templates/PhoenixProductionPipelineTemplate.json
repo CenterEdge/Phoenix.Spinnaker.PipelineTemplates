@@ -224,6 +224,15 @@
 			  }
 			 },
 			 "name": "LaunchDarklyOptions__SdkKey"
+			},
+			{
+			 "envSource": {
+				"configMapSource": {
+					"configMapName": "pdf-api",
+					"key": "url"
+				}
+			 },
+			 "name": "HtmlToPdf__Host"
 			}
 		   ],
 		   "imageDescription": {
@@ -578,6 +587,15 @@
 			  }
 			 },
 			 "name": "LaunchDarklyOptions__SdkKey"
+			},
+			{
+			 "envSource": {
+				"configMapSource": {
+					"configMapName": "pdf-api",
+					"key": "url"
+				}
+			 },
+			 "name": "HtmlToPdf__Host"
 			}
 		   ],
 		   "imageDescription": {
@@ -794,6 +812,10 @@
 		}
 	   ],
 	   "name": "Deploy Production",
+	   "stageEnabled": {
+		"expression": "#stage('Smoke Test')['context']['buildInfo']['result']=='SUCCESS'",
+		"type": "expression"
+	   },
 	   "refId": "4",
 	   "requisiteStageRefIds": [
 		"3"
