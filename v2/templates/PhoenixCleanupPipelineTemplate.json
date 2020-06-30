@@ -8,19 +8,19 @@
       "name": "appName",
       "type": "string"
     },
-	{
+    {
       "defaultValue": "*",
       "description": "Prod Cluster Name (i.e. waivers-prod-api); leave '*' to use default pattern: {appName}-prod-api.",
       "name": "prodClustername",
       "type": "string"
     },
-	{
+    {
       "defaultValue": "*",
       "description": "Staging Cluster Name (i.e. waivers-staging-api); leave '*' to use default pattern: {appName}-staging-api.",
       "name": "stagingClustername",
       "type": "string"
     },
-	{
+    {
       "defaultValue": "*",
       "description": "Temp Cluster Name (i.e. waivers-staging-temp); leave '*' to use default pattern: {appName}-staging-temp.",
       "name": "tempClustername",
@@ -31,135 +31,153 @@
   "metadata": {
     "name": "Phoenix Cleanup Pipeline Template",
     "description": "Creates a Cleanup Pipeline",
-    "scopes": [ "global" ]
-  },  
+    "scopes": [
+      "global"
+    ]
+  },
   "pipeline": {
-	 "application": "${ templateVariables.appName }",
-	 "index": 2,
-	 "keepWaitingPipelines": false,
-	 "lastModifiedBy": "mmasenthin@centeredgesoftware.com",
-	 "limitConcurrent": true,
-	 "name": "${ templateVariables.appName } Cleanup",
-	 "notifications": [
-	  {
-	   "address": "phoenixdev-ci",
-	   "level": "pipeline",
-	   "type": "slack",
-	   "when": [
-		"pipeline.starting",
-		"pipeline.failed",
-		"pipeline.complete"
-	   ]
-	  }
-	 ],
-	 "stages": [
-	  {
-	   "cloudProvider": "kubernetes",
-	   "cloudProviderType": "kubernetes",
-	   "cluster": "${ templateVariables.stagingClustername == '*' ? templateVariables.appName + '-staging-api' : templateVariables.stagingClustername }",
-	   "completeOtherBranchesThenFail": false,
-	   "continuePipeline": false,
-	   "credentials": "phoenix",
-	   "failPipeline": false,
-	   "imageNamePattern": ".*${ templateVariables.appName }.*",
-	   "name": "Find Image from Staging Cluster",
-	   "namespaces": [
-		"default"
-	   ],
-	   "onlyEnabled": true,
-	   "refId": "1",
-	   "requisiteStageRefIds": [],
-	   "selectionStrategy": "NEWEST",
-	   "type": "findImage"
-	  },
-	  {
-	   "cloudProvider": "kubernetes",
-	   "cloudProviderType": "kubernetes",
-	   "cluster": "${ templateVariables.tempClustername == '*' ? templateVariables.appName + '-staging-temp' : templateVariables.tempClustername }",
-	   "completeOtherBranchesThenFail": false,
-	   "continuePipeline": false,
-	   "credentials": "phoenix",
-	   "failPipeline": false,
-	   "imageNamePattern": ".*${ templateVariables.appName }.*",
-	   "name": "Find Image from Temp Cluster",
-	   "namespaces": [
-		"default"
-	   ],
-	   "onlyEnabled": true,
-	   "refId": "2",
-	   "requisiteStageRefIds": [],
-	   "selectionStrategy": "NEWEST",
-	   "type": "findImage"
-	  },
-	  {
-	   "allowDeleteActive": false,
-	   "cloudProvider": "kubernetes",
-	   "cloudProviderType": "kubernetes",
-	   "cluster": "${ templateVariables.prodClustername == '*' ? templateVariables.appName + '-prod-api' : templateVariables.prodClustername }",
-	   "credentials": "phoenix",
-	   "name": "Shrink Production Cluster",
-	   "namespaces": [
-		"default"
-	   ],
-	   "refId": "3",
-	   "requisiteStageRefIds": [],
-	   "retainLargerOverNewer": "false",
-	   "shrinkToSize": 2,
-	   "type": "shrinkCluster"
-	  },
-	  {
-	   "cloudProvider": "kubernetes",
-	   "cloudProviderType": "kubernetes",
-	   "cluster": "${ templateVariables.stagingClustername == '*' ? templateVariables.appName + '-staging-api' : templateVariables.stagingClustername }",
-	   "completeOtherBranchesThenFail": false,
-	   "continuePipeline": true,
-	   "credentials": "phoenix",
-	   "failPipeline": false,
-	   "interestingHealthProviderNames": [
-		"KubernetesService"
-	   ],
-	   "name": "Destroy Staging Cluster",
-	   "namespaces": [
-		"default"
-	   ],
-	   "refId": "4",
-	   "requisiteStageRefIds": [
-		"1"
-	   ],
-	   "target": "current_asg_dynamic",
-	   "type": "destroyServerGroup"
-	  },
-	  {
-	   "cloudProvider": "kubernetes",
-	   "cloudProviderType": "kubernetes",
-	   "cluster": "${ templateVariables.tempClustername == '*' ? templateVariables.appName + '-staging-temp' : templateVariables.tempClustername }",
-	   "completeOtherBranchesThenFail": false,
-	   "continuePipeline": true,
-	   "credentials": "phoenix",
-	   "failPipeline": false,
-	   "interestingHealthProviderNames": [
-		"KubernetesService"
-	   ],
-	   "name": "Destroy Temp Cluster",
-	   "namespaces": [
-		"default"
-	   ],
-	   "refId": "5",
-	   "requisiteStageRefIds": [
-		"2"
-	   ],
-	   "target": "current_asg_dynamic",
-	   "type": "destroyServerGroup"
-	  }
-	 ],
-	 "triggers": [
-	  {
-	   "cronExpression": "0 0 0 1/1 * ? *",
-	   "enabled": true,
-	   "id": "3f85a65e-8d95-4394-98ed-97405f541700",
-	   "runAsUser": "phoenix-svc-account",
-	   "type": "cron"
-	  }
-	 ]
+    "application": "${ templateVariables.appName }",
+    "index": 2,
+    "keepWaitingPipelines": false,
+    "lastModifiedBy": "mmasenthin@centeredgesoftware.com",
+    "limitConcurrent": true,
+    "name": "${ templateVariables.appName } Cleanup",
+    "notifications": [
+      {
+        "address": "phoenixdev-ci",
+        "level": "pipeline",
+        "type": "slack",
+        "when": [
+          "pipeline.starting",
+          "pipeline.failed",
+          "pipeline.complete"
+        ]
+      }
+    ],
+    "stages": [
+      {
+        "cloudProvider": "kubernetes",
+        "cloudProviderType": "kubernetes",
+        "cluster": "${ templateVariables.stagingClustername == '*' ? templateVariables.appName + '-staging-api' : templateVariables.stagingClustername }",
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": false,
+        "credentials": "phoenix",
+        "failPipeline": false,
+        "imageNamePattern": ".*${ templateVariables.appName }.*",
+        "name": "Find Image from Staging Cluster",
+        "namespaces": [
+          "default"
+        ],
+        "onlyEnabled": true,
+        "refId": "1",
+        "requisiteStageRefIds": [],
+        "selectionStrategy": "NEWEST",
+        "type": "findImage"
+      },
+      {
+        "cloudProvider": "kubernetes",
+        "cloudProviderType": "kubernetes",
+        "cluster": "${ templateVariables.tempClustername == '*' ? templateVariables.appName + '-staging-temp' : templateVariables.tempClustername }",
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": false,
+        "credentials": "phoenix",
+        "failPipeline": false,
+        "imageNamePattern": ".*${ templateVariables.appName }.*",
+        "name": "Find Image from Temp Cluster",
+        "namespaces": [
+          "default"
+        ],
+        "onlyEnabled": true,
+        "refId": "2",
+        "requisiteStageRefIds": [],
+        "selectionStrategy": "NEWEST",
+        "type": "findImage"
+      },
+      {
+        "allowDeleteActive": false,
+        "cloudProvider": "kubernetes",
+        "cloudProviderType": "kubernetes",
+        "cluster": "${ templateVariables.prodClustername == '*' ? templateVariables.appName + '-prod-api' : templateVariables.prodClustername }",
+        "credentials": "phoenix",
+        "name": "Shrink Production Cluster",
+        "namespaces": [
+          "default"
+        ],
+        "refId": "3",
+        "requisiteStageRefIds": [],
+        "retainLargerOverNewer": "false",
+        "shrinkToSize": 2,
+        "type": "shrinkCluster"
+      },
+      {
+        "allowDeleteActive": false,
+        "cloudProvider": "kubernetes",
+        "cloudProviderType": "kubernetes",
+        "cluster": "${ templateVariables.jobsClustername == '*' ? templateVariables.appName + '-jobs-api' : templateVariables.jobsClustername }",
+        "credentials": "phoenix",
+        "name": "Shrink Jobs Cluster",
+        "namespaces": [
+          "default"
+        ],
+        "refId": "4",
+        "requisiteStageRefIds": [],
+        "retainLargerOverNewer": "false",
+        "shrinkToSize": 2,
+        "type": "shrinkCluster"
+      },
+      {
+        "cloudProvider": "kubernetes",
+        "cloudProviderType": "kubernetes",
+        "cluster": "${ templateVariables.stagingClustername == '*' ? templateVariables.appName + '-staging-api' : templateVariables.stagingClustername }",
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": true,
+        "credentials": "phoenix",
+        "failPipeline": false,
+        "interestingHealthProviderNames": [
+          "KubernetesService"
+        ],
+        "name": "Destroy Staging Cluster",
+        "namespaces": [
+          "default"
+        ],
+        "refId": "5",
+        "requisiteStageRefIds": [
+          "1"
+        ],
+        "target": "current_asg_dynamic",
+        "type": "destroyServerGroup"
+      },
+      {
+        "cloudProvider": "kubernetes",
+        "cloudProviderType": "kubernetes",
+        "cluster": "${ templateVariables.tempClustername == '*' ? templateVariables.appName + '-staging-temp' : templateVariables.tempClustername }",
+        "completeOtherBranchesThenFail": false,
+        "continuePipeline": true,
+        "credentials": "phoenix",
+        "failPipeline": false,
+        "interestingHealthProviderNames": [
+          "KubernetesService"
+        ],
+        "name": "Destroy Temp Cluster",
+        "namespaces": [
+          "default"
+        ],
+        "refId": "6",
+        "requisiteStageRefIds": [
+          "2"
+        ],
+        "target": "current_asg_dynamic",
+        "type": "destroyServerGroup"
+      }
+    ],
+    "triggers": [
+      {
+        "cronExpression": "0 0 0 1/1 * ? *",
+        "enabled": true,
+        "id": "3f85a65e-8d95-4394-98ed-97405f541700",
+        "runAsUser": "phoenix-svc-account",
+        "type": "cron"
+      }
+    ]
   }
 }
