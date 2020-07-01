@@ -25,6 +25,12 @@
       "description": "Temp Cluster Name (i.e. waivers-staging-temp); leave '*' to use default pattern: {appName}-staging-temp.",
       "name": "tempClustername",
       "type": "string"
+    },
+    {
+      "defaultValue": "*",
+      "description": "Jobs Cluster Name; leave '*' to use default pattern: {appName}-jobs-api",
+      "name": "jobsClustername",
+      "type": "string"
     }
   ],
   "protect": false,
