@@ -843,7 +843,7 @@
           }
         ],
         "stageEnabled": {
-          "expression": "${ templateVariables.jobsEnabled }",
+          "expression": "${ templateVariables.jobsEnabled ? \"#stage('Smoke Tests')['context']['buildInfo']['result']=='SUCCESS'\" : false }",
           "type": "expression"
         },
         "stageTimeoutMs": 1200000,
