@@ -922,7 +922,7 @@
         "namespaces": [
           "default"
         ],
-        "refId": "7",
+        "refId": "8",
         "requisiteStageRefIds": [
           "6"
         ],
@@ -932,7 +932,7 @@
       },
       {
         "name": "Disable Jobs Cluster",
-        "refId": "8",
+        "refId": "9",
         "requisiteStageRefIds": [
           "4"
         ],
@@ -956,9 +956,9 @@
       },
       {
         "name": "Shrink Jobs Cluster",
-        "refId": "9",
+        "refId": "10",
         "requisiteStageRefIds": [
-          "8"
+          "9"
         ],
         "allowDeleteActive": false,
         "cloudProvider": "kubernetes",
