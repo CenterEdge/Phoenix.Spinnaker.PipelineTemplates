@@ -1,6 +1,6 @@
 {
   "schema": "v2",
-  "id": "phnx-pipeline-template",
+  "id": "phnx-production-pipeline-template",
   "variables": [
     {
       "defaultValue": "",
