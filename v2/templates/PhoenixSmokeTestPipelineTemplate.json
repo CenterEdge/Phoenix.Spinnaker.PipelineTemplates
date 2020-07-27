@@ -170,6 +170,15 @@
 			  }
 			 },
 			 "name": "LaunchDarklyOptions__SdkKey"
+			},
+			{
+				"envSource": {
+				  "configMapSource": {
+					"configMapName": "pdf-api",
+					"key": "url"
+				  }
+				},
+				"name": "HtmlToPdf__Host"
 			}
 		   ],
 		   "imageDescription": {
