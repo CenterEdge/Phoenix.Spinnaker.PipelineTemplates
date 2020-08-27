@@ -17,6 +17,7 @@ pipeline:
     gcrimage: us.gcr.io/phoenix-177420/phoenix-service-customers
     podAnnotations: "{ environment: prod }"
     podAnnotationsStaging: "{ environment: staging }"
+    shawarmaEnabled: true
   metadata:
     description: The Customers Production Pipeline Config
     name: Customers-Production
