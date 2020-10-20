@@ -404,7 +404,7 @@ stages:
               secretName: couchbase-primary
           name: Couchbase__Password
         - name: ASPNETCORE_URLS
-          value: http://localhost:80/
+          value: http://*:80/
         - envSource:
             configMapSource:
               configMapName: rabbitmq
