@@ -17,6 +17,8 @@ pipeline:
     gcrimage: us.gcr.io/phoenix-177420/phoenix-service-businessentities
     podAnnotations: "{ iam.amazonaws.com/role: PhoenixBusEntSvc, environment: prod }"
     podAnnotationsStaging: "{ iam.amazonaws.com/role: PhoenixBusEntSvc, environment: staging }"
+    requestmem: 1Gi
+    maxmem: 2Gi
   metadata:
     description: The Business Entities Production Pipeline Config
     name: BusinessEntities-Production

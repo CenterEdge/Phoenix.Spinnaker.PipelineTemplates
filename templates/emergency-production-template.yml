@@ -124,7 +124,7 @@ stages:
               secretName: couchbase-primary
           name: Couchbase__Password
         - name: ASPNETCORE_URLS
-          value: http://localhost:8080/
+          value: http://*:80/
         - envSource:
             configMapSource:
               configMapName: rabbitmq
@@ -188,7 +188,7 @@ stages:
           timeoutSeconds: 5
         name: "phoenix-{{ application }}-image"
         ports:
-        - containerPort: 8080
+        - containerPort: 80
           name: http
           protocol: TCP
         readinessProbe:
@@ -207,56 +207,6 @@ stages:
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 5
-        requests:
-          cpu: "{{ requestcpu }}"
-          memory: "{{ requestmem }}"
-        volumeMounts: []
-      - args: []
-        command: []
-        envVars:
-        - name: STATSD_SERVER
-          envSource:
-            fieldRef:
-              fieldPath: status.hostIP
-        - name: STATSD_SAMPLE_RATE
-          value: "{{ statsdSampleRate }}"
-        - name: SERVICE_NAME
-          value: "prod.{{ application }}"
-        - envSource:
-            configMapSource:
-              configMapName: timeouts
-              key: connect_read_write
-          name: TimeoutOptions__ConnectTimeout
-        - envSource:
-            configMapSource:
-              configMapName: timeouts
-              key: connect_read_write
-          name: TimeoutOptions__ReadTimeout
-        - envSource:
-            configMapSource:
-              configMapName: timeouts
-              key: connect_read_write
-          name: TimeoutOptions__SendTimeout
-        - envSource:
-            configMapSource:
-              configMapName: waiver-upload-options
-              key: max_size
-          name: WaiverUploadOptions__MaxRequestSize
-        imageDescription:
-          account: gcr-phoenix
-          imageId: us.gcr.io/phoenix-177420/nginx-proxy:27
-          registry: us.gcr.io
-          repository: phoenix-177420/nginx-proxy
-          tag: "27"
-        imagePullPolicy: IFNOTPRESENT
-        limits:
-          cpu: "{{ maxcpu }}"
-          memory: "{{ maxmem }}"
-        name: phoenix-177420-nginx-proxy
-        ports:
-        - containerPort: 80
-          name: http
-          protocol: TCP
         requests:
           cpu: "{{ requestcpu }}"
           memory: "{{ requestmem }}"
