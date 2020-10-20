@@ -4,7 +4,7 @@ pipeline:
   name: BusinessEntities Production
   id: phnx-businessentities-prod
   template:
-    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/PHNX-6016/templates/production-template.yml
+    source: https://raw.githubusercontent.com/CenterEdge/Phoenix.Spinnaker.PipelineTemplates/master/templates/production-template.yml
   variables:
     application: businessentities
     loadbalancer: businessentities-prod
