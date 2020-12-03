@@ -13,10 +13,10 @@
       "description": "Load Balancer Name"
     },
     {
-      "name": "relayDomainSuffix",
+      "name": "configMap",
       "type": "string",
-      "defaultValue": ".relay.int.centeredgeonline.com",
-      "description": "Relay Domain Suffix"
+      "defaultValue": "advantage-proxy",
+      "description": "Config Map"
     },
     {
       "name": "slackChannel",
@@ -153,7 +153,31 @@
           "envVars": [
            {
             "name": "RELAY_DOMAIN_SUFFIX",
-            "value": "${ templateVariables.relayDomainSuffix }"
+            "envSource": {
+              "configMapSource": {
+                "configMapName": "${ templateVariables.configMap }",
+                "key": "relayDomainSuffix",
+                "optional": false
+              }
+            }
+           },
+           {
+            "name": "QA_RELAY_DOMAIN_SUFFIX",
+            "envSource": {
+              "configMapSource": {
+                "configMapName": "${ templateVariables.configMap }",
+                "key": "qaRelayDomainSuffix"
+              }
+            }
+           },
+           {
+            "name": "QA_REGEX",
+            "envSource": {
+              "configMapSource": {
+                "configMapName": "${ templateVariables.configMap }",
+                "key": "qaRegex"
+              }
+            }
            },
            {
             "envSource": {
