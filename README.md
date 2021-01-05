@@ -19,3 +19,7 @@ Use template variables in place of hard coded ones by using ${ templateVariables
 Save the template to be usable: spin pipeline-templates save --file my_template.txt
 Verify pipeline works in spinnaker
 More information can be found at https://www.spinnaker.io/guides/user/pipeline/pipeline-templates/create/
+
+Kubernetes Manifest Templates
+----
+Templates using kv2 are deployed via manifest files. Some kubernetes documentation, for use with the manifests, is located here: https://v1-18.docs.kubernetes.io/docs/reference/generated/kubernetes-api/v1.18/#-strong-api-overview-strong-
