@@ -1,0 +1,1288 @@
+{
+  "digest": "d2969e1d0f91a6c67e48c8ce5c2a03dd4e6bfcfdbb19b05b00a9115531586100",
+  "id": "phnx-production-pipeline-template-kv2",
+  "lastModifiedBy": "mmasenthin@centeredgesoftware.com",
+  "metadata": {
+    "description": "Creates a production pipeline using the kubernetes V2 standard",
+    "name": "Kubernetes V2 Phoenix Service Production Template",
+    "scopes": [
+      "global"
+    ]
+  },
+  "pipeline": {
+    "expectedArtifacts": [
+      {
+        "defaultArtifact": {
+          "customKind": true,
+          "id": "39b0955b-01fc-4001-aa27-9dfa7074937a"
+        },
+        "displayName": "${ templateVariables.appName }",
+        "id": "0f5786e8-3a1e-4dc3-a038-3d31bf6c1366",
+        "matchArtifact": {
+          "artifactAccount": "docker-registry",
+          "id": "d7297804-9e1e-4ab7-954e-539286d11999",
+          "name": "us.gcr.io/${ templateVariables.gcrAccountName }/${ templateVariables.gcrImageName == '*' ? 'phoenix-service-' + templateVariables.appName : templateVariables.gcrImageName }",
+          "type": "docker/image"
+        },
+        "useDefaultArtifact": false,
+        "usePriorArtifact": false
+      }
+    ],
+    "keepWaitingPipelines": false,
+    "limitConcurrent": true,
+    "stages": [
+      {
+        "account": "phoenix-v2",
+        "cloudProvider": "kubernetes",
+        "manifests": [
+          {
+            "apiVersion": "apps/v1",
+            "kind": "Deployment",
+            "metadata": {
+              "annotations": {
+                "moniker.spinnaker.io/detail": "api",
+                "moniker.spinnaker.io/stack": "prod",
+                "strategy.spinnaker.io/use-source-capacity": "true",
+                "traffic.spinnaker.io/load-balancers": "[\"service ${ templateVariables.prodLoadBalancerName == '*' ? templateVariables.appName + '-prod-api' : templateVariables.prodLoadBalancerName }\"]"
+              },
+              "name": "${ templateVariables.appName }prod",
+              "namespace": "default"
+            },
+            "spec": {
+              "progressDeadlineSeconds": 600,
+              "revisionHistoryLimit": 10,
+              "selector": {
+                "matchLabels": {
+                  "app": "${ templateVariables.appName }prod"
+                }
+              },
+              "strategy": {
+                "rollingUpdate": {
+                  "maxSurge": 1,
+                  "maxUnavailable": 1
+                },
+                "type": "RollingUpdate"
+              },
+              "template": {
+                "metadata": {
+                  "annotations": {
+                    "moniker.spinnaker.io/detail": "api",
+                    "moniker.spinnaker.io/stack": "prod",
+                    "shawarma.centeredge.io/service-name": "${ templateVariables.shawarmaEnabled ? templateVariables.jobsLoadBalancer == '*' ? templateVariables.appName + '-prod-jobs' : templateVariables.jobsLoadBalancer : '' }"
+                  },
+                  "labels": {
+                    "app": "${ templateVariables.appName }prod"
+                  }
+                },
+                "spec": {
+                  "containers": [
+                    {
+                      "env": [
+                        {
+                          "name": "ASPNETCORE_ENVIRONMENT",
+                          "value": "Production"
+                        },
+                        {
+                          "name": "Statsd__Config__StatsdServerName",
+                          "valueFrom": {
+                            "fieldRef": {
+                              "apiVersion": "v1",
+                              "fieldPath": "status.hostIP"
+                            }
+                          }
+                        },
+                        {
+                          "name": "Statsd__Enabled",
+                          "value": "true"
+                        },
+                        {
+                          "name": "BusinessEntities__Host",
+                          "valueFrom": {
+                            "configMapKeyRef": {
+                              "key": "url",
+                              "name": "businessentities-api",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "Couchbase__ConnectionString",
+                          "valueFrom": {
+                            "secretKeyRef": {
+                              "key": "connectionString",
+                              "name": "couchbase-primary",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "Couchbase__Username",
+                          "valueFrom": {
+                            "secretKeyRef": {
+                              "key": "username",
+                              "name": "couchbase-primary",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "Couchbase__Password",
+                          "valueFrom": {
+                            "secretKeyRef": {
+                              "key": "password",
+                              "name": "couchbase-primary",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "ASPNETCORE_URLS",
+                          "value": "http://localhost:8080/"
+                        },
+                        {
+                          "name": "RabbitMQ__Hosts__0__Host",
+                          "valueFrom": {
+                            "configMapKeyRef": {
+                              "key": "host",
+                              "name": "rabbitmq",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "RabbitMQ__Username",
+                          "valueFrom": {
+                            "configMapKeyRef": {
+                              "key": "username",
+                              "name": "rabbitmq",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "RabbitMQ__Password",
+                          "valueFrom": {
+                            "secretKeyRef": {
+                              "key": "default-pass",
+                              "name": "rabbitmq-config",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "LaunchDarklyOptions__SdkKey",
+                          "valueFrom": {
+                            "secretKeyRef": {
+                              "key": "key",
+                              "name": "feature-flag-key",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "HtmlToPdf__Host",
+                          "valueFrom": {
+                            "configMapKeyRef": {
+                              "key": "url",
+                              "name": "pdf-api"
+                            }
+                          }
+                        }
+                      ],
+                      "image": "us.gcr.io/${ templateVariables.gcrAccountName }/${ templateVariables.gcrImageName == '*' ? 'phoenix-service-' + templateVariables.appName : templateVariables.gcrImageName }",
+                      "imagePullPolicy": "IfNotPresent",
+                      "livenessProbe": {
+                        "failureThreshold": 3,
+                        "httpGet": {
+                          "path": "/health?type=ready",
+                          "port": 80,
+                          "scheme": "HTTP"
+                        },
+                        "initialDelaySeconds": 5,
+                        "periodSeconds": 10,
+                        "successThreshold": 1,
+                        "timeoutSeconds": 1
+                      },
+                      "name": "${ templateVariables.appName }",
+                      "ports": [
+                        {
+                          "containerPort": 8080,
+                          "name": "http",
+                          "protocol": "TCP"
+                        }
+                      ],
+                      "readinessProbe": {
+                        "failureThreshold": 3,
+                        "httpGet": {
+                          "path": "/health?type=ready",
+                          "port": 80,
+                          "scheme": "HTTP"
+                        },
+                        "initialDelaySeconds": 15,
+                        "periodSeconds": 10,
+                        "successThreshold": 1,
+                        "timeoutSeconds": 1
+                      },
+                      "resources": {
+                        "limits": {
+                          "cpu": "${ templateVariables.maxCPU }",
+                          "memory": "${ templateVariables.maxMem }"
+                        },
+                        "requests": {
+                          "cpu": "${ templateVariables.reqCPU }",
+                          "memory": "${ templateVariables.reqMem }"
+                        }
+                      },
+                      "terminationMessagePath": "/dev/termination-log",
+                      "terminationMessagePolicy": "File"
+                    },
+                    {
+                      "env": [
+                        {
+                          "name": "STATSD_SERVER",
+                          "valueFrom": {
+                            "fieldRef": {
+                              "apiVersion": "v1",
+                              "fieldPath": "status.hostIP"
+                            }
+                          }
+                        },
+                        {
+                          "name": "STATSD_SAMPLE_RATE",
+                          "value": "${ templateVariables.statsdSampleRate.toString() }"
+                        },
+                        {
+                          "name": "SERVICE_NAME",
+                          "value": "prod.${ templateVariables.appName }"
+                        },
+                        {
+                          "name": "TimeoutOptions__ConnectTimeout",
+                          "valueFrom": {
+                            "configMapKeyRef": {
+                              "key": "connect_read_write",
+                              "name": "timeouts",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "TimeoutOptions__ReadTimeout",
+                          "valueFrom": {
+                            "configMapKeyRef": {
+                              "key": "connect_read_write",
+                              "name": "timeouts",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "TimeoutOptions__SendTimeout",
+                          "valueFrom": {
+                            "configMapKeyRef": {
+                              "key": "connect_read_write",
+                              "name": "timeouts",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "WaiverUploadOptions__MaxRequestSize",
+                          "valueFrom": {
+                            "configMapKeyRef": {
+                              "key": "max_size",
+                              "name": "waiver-upload-options",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "PROXY_HOST",
+                          "value": "localhost"
+                        },
+                        {
+                          "name": "PROXY_PORT",
+                          "value": "8080"
+                        },
+                        {
+                          "name": "HEALTH_CHECK_URI",
+                          "value": "/health"
+                        }
+                      ],
+                      "image": "us.gcr.io/phoenix-177420/nginx-proxy:27",
+                      "imagePullPolicy": "IfNotPresent",
+                      "name": "nginx-proxy",
+                      "ports": [
+                        {
+                          "containerPort": 80,
+                          "name": "http",
+                          "protocol": "TCP"
+                        }
+                      ],
+                      "resources": {
+                        "limits": {
+                          "cpu": "${ templateVariables.maxCPU }",
+                          "memory": "${ templateVariables.maxMem }"
+                        },
+                        "requests": {
+                          "cpu": "${ templateVariables.reqCPU }",
+                          "memory": "${ templateVariables.reqMem }"
+                        }
+                      },
+                      "terminationMessagePath": "/dev/termination-log",
+                      "terminationMessagePolicy": "File"
+                    }
+                  ],
+                  "dnsPolicy": "ClusterFirst",
+                  "imagePullSecrets": [
+                    {
+                      "name": "gcr-phoenix"
+                    }
+                  ],
+                  "restartPolicy": "Always",
+                  "schedulerName": "default-scheduler",
+                  "securityContext": {},
+                  "terminationGracePeriodSeconds": 30
+                }
+              }
+            }
+          },
+          {
+            "apiVersion": "autoscaling/v1",
+            "kind": "HorizontalPodAutoscaler",
+            "metadata": {
+              "name": "${ templateVariables.appName }-prod-autoscaler",
+              "namespace": "default"
+            },
+            "spec": {
+              "maxReplicas": 9,
+              "minReplicas": 2,
+              "scaleTargetRef": {
+                "apiVersion": "apps/v1",
+                "kind": "Deployment",
+                "name": "${ templateVariables.appName }prod"
+              },
+              "targetCPUUtilizationPercentage": 40
+            }
+          }         
+        ],
+        "moniker": {
+          "app": "${ templateVariables.appName }"
+        },
+        "name": "Deploy (Production)",
+        "refId": "1",
+        "requiredArtifactIds": [
+          "0f5786e8-3a1e-4dc3-a038-3d31bf6c1366"
+        ],
+        "requiredArtifacts": [],
+        "requisiteStageRefIds": [
+          "3"
+        ],
+        "skipExpressionEvaluation": false,
+        "source": "text",
+        "stageEnabled": {
+          "expression": "#stage('Smoke Tests')['context']['buildInfo']['result']=='SUCCESS'",
+          "type": "expression"
+        },
+        "trafficManagement": {
+          "enabled": false,
+          "options": {
+            "enableTraffic": false,
+            "services": []
+          }
+        },
+        "type": "deployManifest"
+      },
+      {
+        "account": "phoenix-v2",
+        "cloudProvider": "kubernetes",
+        "manifests": [
+          {
+            "apiVersion": "apps/v1",
+            "kind": "Deployment",
+            "metadata": {
+              "annotations": {
+                "moniker.spinnaker.io/detail": "api",
+                "moniker.spinnaker.io/stack": "staging",
+                "traffic.spinnaker.io/load-balancers": "[\"service ${ templateVariables.stagingLoadBalancerName == '*' ? templateVariables.appName + '-staging-api' : templateVariables.stagingLoadBalancerName }\"]"
+              },
+              "name": "${ templateVariables.appName }staging",
+              "namespace": "default"
+            },
+            "spec": {
+              "progressDeadlineSeconds": 600,
+              "replicas": 1,
+              "revisionHistoryLimit": 10,
+              "selector": {
+                "matchLabels": {
+                  "app": "${ templateVariables.appName }staging"
+                }
+              },
+              "strategy": {
+                "type": "Recreate"
+              },
+              "template": {
+                "metadata": {
+                  "annotations": {
+                    "moniker.spinnaker.io/detail": "api",
+                    "moniker.spinnaker.io/stack": "staging",
+                    "shawarma.centeredge.io/service-name": "${ templateVariables.stagingLoadBalancerName == '*' ? templateVariables.appName + '-staging-api' : templateVariables.stagingLoadBalancerName }"
+                  },
+                  "labels": {
+                    "app": "${ templateVariables.appName }staging"
+                  }
+                },
+                "spec": {
+                  "containers": [
+                    {
+                      "env": [
+                        {
+                          "name": "ASPNETCORE_ENVIRONMENT",
+                          "value": "Production"
+                        },
+                        {
+                          "name": "Statsd__Config__StatsdServerName",
+                          "valueFrom": {
+                            "fieldRef": {
+                              "apiVersion": "v1",
+                              "fieldPath": "status.hostIP"
+                            }
+                          }
+                        },
+                        {
+                          "name": "Statsd__Enabled",
+                          "value": "true"
+                        },
+                        {
+                          "name": "BusinessEntities__Host",
+                          "valueFrom": {
+                            "configMapKeyRef": {
+                              "key": "url",
+                              "name": "businessentities-api",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "Couchbase__ConnectionString",
+                          "valueFrom": {
+                            "secretKeyRef": {
+                              "key": "connectionString",
+                              "name": "couchbase-primary",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "Couchbase__Username",
+                          "valueFrom": {
+                            "secretKeyRef": {
+                              "key": "username",
+                              "name": "couchbase-primary",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "Couchbase__Password",
+                          "valueFrom": {
+                            "secretKeyRef": {
+                              "key": "password",
+                              "name": "couchbase-primary",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "ASPNETCORE_URLS",
+                          "value": "http://localhost:8080/"
+                        },
+                        {
+                          "name": "RabbitMQ__Hosts__0__Host",
+                          "valueFrom": {
+                            "configMapKeyRef": {
+                              "key": "host",
+                              "name": "rabbitmq",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "RabbitMQ__Username",
+                          "valueFrom": {
+                            "configMapKeyRef": {
+                              "key": "username",
+                              "name": "rabbitmq",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "RabbitMQ__Password",
+                          "valueFrom": {
+                            "secretKeyRef": {
+                              "key": "default-pass",
+                              "name": "rabbitmq-config",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "LaunchDarklyOptions__SdkKey",
+                          "valueFrom": {
+                            "secretKeyRef": {
+                              "key": "key",
+                              "name": "feature-flag-key",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "HtmlToPdf__Host",
+                          "valueFrom": {
+                            "configMapKeyRef": {
+                              "key": "url",
+                              "name": "pdf-api"
+                            }
+                          }
+                        }
+                      ],
+                      "image": "us.gcr.io/${ templateVariables.gcrAccountName }/${ templateVariables.gcrImageName == '*' ? 'phoenix-service-' + templateVariables.appName : templateVariables.gcrImageName }",
+                      "imagePullPolicy": "IfNotPresent",
+                      "livenessProbe": {
+                        "failureThreshold": 3,
+                        "httpGet": {
+                          "path": "/health?type=ready",
+                          "port": 80,
+                          "scheme": "HTTP"
+                        },
+                        "initialDelaySeconds": 5,
+                        "periodSeconds": 10,
+                        "successThreshold": 1,
+                        "timeoutSeconds": 1
+                      },
+                      "name": "${ templateVariables.appName }",
+                      "ports": [
+                        {
+                          "containerPort": 8080,
+                          "name": "http",
+                          "protocol": "TCP"
+                        }
+                      ],
+                      "readinessProbe": {
+                        "failureThreshold": 3,
+                        "httpGet": {
+                          "path": "/health?type=ready",
+                          "port": 80,
+                          "scheme": "HTTP"
+                        },
+                        "initialDelaySeconds": 15,
+                        "periodSeconds": 10,
+                        "successThreshold": 1,
+                        "timeoutSeconds": 1
+                      },
+                      "resources": {
+                        "limits": {
+                          "cpu": "${ templateVariables.maxCPU }",
+                          "memory": "${ templateVariables.maxMem }"
+                        },
+                        "requests": {
+                          "cpu": "${ templateVariables.reqCPU }",
+                          "memory": "${ templateVariables.reqMem }"
+                        }
+                      },
+                      "terminationMessagePath": "/dev/termination-log",
+                      "terminationMessagePolicy": "File"
+                    },
+                    {
+                      "env": [
+                        {
+                          "name": "STATSD_SERVER",
+                          "valueFrom": {
+                            "fieldRef": {
+                              "apiVersion": "v1",
+                              "fieldPath": "status.hostIP"
+                            }
+                          }
+                        },
+                        {
+                          "name": "STATSD_SAMPLE_RATE",
+                          "value": "${ templateVariables.statsdSampleRate.toString() }"
+                        },
+                        {
+                          "name": "SERVICE_NAME",
+                          "value": "prod.${ templateVariables.appName }"
+                        },
+                        {
+                          "name": "TimeoutOptions__ConnectTimeout",
+                          "valueFrom": {
+                            "configMapKeyRef": {
+                              "key": "connect_read_write",
+                              "name": "timeouts",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "TimeoutOptions__ReadTimeout",
+                          "valueFrom": {
+                            "configMapKeyRef": {
+                              "key": "connect_read_write",
+                              "name": "timeouts",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "TimeoutOptions__SendTimeout",
+                          "valueFrom": {
+                            "configMapKeyRef": {
+                              "key": "connect_read_write",
+                              "name": "timeouts",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "WaiverUploadOptions__MaxRequestSize",
+                          "valueFrom": {
+                            "configMapKeyRef": {
+                              "key": "max_size",
+                              "name": "waiver-upload-options",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "PROXY_HOST",
+                          "value": "localhost"
+                        },
+                        {
+                          "name": "PROXY_PORT",
+                          "value": "8080"
+                        },
+                        {
+                          "name": "HEALTH_CHECK_URI",
+                          "value": "/health"
+                        }
+                      ],
+                      "image": "us.gcr.io/phoenix-177420/nginx-proxy:27",
+                      "imagePullPolicy": "IfNotPresent",
+                      "name": "nginx-proxy",
+                      "ports": [
+                        {
+                          "containerPort": 80,
+                          "name": "http",
+                          "protocol": "TCP"
+                        }
+                      ],
+                      "resources": {
+                        "limits": {
+                          "cpu": "${ templateVariables.maxCPU }",
+                          "memory": "${ templateVariables.maxMem }"
+                        },
+                        "requests": {
+                          "cpu": "${ templateVariables.reqCPU }",
+                          "memory": "${ templateVariables.reqMem }"
+                        }
+                      },
+                      "terminationMessagePath": "/dev/termination-log",
+                      "terminationMessagePolicy": "File"
+                    }
+                  ],
+                  "dnsPolicy": "ClusterFirst",
+                  "imagePullSecrets": [
+                    {
+                      "name": "gcr-phoenix"
+                    }
+                  ],
+                  "restartPolicy": "Always",
+                  "schedulerName": "default-scheduler",
+                  "securityContext": {},
+                  "terminationGracePeriodSeconds": 30
+                }
+              }
+            }
+          }
+        ],
+        "moniker": {
+          "app": "${ templateVariables.appName }"
+        },
+        "name": "Deploy (Staging)",
+        "refId": "2",
+        "requiredArtifactIds": [
+          "0f5786e8-3a1e-4dc3-a038-3d31bf6c1366"
+        ],
+        "requiredArtifacts": [],
+        "requisiteStageRefIds": [],
+        "skipExpressionEvaluation": false,
+        "source": "text",
+        "trafficManagement": {
+          "enabled": false,
+          "options": {
+            "enableTraffic": false,
+            "services": []
+          }
+        },
+        "type": "deployManifest"
+      },
+      {
+        "continuePipeline": false,
+        "failPipeline": true,
+        "job": "Phoenix/job/Services/job/Phoenix.Service.${ templateVariables.serviceName }/job/Phoenix.Service.${ templateVariables.serviceName }.Smoke",
+        "master": "primary-jenkins",
+        "name": "Smoke Tests",
+        "parameters": {},
+        "refId": "3",
+        "requisiteStageRefIds": [
+          "2"
+        ],
+        "type": "jenkins"
+      },
+      {
+        "alias": "preconfiguredWebhook",
+        "name": "Publish Start Event",
+        "parameterValues": {
+          "alertType": "info",
+          "environment": "${ templateVariables.appName }prod",
+          "product": "Phoenix",
+          "text": "Starting Production Pipeline Deploy For ${ templateVariables.appName }",
+          "title": "Starting Production Deploy To ${ templateVariables.appName }prod"
+        },
+        "refId": "4",
+        "requisiteStageRefIds": [
+          "3"
+        ],
+        "statusUrlResolution": "getMethod",
+        "type": "datadogEvent"
+      },
+      {
+        "alias": "preconfiguredWebhook",
+        "name": "Publish Success Event",
+        "parameterValues": {
+          "alertType": "success",
+          "environment": "${ templateVariables.appName }",
+          "product": "Phoenix",
+          "text": "Deployed To ${ templateVariables.appName }",
+          "title": "Deployed To ${ templateVariables.appName }"
+        },
+        "refId": "5",
+        "requisiteStageRefIds": [
+          "1"
+        ],
+        "stageEnabled": {
+          "expression": "#stage('Deploy (Production)').status.toString() == 'SUCCEEDED'",
+          "type": "expression"
+        },
+        "statusUrlResolution": "getMethod",
+        "type": "datadogEvent"
+      },
+      {
+        "account": "phoenix-v2",
+        "cloudProvider": "kubernetes",
+        "manifests": [
+          {
+            "apiVersion": "apps/v1",
+            "kind": "Deployment",
+            "metadata": {
+              "annotations": {
+                "moniker.spinnaker.io/detail": "api",
+                "moniker.spinnaker.io/stack": "jobs",
+                "strategy.spinnaker.io/use-source-capacity": "true",
+                "traffic.spinnaker.io/load-balancers": "[\"service ${ templateVariables.jobsLoadBalancer == '*' ? templateVariables.appName + '-prod-jobs' : templateVariables.jobsLoadBalancer }\"]"
+              },
+              "name": "${ templateVariables.appName }jobs",
+              "namespace": "default"
+            },
+            "spec": {
+              "progressDeadlineSeconds": 600,
+              "revisionHistoryLimit": 10,
+              "selector": {
+                "matchLabels": {
+                  "app": "${ templateVariables.appName }jobs"
+                }
+              },
+              "strategy": {
+                "rollingUpdate": {
+                  "maxSurge": 1,
+                  "maxUnavailable": 1
+                },
+                "type": "RollingUpdate"
+              },
+              "template": {
+                "metadata": {
+                  "annotations": {
+                    "moniker.spinnaker.io/detail": "api",
+                    "moniker.spinnaker.io/stack": "jobs",
+                    "shawarma.centeredge.io/service-name": "${ templateVariables.shawarmaEnabled ? templateVariables.jobsLoadBalancer == '*' ? templateVariables.appName + '-prod-jobs' : templateVariables.jobsLoadBalancer : '' }"
+                  },
+                  "labels": {
+                    "app": "${ templateVariables.appName }jobs"
+                  }
+                },
+                "spec": {
+                  "containers": [
+                    {
+                      "env": [
+                        {
+                          "name": "ASPNETCORE_ENVIRONMENT",
+                          "value": "Production"
+                        },
+                        {
+                          "name": "Statsd__Config__StatsdServerName",
+                          "valueFrom": {
+                            "fieldRef": {
+                              "apiVersion": "v1",
+                              "fieldPath": "status.hostIP"
+                            }
+                          }
+                        },
+                        {
+                          "name": "Statsd__Enabled",
+                          "value": "true"
+                        },
+                        {
+                          "name": "BusinessEntities__Host",
+                          "valueFrom": {
+                            "configMapKeyRef": {
+                              "key": "url",
+                              "name": "businessentities-api",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "Couchbase__ConnectionString",
+                          "valueFrom": {
+                            "secretKeyRef": {
+                              "key": "connectionString",
+                              "name": "couchbase-primary",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "Couchbase__Username",
+                          "valueFrom": {
+                            "secretKeyRef": {
+                              "key": "username",
+                              "name": "couchbase-primary",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "Couchbase__Password",
+                          "valueFrom": {
+                            "secretKeyRef": {
+                              "key": "password",
+                              "name": "couchbase-primary",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "ASPNETCORE_URLS",
+                          "value": "http://localhost:8080/"
+                        },
+                        {
+                          "name": "RabbitMQ__Hosts__0__Host",
+                          "valueFrom": {
+                            "configMapKeyRef": {
+                              "key": "host",
+                              "name": "rabbitmq",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "RabbitMQ__Username",
+                          "valueFrom": {
+                            "configMapKeyRef": {
+                              "key": "username",
+                              "name": "rabbitmq",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "RabbitMQ__Password",
+                          "valueFrom": {
+                            "secretKeyRef": {
+                              "key": "default-pass",
+                              "name": "rabbitmq-config",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "LaunchDarklyOptions__SdkKey",
+                          "valueFrom": {
+                            "secretKeyRef": {
+                              "key": "key",
+                              "name": "feature-flag-key",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "HtmlToPdf__Host",
+                          "valueFrom": {
+                            "configMapKeyRef": {
+                              "key": "url",
+                              "name": "pdf-api"
+                            }
+                          }
+                        }
+                      ],
+                      "image": "us.gcr.io/${ templateVariables.gcrAccountName }/${ templateVariables.gcrImageName == '*' ? 'phoenix-service-' + templateVariables.appName : templateVariables.gcrImageName }",
+                      "imagePullPolicy": "IfNotPresent",
+                      "livenessProbe": {
+                        "failureThreshold": 3,
+                        "httpGet": {
+                          "path": "/health?type=ready",
+                          "port": 80,
+                          "scheme": "HTTP"
+                        },
+                        "initialDelaySeconds": 5,
+                        "periodSeconds": 10,
+                        "successThreshold": 1,
+                        "timeoutSeconds": 1
+                      },
+                      "name": "${ templateVariables.appName }",
+                      "ports": [
+                        {
+                          "containerPort": 8080,
+                          "name": "http",
+                          "protocol": "TCP"
+                        }
+                      ],
+                      "readinessProbe": {
+                        "failureThreshold": 3,
+                        "httpGet": {
+                          "path": "/health?type=ready",
+                          "port": 80,
+                          "scheme": "HTTP"
+                        },
+                        "initialDelaySeconds": 15,
+                        "periodSeconds": 10,
+                        "successThreshold": 1,
+                        "timeoutSeconds": 1
+                      },
+                      "resources": {
+                        "limits": {
+                          "cpu": "${ templateVariables.maxCPU }",
+                          "memory": "${ templateVariables.maxMem }"
+                        },
+                        "requests": {
+                          "cpu": "${ templateVariables.reqCPU }",
+                          "memory": "${ templateVariables.reqMem }"
+                        }
+                      },
+                      "terminationMessagePath": "/dev/termination-log",
+                      "terminationMessagePolicy": "File"
+                    },
+                    {
+                      "env": [
+                        {
+                          "name": "STATSD_SERVER",
+                          "valueFrom": {
+                            "fieldRef": {
+                              "apiVersion": "v1",
+                              "fieldPath": "status.hostIP"
+                            }
+                          }
+                        },
+                        {
+                          "name": "STATSD_SAMPLE_RATE",
+                          "value": "${ templateVariables.statsdSampleRate.toString() }"
+                        },
+                        {
+                          "name": "SERVICE_NAME",
+                          "value": "prod.${ templateVariables.appName }"
+                        },
+                        {
+                          "name": "TimeoutOptions__ConnectTimeout",
+                          "valueFrom": {
+                            "configMapKeyRef": {
+                              "key": "connect_read_write",
+                              "name": "timeouts",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "TimeoutOptions__ReadTimeout",
+                          "valueFrom": {
+                            "configMapKeyRef": {
+                              "key": "connect_read_write",
+                              "name": "timeouts",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "TimeoutOptions__SendTimeout",
+                          "valueFrom": {
+                            "configMapKeyRef": {
+                              "key": "connect_read_write",
+                              "name": "timeouts",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "WaiverUploadOptions__MaxRequestSize",
+                          "valueFrom": {
+                            "configMapKeyRef": {
+                              "key": "max_size",
+                              "name": "waiver-upload-options",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "PROXY_HOST",
+                          "value": "localhost"
+                        },
+                        {
+                          "name": "PROXY_PORT",
+                          "value": "8080"
+                        },
+                        {
+                          "name": "HEALTH_CHECK_URI",
+                          "value": "/health"
+                        }
+                      ],
+                      "image": "us.gcr.io/phoenix-177420/nginx-proxy:27",
+                      "imagePullPolicy": "IfNotPresent",
+                      "name": "nginx-proxy",
+                      "ports": [
+                        {
+                          "containerPort": 80,
+                          "name": "http",
+                          "protocol": "TCP"
+                        }
+                      ],
+                      "resources": {
+                        "limits": {
+                          "cpu": "${ templateVariables.maxCPU }",
+                          "memory": "${ templateVariables.maxMem }"
+                        },
+                        "requests": {
+                          "cpu": "${ templateVariables.reqCPU }",
+                          "memory": "${ templateVariables.reqMem }"
+                        }
+                      },
+                      "terminationMessagePath": "/dev/termination-log",
+                      "terminationMessagePolicy": "File"
+                    }
+                  ],
+                  "dnsPolicy": "ClusterFirst",
+                  "imagePullSecrets": [
+                    {
+                      "name": "gcr-phoenix"
+                    }
+                  ],
+                  "restartPolicy": "Always",
+                  "schedulerName": "default-scheduler",
+                  "securityContext": {},
+                  "terminationGracePeriodSeconds": 30
+                }
+              }
+            }
+          },
+          {
+            "apiVersion": "autoscaling/v1",
+            "kind": "HorizontalPodAutoscaler",
+            "metadata": {
+              "name": "${ templateVariables.appName }-jobs-autoscaler",
+              "namespace": "default"
+            },
+            "spec": {
+              "maxReplicas": 9,
+              "minReplicas": 2,
+              "scaleTargetRef": {
+                "apiVersion": "apps/v1",
+                "kind": "Deployment",
+                "name": "${ templateVariables.appName }jobs"
+              },
+              "targetCPUUtilizationPercentage": 40
+            }
+          }
+        ],
+        "moniker": {
+          "app": "${ templateVariables.appName }"
+        },
+        "name": "Deploy Jobs (Production)",
+        "refId": "6",
+        "requiredArtifactIds": [
+          "0f5786e8-3a1e-4dc3-a038-3d31bf6c1366"
+        ],
+        "requiredArtifacts": [],
+        "requisiteStageRefIds": [
+          "3"
+        ],
+        "skipExpressionEvaluation": false,
+        "source": "text",
+        "stageEnabled": {
+          "expression": "${ templateVariables.jobsEnabled ? \"#stage('Smoke Tests')['context']['buildInfo']['result']=='SUCCESS'\" : false }",
+          "type": "expression"
+        },
+        "stageTimeoutMs": 1200000,
+        "trafficManagement": {
+          "enabled": false,
+          "options": {
+            "enableTraffic": false,
+            "services": []
+          }
+        },
+        "type": "deployManifest"
+      },
+      {
+        "alias": "preconfiguredWebhook",
+        "failOnFailedExpressions": true,
+        "isNew": true,
+        "name": "Publish Fail Event",
+        "parameterValues": {
+          "alertType": "error",
+          "environment": "${ templateVariables.appName } prod",
+          "product": "Phoenix",
+          "text": "Failed to deploy to production",
+          "title": "Failed to deploy ${ templateVariables.appName } to production"
+        },
+        "refId": "7",
+        "requisiteStageRefIds": [
+          "1"
+        ],
+        "stageEnabled": {
+          "expression": "#stage('Deploy (Production)').status.toString() != 'SUCCEEDED'",
+          "type": "expression"
+        },
+        "statusUrlResolution": "getMethod",
+        "type": "datadogEvent"
+      }
+    ],
+    "triggers": [
+      {
+        "account": "gcr-phoenix",
+        "enabled": true,
+        "expectedArtifactIds": [
+          "0f5786e8-3a1e-4dc3-a038-3d31bf6c1366"
+        ],
+        "organization": "${ templateVariables.gcrAccountName }",
+        "registry": "us.gcr.io",
+        "repository": "${ templateVariables.gcrAccountName }/${ templateVariables.gcrImageName == '*' ? 'phoenix-service-' + templateVariables.appName : templateVariables.gcrImageName }",
+        "runAsUser": "phoenix-svc-account",
+        "type": "docker"
+      }
+    ]
+  },
+  "protect": false,
+  "schema": "v2",
+  "tag": "latest",
+  "updateTs": "1608831272000",
+  "variables": [
+    {
+      "defaultValue": "",
+      "description": "Application Name",
+      "name": "appName",
+      "type": "string"
+    },
+    {
+      "defaultValue": "",
+      "description": "The service name (i.e. Phoenix.Service.Waivers -> Waivers; capitalization might be necessary.",
+      "name": "serviceName",
+      "type": "string"
+    },
+    {
+      "defaultValue": "*",
+      "description": "Prod Cluster Name (i.e. waivers-prod-api); leave '*' to use default pattern: {appName}-prod-api.",
+      "name": "prodClustername",
+      "type": "string"
+    },
+    {
+      "defaultValue": "*",
+      "description": "The Staging Load Balancer Name (i.e. waivers-staging-api); leave '*' to use default pattern: {appName}-staging-api.",
+      "name": "stagingLoadBalancerName",
+      "type": "string"
+    },
+    {
+      "defaultValue": "*",
+      "description": "The Prod Load Balancer Name (i.e. waivers-prod-api); leave '*' to use default pattern: {appName}-prod-api.",
+      "name": "prodLoadBalancerName",
+      "type": "string"
+    },
+    {
+      "defaultValue": false,
+      "description": "Determines whether a separate set of pods should be created for batch jobs",
+      "name": "jobsEnabled",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "*",
+      "description": "The name of jobs cluster that contains the k8s pods generated by this pipeline; leave '*' to use default pattern: {appName}-jobs-api",
+      "name": "jobsClusterName",
+      "type": "string"
+    },
+    {
+      "defaultValue": "*",
+      "description": "The name of the jobs load balancer for clusters created by this pipeline; leave '*' to use default pattern: {appName}-prod-jobs",
+      "name": "jobsLoadBalancer",
+      "type": "string"
+    },
+    {
+      "defaultValue": "phoenix-177420",
+      "description": "The GCR account name that contains the image",
+      "name": "gcrAccountName",
+      "type": "string"
+    },
+    {
+      "defaultValue": "*",
+      "description": "The image name to pull; leave '*' to use default pattern: phoenix-service-{appName}",
+      "name": "gcrImageName",
+      "type": "string"
+    },
+    {
+      "defaultValue": true,
+      "description": "Is Shawarma Enabled?",
+      "name": "shawarmaEnabled",
+      "type": "boolean"
+    },
+    {
+      "defaultValue": "-",
+      "description": "The IAM role name for the service to use; leave '-' to not use",
+      "name": "iamRole",
+      "type": "string"
+    },
+    {
+      "defaultValue": "100m",
+      "description": "Pod Requested CPU",
+      "name": "reqCPU",
+      "type": "string"
+    },
+    {
+      "defaultValue": "512Mi",
+      "description": "Pod Requested Memory",
+      "name": "reqMem",
+      "type": "string"
+    },
+    {
+      "defaultValue": "200m",
+      "description": "Pod Max CPU",
+      "name": "maxCPU",
+      "type": "string"
+    },
+    {
+      "defaultValue": "4096Mi",
+      "description": "Pod Max Memory",
+      "name": "maxMem",
+      "type": "string"
+    },
+    {
+      "defaultValue": "100",
+      "description": "StatsD Sample Rate 0-100",
+      "name": "statsdSampleRate",
+      "type": "int"
+    }
+  ]
+}
