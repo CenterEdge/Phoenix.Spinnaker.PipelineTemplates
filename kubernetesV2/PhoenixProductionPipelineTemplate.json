@@ -1,5 +1,4 @@
 {
-  "digest": "d2969e1d0f91a6c67e48c8ce5c2a03dd4e6bfcfdbb19b05b00a9115531586100",
   "id": "phnx-production-pipeline-template-kv2",
   "lastModifiedBy": "mmasenthin@centeredgesoftware.com",
   "metadata": {
@@ -20,7 +19,6 @@
         "id": "0f5786e8-3a1e-4dc3-a038-3d31bf6c1366",
         "matchArtifact": {
           "artifactAccount": "docker-registry",
-          "id": "d7297804-9e1e-4ab7-954e-539286d11999",
           "name": "us.gcr.io/${ templateVariables.gcrAccountName }/${ templateVariables.gcrImageName == '*' ? 'phoenix-service-' + templateVariables.appName : templateVariables.gcrImageName }",
           "type": "docker/image"
         },
@@ -1179,8 +1177,6 @@
   },
   "protect": false,
   "schema": "v2",
-  "tag": "latest",
-  "updateTs": "1608831272000",
   "variables": [
     {
       "defaultValue": "",
