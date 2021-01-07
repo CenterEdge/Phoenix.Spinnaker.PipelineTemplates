@@ -165,7 +165,7 @@
                                     "annotations": {
                                         "moniker.spinnaker.io/stack": "prod",
                                         "moniker.spinnaker.io/detail": "api",
-                                        "shawarma.centeredge.io/service-name": "${ templateVariables.shawarmaEnabled ? templateVariables.jobsLoadBalancer == '*' ? templateVariables.appName + '-prod-jobs' : templateVariables.jobsLoadBalancer : '' }",
+                                        "shawarma.centeredge.io/service-name": "${ templateVariables.prodLoadBalancerName == '*' ? templateVariables.appName + '-prod-api' : templateVariables.prodLoadBalancerName }",
                                         "iam.amazonaws.com/role": "${ templateVariables.iamRole == '-' ? '' : templateVariables.iamRole }"
                                     },
                                     "labels": {
