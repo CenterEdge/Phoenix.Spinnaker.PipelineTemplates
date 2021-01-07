@@ -137,8 +137,8 @@
                         "kind": "Deployment",
                         "metadata": {
                             "annotations": {
-                                "moniker.spinnaker.io/detail": "api",
                                 "moniker.spinnaker.io/stack": "prod",
+                                "moniker.spinnaker.io/detail": "api",
                                 "strategy.spinnaker.io/use-source-capacity": "true",
                                 "traffic.spinnaker.io/load-balancers": "[\"service ${ templateVariables.prodLoadBalancerName == '*' ? templateVariables.appName + '-prod-api' : templateVariables.prodLoadBalancerName }\"]"
                             },
@@ -163,8 +163,8 @@
                             "template": {
                                 "metadata": {
                                     "annotations": {
-                                        "moniker.spinnaker.io/detail": "api",
                                         "moniker.spinnaker.io/stack": "prod",
+                                        "moniker.spinnaker.io/detail": "api",
                                         "shawarma.centeredge.io/service-name": "${ templateVariables.shawarmaEnabled ? templateVariables.jobsLoadBalancer == '*' ? templateVariables.appName + '-prod-jobs' : templateVariables.jobsLoadBalancer : '' }",
                                         "iam.amazonaws.com/role": "${ templateVariables.iamRole == '-' ? '' : templateVariables.iamRole }"
                                     },
@@ -528,8 +528,8 @@
                         "kind": "Deployment",
                         "metadata": {
                             "annotations": {
-                                "moniker.spinnaker.io/detail": "api",
-                                "moniker.spinnaker.io/stack": "jobs",
+                                "moniker.spinnaker.io/stack": "prod",
+                                "moniker.spinnaker.io/detail": "jobs",
                                 "strategy.spinnaker.io/use-source-capacity": "true",
                                 "traffic.spinnaker.io/load-balancers": "[\"service ${ templateVariables.jobsLoadBalancer == '*' ? templateVariables.appName + '-prod-jobs' : templateVariables.jobsLoadBalancer }\"]"
                             },
@@ -554,8 +554,8 @@
                             "template": {
                                 "metadata": {
                                     "annotations": {
-                                        "moniker.spinnaker.io/detail": "api",
-                                        "moniker.spinnaker.io/stack": "jobs",
+                                        "moniker.spinnaker.io/stack": "prod",
+                                        "moniker.spinnaker.io/detail": "jobs",
                                         "shawarma.centeredge.io/service-name": "${ templateVariables.shawarmaEnabled ? templateVariables.jobsLoadBalancer == '*' ? templateVariables.appName + '-prod-jobs' : templateVariables.jobsLoadBalancer : '' }"
                                     },
                                     "labels": {
