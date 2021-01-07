@@ -882,7 +882,7 @@
         "triggers": [
             {
                 "account": "gcr-phoenix",
-                "enabled": true,
+                "enabled": false,
                 "expectedArtifactIds": [
                     "0f5786e8-3a1e-4dc3-a038-3d31bf6c1366"
                 ],
