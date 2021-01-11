@@ -179,7 +179,7 @@
                                             "env": [
                                                 {
                                                     "name": "ASPNETCORE_ENVIRONMENT",
-                                                    "value": "Production"
+                                                    "value": "Staging"
                                                 },
                                                 {
                                                     "name": "Statsd__Config__StatsdServerName",
