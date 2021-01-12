@@ -362,7 +362,7 @@
                                                 },
                                                 {
                                                     "name": "JobOptions__ProcessBulkJobs",
-                                                    "value": false
+                                                    "value": "false"
                                                 },
                                                 {
                                                     "name": "COGNITO__ClientId",
@@ -464,16 +464,6 @@
                                         },
                                         {
                                             "env": [
-                                                {
-                                                    "name": "API_GATEWAY_KEY",
-                                                    "valueFrom": {
-                                                        "secretKeyRef": {
-                                                            "key": "key",
-                                                            "name": "api-gateway",
-                                                            "optional": true
-                                                        }
-                                                    }
-                                                },
                                                 {
                                                     "name": "STATSD_SERVER",
                                                     "valueFrom": {
@@ -891,7 +881,7 @@
                                                 },
                                                 {
                                                     "name": "JobOptions__ProcessBulkJobs",
-                                                    "value": false
+                                                    "value": "false"
                                                 },
                                                 {
                                                     "name": "COGNITO__ClientId",
@@ -993,16 +983,6 @@
                                         },
                                         {
                                             "env": [
-                                                {
-                                                    "name": "API_GATEWAY_KEY",
-                                                    "valueFrom": {
-                                                        "secretKeyRef": {
-                                                            "key": "key",
-                                                            "name": "api-gateway",
-                                                            "optional": true
-                                                        }
-                                                    }
-                                                },
                                                 {
                                                     "name": "STATSD_SERVER",
                                                     "valueFrom": {

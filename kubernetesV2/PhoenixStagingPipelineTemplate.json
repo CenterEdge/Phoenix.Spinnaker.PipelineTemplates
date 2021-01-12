@@ -199,8 +199,43 @@
                                                     "valueFrom": {
                                                         "configMapKeyRef": {
                                                             "key": "url",
-                                                            "name": "businessentities-api",
-                                                            "optional": true
+                                                            "name": "businessentities-api"
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "name": "Mappings__Host",
+                                                    "valueFrom": {
+                                                        "configMapKeyRef": {
+                                                            "key": "url",
+                                                            "name": "mappings-api"
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "name": "ProductCatalogs__Host",
+                                                    "valueFrom": {
+                                                        "configMapKeyRef": {
+                                                            "key": "url",
+                                                            "name": "productcatalogs-api"
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "name": "Stations__Host",
+                                                    "valueFrom": {
+                                                        "configMapKeyRef": {
+                                                            "key": "url",
+                                                            "name": "stations-api"
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "name": "HtmlToPdf__Host",
+                                                    "valueFrom": {
+                                                        "configMapKeyRef": {
+                                                            "key": "url",
+                                                            "name": "pdf-api"
                                                         }
                                                     }
                                                 },
@@ -279,11 +314,96 @@
                                                     }
                                                 },
                                                 {
-                                                    "name": "HtmlToPdf__Host",
+                                                    "name": "TimeoutOptions__KeepAliveTimeout",
                                                     "valueFrom": {
                                                         "configMapKeyRef": {
-                                                            "key": "url",
-                                                            "name": "pdf-api"
+                                                            "key": "keepalive",
+                                                            "name": "timeouts",
+                                                            "optional": true
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "name": "TimeoutOptions__WaiverUploadTimeout",
+                                                    "valueFrom": {
+                                                        "configMapKeyRef": {
+                                                            "key": "connect_read_write",
+                                                            "name": "timeouts",
+                                                            "optional": true
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "name": "WaiverUploadOptions__KeepAliveTimeout",
+                                                    "valueFrom": {
+                                                        "configMapKeyRef": {
+                                                            "key": "keepalive",
+                                                            "name": "timeouts",
+                                                            "optional": true
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "name": "WaiverUploadOptions__KeepAliveTimeout",
+                                                    "valueFrom": {
+                                                        "configMapKeyRef": {
+                                                            "key": "keepalive",
+                                                            "name": "timeouts",
+                                                            "optional": true
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "name": "JobOptions__ProcessBulkJobs",
+                                                    "value": "false"
+                                                },
+                                                {
+                                                    "name": "COGNITO__ClientId",
+                                                    "valueFrom": {
+                                                        "secretKeyRef": {
+                                                            "key": "clientId",
+                                                            "name": "cognito-creds",
+                                                            "optional": true
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "name": "COGNITO__ClientSecret",
+                                                    "valueFrom": {
+                                                        "secretKeyRef": {
+                                                            "key": "clientSecret",
+                                                            "name": "cognito-creds",
+                                                            "optional": true
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "name": "COGNITO__UserPoolId",
+                                                    "valueFrom": {
+                                                        "secretKeyRef": {
+                                                            "key": "poolId",
+                                                            "name": "cognito-creds",
+                                                            "optional": true
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "name": "COGNITO__Region",
+                                                    "valueFrom": {
+                                                        "secretKeyRef": {
+                                                            "key": "region",
+                                                            "name": "cognito-creds",
+                                                            "optional": true
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "name": "JwtOptions__Secret",
+                                                    "valueFrom": {
+                                                        "secretKeyRef": {
+                                                            "key": "secret",
+                                                            "name": "jwt-options",
+                                                            "optional": true
                                                         }
                                                     }
                                                 }
@@ -337,6 +457,16 @@
                                         },
                                         {
                                             "env": [
+                                                {
+                                                    "name": "API_GATEWAY_KEY",
+                                                    "valueFrom": {
+                                                        "secretKeyRef": {
+                                                            "key": "key",
+                                                            "name": "api-gateway",
+                                                            "optional": true
+                                                        }
+                                                    }
+                                                },
                                                 {
                                                     "name": "STATSD_SERVER",
                                                     "valueFrom": {
