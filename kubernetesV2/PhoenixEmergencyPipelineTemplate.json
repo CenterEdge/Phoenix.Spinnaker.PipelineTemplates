@@ -1123,7 +1123,7 @@
                 "skipExpressionEvaluation": false,
                 "source": "text",
                 "stageEnabled": {
-                    "expression": "${ templateVariables.jobsEnabled ? \"#stage('Smoke Tests')['context']['buildInfo']['result']=='SUCCESS'\" : false }",
+                    "expression": "${ templateVariables.jobsEnabled }",
                     "type": "expression"
                 },
                 "stageTimeoutMs": 1200000,
