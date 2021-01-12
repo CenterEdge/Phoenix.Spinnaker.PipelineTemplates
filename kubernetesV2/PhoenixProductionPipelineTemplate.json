@@ -691,7 +691,7 @@
                         },
                         {
                           "name": "JobOptions__ProcessBulkJobs",
-                          "value": "false"
+                          "value": "true"
                         },
                         {
                           "name": "COGNITO__ClientId",
@@ -1218,7 +1218,7 @@
                         },
                         {
                           "name": "JobOptions__ProcessBulkJobs",
-                          "value": "false"
+                          "value": "true"
                         },
                         {
                           "name": "COGNITO__ClientId",
