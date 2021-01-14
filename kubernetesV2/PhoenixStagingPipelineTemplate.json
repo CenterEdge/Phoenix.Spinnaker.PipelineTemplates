@@ -167,7 +167,8 @@
                                     "annotations": {
                                         "moniker.spinnaker.io/detail": "api",
                                         "moniker.spinnaker.io/stack": "staging",
-                                        "shawarma.centeredge.io/service-name": "${ templateVariables.stagingLoadBalancerName == '*' ? templateVariables.appName + '-staging-api' : templateVariables.stagingLoadBalancerName }"
+                                        "shawarma.centeredge.io/service-name": "${ templateVariables.stagingLoadBalancerName == '*' ? templateVariables.appName + '-staging-api' : templateVariables.stagingLoadBalancerName }",
+                                        "iam.amazonaws.com/role": "${ templateVariables.iamRole == '-' ? '' : templateVariables.iamRole }"
                                     },
                                     "labels": {
                                         "app": "${ templateVariables.appName }staging"
@@ -601,7 +602,7 @@
         "triggers": [
             {
                 "account": "gcr-phoenix",
-                "enabled": true,
+                "enabled": false,
                 "expectedArtifactIds": [
                     "0f5786e8-3a1e-4dc3-a038-3d31bf6c1366"
                 ],
