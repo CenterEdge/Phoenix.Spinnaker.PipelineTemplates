@@ -264,6 +264,56 @@
                         {
                           "name": "JobOptions__ProcessBulkJobs",
                           "value": "false"
+                        },
+                        {
+                          "name": "COGNITO__ClientId",
+                          "valueFrom": {
+                            "secretKeyRef": {
+                              "key": "clientId",
+                              "name": "cognito-creds",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "COGNITO__ClientSecret",
+                          "valueFrom": {
+                            "secretKeyRef": {
+                              "key": "clientSecret",
+                              "name": "cognito-creds",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "COGNITO__UserPoolId",
+                          "valueFrom": {
+                            "secretKeyRef": {
+                              "key": "poolId",
+                              "name": "cognito-creds",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "COGNITO__Region",
+                          "valueFrom": {
+                            "secretKeyRef": {
+                              "key": "region",
+                              "name": "cognito-creds",
+                              "optional": true
+                            }
+                          }
+                        },
+                        {
+                          "name": "JwtOptions__Secret",
+                          "valueFrom": {
+                            "secretKeyRef": {
+                              "key": "secret",
+                              "name": "jwt-options",
+                              "optional": true
+                            }
+                          }
                         }
                       ],
                       "image": "us.gcr.io/${ templateVariables.gcrAccountName }/${ templateVariables.gcrImageName == '*' ? 'phoenix-service-' + templateVariables.appName : templateVariables.gcrImageName }",
