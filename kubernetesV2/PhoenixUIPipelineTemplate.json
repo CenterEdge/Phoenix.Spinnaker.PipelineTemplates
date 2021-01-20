@@ -1,0 +1,288 @@
+{
+    "schema": "v2",
+    "protect": false,
+    "id": "phnx-ui-pipeline-template-kv2",
+    "metadata": {
+        "description": "Creates a standard pipeline that deploys a single pod for UI purposes (i.e. webUI/online waivers/etc.)",
+        "name": "Kubernetes V2 Phoenix UI Production Template",
+        "scopes": [
+            "global"
+        ]
+    },
+    "variables": [
+        {
+            "defaultValue": "",
+            "description": "Application Name",
+            "name": "appName",
+            "type": "string"
+        },
+        {
+            "defaultValue": "*",
+            "description": "The Prod Load Balancer Name (i.e. onlinewaivers-prod-ui); leave '*' to use default pattern: {appName}-prod-ui.",
+            "name": "prodLoadBalancerName",
+            "type": "string"
+        },
+        {
+            "defaultValue": "prod",
+            "description": "The type of deployment. This determines what stack to annotate this pipeline as. (i.e. dev vs. prod)",
+            "name": "deploymentType",
+            "type": "string"
+        },
+        {
+            "defaultValue": "phoenix-177420",
+            "description": "The GCR account name that contains the image",
+            "name": "gcrAccountName",
+            "type": "string"
+        },
+        {
+            "defaultValue": "*",
+            "description": "The image name to pull; leave '*' to use default pattern: phoenix-service-{appName}",
+            "name": "gcrImageName",
+            "type": "string"
+        },
+        {
+            "defaultValue": "50m",
+            "description": "Pod Requested CPU",
+            "name": "reqCPU",
+            "type": "string"
+        },
+        {
+            "defaultValue": "128Mi",
+            "description": "Pod Requested Memory",
+            "name": "reqMem",
+            "type": "string"
+        },
+        {
+            "defaultValue": "100m",
+            "description": "Pod Max CPU",
+            "name": "maxCPU",
+            "type": "string"
+        },
+        {
+            "defaultValue": "256Mi",
+            "description": "Pod Max Memory",
+            "name": "maxMem",
+            "type": "string"
+        }
+    ],
+    "pipeline": {
+        "expectedArtifacts": [
+            {
+                "defaultArtifact": {
+                    "customKind": true,
+                    "id": "39b0955b-01fc-4001-aa27-9dfa7074937a"
+                },
+                "displayName": "${ templateVariables.appName }",
+                "id": "0f5786e8-3a1e-4dc3-a038-3d31bf6c1366",
+                "matchArtifact": {
+                    "artifactAccount": "docker-registry",
+                    "name": "us.gcr.io/${ templateVariables.gcrAccountName }/${ templateVariables.gcrImageName == '*' ? 'phoenix-service-' + templateVariables.appName : templateVariables.gcrImageName }",
+                    "type": "docker/image"
+                },
+                "useDefaultArtifact": false,
+                "usePriorArtifact": false
+            }
+        ],
+        "keepWaitingPipelines": false,
+        "limitConcurrent": true,
+        "stages": [
+            {
+                "account": "phoenix-v2",
+                "cloudProvider": "kubernetes",
+                "manifests": [
+                    {
+                        "apiVersion": "apps/v1",
+                        "kind": "Deployment",
+                        "metadata": {
+                            "annotations": {
+                                "moniker.spinnaker.io/stack": "${ templateVariables.deploymentType }",
+                                "moniker.spinnaker.io/detail": "api",
+                                "strategy.spinnaker.io/use-source-capacity": "true",
+                                "traffic.spinnaker.io/load-balancers": "[\"service ${ templateVariables.prodLoadBalancerName == '*' ? templateVariables.appName + '-prod-ui' : templateVariables.prodLoadBalancerName }\"]"
+                            },
+                            "name": "${ templateVariables.appName }${ templateVariables.deploymentType }",
+                            "namespace": "default"
+                        },
+                        "spec": {
+                            "progressDeadlineSeconds": 600,
+                            "revisionHistoryLimit": 10,
+                            "selector": {
+                                "matchLabels": {
+                                    "app": "${ templateVariables.appName }${ templateVariables.deploymentType }"
+                                }
+                            },
+                            "strategy": {
+                                "rollingUpdate": {
+                                    "maxSurge": 1,
+                                    "maxUnavailable": 1
+                                },
+                                "type": "RollingUpdate"
+                            },
+                            "template": {
+                                "metadata": {
+                                    "annotations": {
+                                        "moniker.spinnaker.io/stack": "${ templateVariables.deploymentType }",
+                                        "moniker.spinnaker.io/detail": "ui"
+                                    },
+                                    "labels": {
+                                        "app": "${ templateVariables.appName }${ templateVariables.deploymentType }"
+                                    }
+                                },
+                                "spec": {
+                                    "containers": [
+                                        {
+                                            "env": [],
+                                            "image": "us.gcr.io/${ templateVariables.gcrAccountName }/${ templateVariables.gcrImageName == '*' ? 'phoenix-service-' + templateVariables.appName : templateVariables.gcrImageName }",
+                                            "imagePullPolicy": "IfNotPresent",
+                                            "livenessProbe": {
+                                                "failureThreshold": 3,
+                                                "httpGet": {
+                                                    "path": "/health?type=ready",
+                                                    "port": 80,
+                                                    "scheme": "HTTP"
+                                                },
+                                                "initialDelaySeconds": 5,
+                                                "periodSeconds": 10,
+                                                "successThreshold": 1,
+                                                "timeoutSeconds": 1
+                                            },
+                                            "name": "${ templateVariables.appName }",
+                                            "ports": [
+                                                {
+                                                    "containerPort": 8080,
+                                                    "name": "http",
+                                                    "protocol": "TCP"
+                                                }
+                                            ],
+                                            "readinessProbe": {
+                                                "failureThreshold": 3,
+                                                "httpGet": {
+                                                    "path": "/health?type=ready",
+                                                    "port": 80,
+                                                    "scheme": "HTTP"
+                                                },
+                                                "initialDelaySeconds": 15,
+                                                "periodSeconds": 10,
+                                                "successThreshold": 1,
+                                                "timeoutSeconds": 1
+                                            },
+                                            "resources": {
+                                                "limits": {
+                                                    "cpu": "${ templateVariables.maxCPU }",
+                                                    "memory": "${ templateVariables.maxMem }"
+                                                },
+                                                "requests": {
+                                                    "cpu": "${ templateVariables.reqCPU }",
+                                                    "memory": "${ templateVariables.reqMem }"
+                                                }
+                                            },
+                                            "terminationMessagePath": "/dev/termination-log",
+                                            "terminationMessagePolicy": "File"
+                                        }
+                                    ],
+                                    "dnsPolicy": "ClusterFirst",
+                                    "imagePullSecrets": [
+                                        {
+                                            "name": "gcr-phoenix"
+                                        }
+                                    ],
+                                    "restartPolicy": "Always",
+                                    "schedulerName": "default-scheduler",
+                                    "securityContext": {},
+                                    "terminationGracePeriodSeconds": 30
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "apiVersion": "autoscaling/v1",
+                        "kind": "HorizontalPodAutoscaler",
+                        "metadata": {
+                            "name": "${ templateVariables.appName }-prod-autoscaler",
+                            "namespace": "default"
+                        },
+                        "spec": {
+                            "maxReplicas": 5,
+                            "minReplicas": 2,
+                            "scaleTargetRef": {
+                                "apiVersion": "apps/v1",
+                                "kind": "Deployment",
+                                "name": "${ templateVariables.appName }${ templateVariables.deploymentType }"
+                            },
+                            "targetCPUUtilizationPercentage": 40
+                        }
+                    }
+                ],
+                "moniker": {
+                    "app": "${ templateVariables.appName }"
+                },
+                "name": "Deploy (${ templateVariables.deploymentType })",
+                "refId": "1",
+                "requiredArtifactIds": [
+                    "0f5786e8-3a1e-4dc3-a038-3d31bf6c1366"
+                ],
+                "requiredArtifacts": [],
+                "requisiteStageRefIds": [],
+                "skipExpressionEvaluation": false,
+                "source": "text",
+                "trafficManagement": {
+                    "enabled": false,
+                    "options": {
+                        "enableTraffic": false,
+                        "services": []
+                    }
+                },
+                "type": "deployManifest"
+            },
+            {
+                "alias": "preconfiguredWebhook",
+                "name": "Publish Start Event",
+                "parameterValues": {
+                    "alertType": "info",
+                    "environment": "${ templateVariables.appName }${ templateVariables.deploymentType }",
+                    "product": "Phoenix",
+                    "text": "Starting UI Pipeline Deploy For ${ templateVariables.appName }",
+                    "title": "Starting UI Deploy To ${ templateVariables.appName }${ templateVariables.deploymentType }"
+                },
+                "refId": "4",
+                "requisiteStageRefIds": [],
+                "statusUrlResolution": "getMethod",
+                "type": "datadogEvent"
+            },
+            {
+                "alias": "preconfiguredWebhook",
+                "name": "Publish Success Event",
+                "parameterValues": {
+                    "alertType": "success",
+                    "environment": "${ templateVariables.appName }",
+                    "product": "Phoenix",
+                    "text": "Deployed To ${ templateVariables.appName }",
+                    "title": "Deployed To ${ templateVariables.appName }"
+                },
+                "refId": "5",
+                "requisiteStageRefIds": [
+                    "1"
+                ],
+                "stageEnabled": {
+                    "type": "expression"
+                },
+                "statusUrlResolution": "getMethod",
+                "type": "datadogEvent"
+            }
+        ],
+        "triggers": [
+            {
+                "account": "gcr-phoenix",
+                "enabled": false,
+                "expectedArtifactIds": [
+                    "0f5786e8-3a1e-4dc3-a038-3d31bf6c1366"
+                ],
+                "organization": "${ templateVariables.gcrAccountName }",
+                "registry": "us.gcr.io",
+                "repository": "${ templateVariables.gcrAccountName }/${ templateVariables.gcrImageName == '*' ? 'phoenix-service-' + templateVariables.appName : templateVariables.gcrImageName }",
+                "runAsUser": "phoenix-svc-account",
+                "type": "docker"
+            }
+        ]
+    }
+}
