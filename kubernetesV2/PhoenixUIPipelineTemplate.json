@@ -18,8 +18,8 @@
         },
         {
             "defaultValue": "*",
-            "description": "The Prod Load Balancer Name (i.e. onlinewaivers-prod-ui); leave '*' to use default pattern: {appName}-prod-ui.",
-            "name": "prodLoadBalancerName",
+            "description": "The Load Balancer Name (i.e. onlinewaivers-prod-ui); leave '*' to use default pattern: {appName}-prod-ui.",
+            "name": "loadBalancerName",
             "type": "string"
         },
         {
@@ -104,7 +104,7 @@
                                 "moniker.spinnaker.io/stack": "${ templateVariables.deploymentType }",
                                 "moniker.spinnaker.io/detail": "api",
                                 "strategy.spinnaker.io/use-source-capacity": "true",
-                                "traffic.spinnaker.io/load-balancers": "[\"service ${ templateVariables.prodLoadBalancerName == '*' ? templateVariables.appName + '-prod-ui' : templateVariables.prodLoadBalancerName }\"]"
+                                "traffic.spinnaker.io/load-balancers": "[\"service ${ templateVariables.loadBalancerName == '*' ? templateVariables.appName + '-prod-ui' : templateVariables.loadBalancerName }\"]"
                             },
                             "name": "${ templateVariables.appName }${ templateVariables.deploymentType }",
                             "namespace": "ui"
