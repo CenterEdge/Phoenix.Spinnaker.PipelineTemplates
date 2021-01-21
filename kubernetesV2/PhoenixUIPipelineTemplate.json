@@ -107,7 +107,7 @@
                                 "traffic.spinnaker.io/load-balancers": "[\"service ${ templateVariables.prodLoadBalancerName == '*' ? templateVariables.appName + '-prod-ui' : templateVariables.prodLoadBalancerName }\"]"
                             },
                             "name": "${ templateVariables.appName }${ templateVariables.deploymentType }",
-                            "namespace": "default"
+                            "namespace": "ui"
                         },
                         "spec": {
                             "progressDeadlineSeconds": 600,
@@ -205,7 +205,7 @@
                         "kind": "HorizontalPodAutoscaler",
                         "metadata": {
                             "name": "${ templateVariables.appName }-prod-autoscaler",
-                            "namespace": "default"
+                            "namespace": "ui"
                         },
                         "spec": {
                             "maxReplicas": 5,
