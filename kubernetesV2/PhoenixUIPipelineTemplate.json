@@ -29,6 +29,12 @@
             "type": "string"
         },
         {
+            "defaultValue": true,
+            "description": "Allow this pipeline to be triggered by a new build",
+            "name": "allowAutomatedTriggers",
+            "type": "boolean"
+        },
+        {
             "defaultValue": "phoenix-177420",
             "description": "The GCR account name that contains the image",
             "name": "gcrAccountName",
@@ -273,7 +279,7 @@
         "triggers": [
             {
                 "account": "gcr-phoenix",
-                "enabled": false,
+                "enabled": "${ templateVariables.allowAutomatedTriggers }",
                 "expectedArtifactIds": [
                     "0f5786e8-3a1e-4dc3-a038-3d31bf6c1366"
                 ],
