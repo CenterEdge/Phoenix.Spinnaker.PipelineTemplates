@@ -1,0 +1,352 @@
+{
+    "schema": "v2",
+    "protect": false,
+    "id": "phnx-advantageproxy-pipeline-template-kv2",
+    "metadata": {
+        "description": "Creates a standard pipeline that deploys the advantage proxy",
+        "name": "Kubernetes V2 Phoenix Advantage Proxy Template",
+        "scopes": [
+            "global"
+        ]
+    },
+    "variables": [
+        {
+            "defaultValue": "",
+            "description": "Application Name",
+            "name": "appName",
+            "type": "string"
+        },
+        {
+            "name": "stackName",
+            "type": "string",
+            "description": "Stack Name"
+        },
+        {
+            "name": "loadBalancer",
+            "type": "string",
+            "description": "Load Balancer Name"
+        },
+        {
+            "name": "configMap",
+            "type": "string",
+            "defaultValue": "advantage-proxy",
+            "description": "Config Map"
+        },
+        {
+          "defaultValue": 2,
+          "description": "The minimum number of pods for the cluster. (i.e. autoscaling)",
+          "name": "minPods",
+          "type": "int"
+        },
+        {
+          "defaultValue": 5,
+          "description": "The maximum number of pods for the cluster. (i.e. autoscaling)",
+          "name": "maxPods",
+          "type": "int"
+        }
+    ],
+    "pipeline": {
+        "expectedArtifacts": [
+            {
+                "defaultArtifact": {
+                    "customKind": true,
+                    "id": "d8e7cf0c-6f07-42b8-9b36-445c4cead0d8"
+                },
+                "displayName": "varnish",
+                "id": "c5c3d29c-1e63-4f34-9dd8-35aaa257b16d",
+                "matchArtifact": {
+                    "id": "a76a8447-ce75-42d7-90f3-d75c752b31f1",
+                    "name": "us.gcr.io/phoenix-177420/advantage-proxy-varnish",
+                    "type": "docker/image"
+                },
+                "useDefaultArtifact": false,
+                "usePriorArtifact": false
+            },
+            {
+                "defaultArtifact": {
+                    "customKind": true,
+                    "id": "1fbce003-6935-4f77-95db-b0c9311f3380"
+                },
+                "displayName": "nginx",
+                "id": "fa46e029-bef3-4f16-89b0-a37ae7571787",
+                "matchArtifact": {
+                    "id": "902cfcb7-d80a-4571-8b70-8cd19fe621f7",
+                    "name": "us.gcr.io/phoenix-177420/advantage-proxy-nginx",
+                    "type": "docker/image"
+                },
+                "useDefaultArtifact": false,
+                "usePriorArtifact": false
+            }
+        ],
+        "keepWaitingPipelines": false,
+        "limitConcurrent": true,
+        "stages": [
+            {
+                "account": "phoenix-v2",
+                "cloudProvider": "kubernetes",
+                "manifests": [
+                    {
+                        "apiVersion": "apps/v1",
+                        "kind": "Deployment",
+                        "metadata": {
+                            "annotations": {
+                                "moniker.spinnaker.io/stack": "${ templateVariables.stackName }",
+                                "strategy.spinnaker.io/use-source-capacity": "true",
+                                "traffic.spinnaker.io/load-balancers": "[\"service ${ templateVariables.loadBalancerName }\"]"
+                            },
+                            "name": "${ templateVariables.appName }${ templateVariables.stackName }",
+                            "namespace": "default"
+                        },
+                        "spec": {
+                            "progressDeadlineSeconds": 600,
+                            "revisionHistoryLimit": 10,
+                            "selector": {
+                                "matchLabels": {
+                                    "app": "${ templateVariables.appName }${ templateVariables.stackName }"
+                                }
+                            },
+                            "strategy": {
+                                "rollingUpdate": {
+                                    "maxSurge": 1,
+                                    "maxUnavailable": 1
+                                },
+                                "type": "RollingUpdate"
+                            },
+                            "template": {
+                                "metadata": {
+                                    "annotations": {
+                                        "moniker.spinnaker.io/stack": "${ templateVariables.stackName }"
+                                    },
+                                    "labels": {
+                                        "app": "${ templateVariables.appName }${ templateVariables.stackName }"
+                                    }
+                                },
+                                "spec": {
+                                    "containers": [
+                                        {
+                                            "env": [],
+                                            "imageDescription": {
+                                                "artifactId": "c5c3d29c-1e63-4f34-9dd8-35aaa257b16d",
+                                                "fromArtifact": true,
+                                                "imageId": "us.gcr.io/phoenix-177420/advantage-proxy-varnish (Artifact resolved at runtime)"
+                                               },
+                                            "imagePullPolicy": "IfNotPresent",
+                                            "name": "us-gcr-io-phoenix-177420-advantage-proxy-varnish",
+                                            "ports": [
+                                                {
+                                                    "containerPort": 8080,
+                                                    "name": "http",
+                                                    "protocol": "TCP"
+                                                }
+                                            ],
+                                            "readinessProbe": {
+                                                "failureThreshold": 3,
+                                                "httpGet": {
+                                                    "path": "/proxyhealthz",
+                                                    "port": 80,
+                                                    "scheme": "HTTP"
+                                                },
+                                                "initialDelaySeconds": 15,
+                                                "periodSeconds": 10,
+                                                "successThreshold": 1,
+                                                "timeoutSeconds": 1
+                                            },
+                                            "resources": {
+                                                "limits": {
+                                                    "cpu": "2000m",
+                                                    "memory": "1200Mi"
+                                                },
+                                                "requests": {
+                                                    "cpu": "500m",
+                                                    "memory": "1200Mi"
+                                                }
+                                            },
+                                            "terminationMessagePath": "/dev/termination-log",
+                                            "terminationMessagePolicy": "File"
+                                        },
+                                        {
+                                            "env": [
+                                                {
+                                                    "name": "STATSD_SERVER",
+                                                    "valueFrom": {
+                                                      "fieldRef": {
+                                                        "apiVersion": "v1",
+                                                        "fieldPath": "status.hostIP"
+                                                      }
+                                                    }
+                                                },
+                                                {
+                                                    "name": "QA_REGEX",
+                                                    "valueFrom": {
+                                                      "configMapKeyRef": {
+                                                        "key": "qaRegex",
+                                                        "name": "${ templateVariables.configMap }",
+                                                        "optional": true
+                                                      }
+                                                    }
+                                                  },
+                                                  {
+                                                    "name": "QA_RELAY_DOMAIN_SUFFIX",
+                                                    "valueFrom": {
+                                                      "configMapKeyRef": {
+                                                        "key": "qaRelayDomainSuffix",
+                                                        "name": "${ templateVariables.configMap }",
+                                                        "optional": true
+                                                      }
+                                                    }
+                                                  },
+                                                  {
+                                                    "name": "RELAY_DOMAIN_SUFFIX",
+                                                    "valueFrom": {
+                                                      "configMapKeyRef": {
+                                                        "key": "relayDomainSuffix",
+                                                        "name": "${ templateVariables.configMap }",
+                                                        "optional": true
+                                                      }
+                                                    }
+                                                  }
+                                            ],
+                                            "imageDescription": {
+                                                "artifactId": "fa46e029-bef3-4f16-89b0-a37ae7571787",
+                                                "fromArtifact": true,
+                                                "imageId": "us.gcr.io/phoenix-177420/advantage-proxy-nginx (Artifact resolved at runtime)"
+                                               },
+                                            "imagePullPolicy": "IfNotPresent",
+                                            "livenessProbe": {
+                                                "failureThreshold": 3,
+                                                "httpGet": {
+                                                    "path": "/health?type=ready",
+                                                    "port": 80,
+                                                    "scheme": "HTTP"
+                                                },
+                                                "initialDelaySeconds": 5,
+                                                "periodSeconds": 10,
+                                                "successThreshold": 1,
+                                                "timeoutSeconds": 1
+                                            },
+                                            "name": "us-gcr-io-phoenix-177420-advantage-proxy-nginx",
+                                            "ports": [
+                                                {
+                                                    "containerPort": 8080,
+                                                    "name": "http",
+                                                    "protocol": "TCP"
+                                                }
+                                            ],
+                                            "readinessProbe": {
+                                                "failureThreshold": 3,
+                                                "httpGet": {
+                                                    "path": "/proxyhealthz",
+                                                    "port": 80,
+                                                    "scheme": "HTTP"
+                                                },
+                                                "initialDelaySeconds": 15,
+                                                "periodSeconds": 10,
+                                                "successThreshold": 1,
+                                                "timeoutSeconds": 1
+                                            },
+                                            "resources": {
+                                                "limits": {
+                                                    "cpu": "2000m",
+                                                    "memory": "512Mi"
+                                                },
+                                                "requests": {
+                                                    "cpu": "500m",
+                                                    "memory": "256Mi"
+                                                }
+                                            },
+                                            "terminationMessagePath": "/dev/termination-log",
+                                            "terminationMessagePolicy": "File"
+                                        }
+                                    ],
+                                    "dnsPolicy": "ClusterFirst",
+                                    "imagePullSecrets": [
+                                        {
+                                            "name": "gcr-phoenix"
+                                        }
+                                    ],
+                                    "restartPolicy": "Always",
+                                    "schedulerName": "default-scheduler",
+                                    "securityContext": {},
+                                    "terminationGracePeriodSeconds": 30
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "apiVersion": "autoscaling/v1",
+                        "kind": "HorizontalPodAutoscaler",
+                        "metadata": {
+                            "name": "${ templateVariables.appName }-prod-autoscaler",
+                            "namespace": "default"
+                        },
+                        "spec": {
+                            "minReplicas": "${ templateVariables.minPods }",
+                            "maxReplicas": "${ templateVariables.maxPods }",
+                            "scaleTargetRef": {
+                                "apiVersion": "apps/v1",
+                                "kind": "Deployment",
+                                "name": "${ templateVariables.appName }${ templateVariables.stackName }"
+                            },
+                            "targetCPUUtilizationPercentage": 40
+                        }
+                    }
+                ],
+                "moniker": {
+                    "app": "${ templateVariables.appName }"
+                },
+                "name": "Deploy (${ templateVariables.stackName })",
+                "refId": "1",
+                "requiredArtifactIds": [
+                    "0f5786e8-3a1e-4dc3-a038-3d31bf6c1366"
+                ],
+                "requiredArtifacts": [],
+                "requisiteStageRefIds": [],
+                "skipExpressionEvaluation": false,
+                "source": "text",
+                "trafficManagement": {
+                    "enabled": false,
+                    "options": {
+                        "enableTraffic": false,
+                        "services": []
+                    }
+                },
+                "type": "deployManifest"
+            },
+            {
+                "alias": "preconfiguredWebhook",
+                "name": "Publish Start Event",
+                "parameterValues": {
+                    "alertType": "info",
+                    "environment": "${ templateVariables.appName }${ templateVariables.stackName }",
+                    "product": "Phoenix",
+                    "text": "Starting Advantage Proxy Pipeline Deploy For ${ templateVariables.stackName }",
+                    "title": "Starting Advantage Proxy Pipeline Deploy To ${ templateVariables.stackName }"
+                },
+                "refId": "4",
+                "requisiteStageRefIds": [],
+                "statusUrlResolution": "getMethod",
+                "type": "datadogEvent"
+            },
+            {
+                "alias": "preconfiguredWebhook",
+                "name": "Publish Success Event",
+                "parameterValues": {
+                    "alertType": "success",
+                    "environment": "${ templateVariables.appName }${ templateVariables.stackName }",
+                    "product": "Phoenix",
+                    "text": "Deployed Advantage Proxy To ${ templateVariables.stackName }",
+                    "title": "Deployed Advantage Proxy To ${ templateVariables.stackName } "
+                },
+                "refId": "5",
+                "requisiteStageRefIds": [
+                    "1"
+                ],
+                "stageEnabled": {
+                    "type": "expression"
+                },
+                "statusUrlResolution": "getMethod",
+                "type": "datadogEvent"
+            }
+        ]
+    }
+}
