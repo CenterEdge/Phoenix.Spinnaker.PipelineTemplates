@@ -989,9 +989,7 @@
         "job": "Phoenix/job/${ templateVariables.smokeTestJobDirectory }/job/${ templateVariables.nestedJobDirectory ? templateVariables.smokeTestServiceName == '*' ? 'Phoenix.Service.' + templateVariables.appName.substring(0,1).toUpperCase() + templateVariables.appName.substring(1) + '/job/' : templateVariables.smokeTestServiceName + '/job/' : '' }${ templateVariables.smokeTestServiceName == '*' ? 'Phoenix.Service.' + templateVariables.appName.substring(0,1).toUpperCase() + templateVariables.appName.substring(1) : templateVariables.smokeTestServiceName }.${ templateVariables.smokeTestProjectSuffix }",
         "master": "primary-jenkins",
         "name": "Smoke Tests",
-        "parameters": {
-          "BASE_URL": "${ templateVariables.smokeTestUrl == '-' ? '' : templateVariables.smokeTestUrl }"
-        },
+        "parameters": "${ templateVariables.smokeTestParameters }",
         "refId": "3",
         "requisiteStageRefIds": [
           "2"
@@ -1594,10 +1592,10 @@
       "type": "string"
     },
     {
-      "defaultValue": "-",
-      "description": "Special parameter to send to the smoke test pipeline; leave '-' for nothing",
-      "name": "smokeTestUrl",
-      "type": "string"
+      "defaultValue": {},
+      "description": "Special parameters to send to the smoke test pipeline",
+      "name": "smokeTestParameters",
+      "type": "object"
     },
     {
       "defaultValue": "Smoke",
