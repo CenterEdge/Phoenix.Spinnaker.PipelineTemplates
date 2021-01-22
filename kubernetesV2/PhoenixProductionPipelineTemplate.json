@@ -38,8 +38,8 @@
             "kind": "Deployment",
             "metadata": {
               "annotations": {
-                "moniker.spinnaker.io/stack": "prod",
                 "moniker.spinnaker.io/detail": "api",
+                "moniker.spinnaker.io/stack": "prod",
                 "strategy.spinnaker.io/use-source-capacity": "true",
                 "traffic.spinnaker.io/load-balancers": "[\"service ${ templateVariables.prodLoadBalancerName == '*' ? templateVariables.appName + '-prod-api' : templateVariables.prodLoadBalancerName }\"]"
               },
@@ -64,10 +64,10 @@
               "template": {
                 "metadata": {
                   "annotations": {
-                    "moniker.spinnaker.io/stack": "prod",
+                    "iam.amazonaws.com/role": "${ templateVariables.iamRole == '-' ? '' : templateVariables.iamRole }",
                     "moniker.spinnaker.io/detail": "api",
-                    "shawarma.centeredge.io/service-name": "${ templateVariables.shawarmaEnabled ? templateVariables.prodLoadBalancerName == '*' ? templateVariables.appName + '-prod-api' : templateVariables.prodLoadBalancerName : '' }",
-                    "iam.amazonaws.com/role": "${ templateVariables.iamRole == '-' ? '' : templateVariables.iamRole }"
+                    "moniker.spinnaker.io/stack": "prod",
+                    "shawarma.centeredge.io/service-name": "${ templateVariables.shawarmaEnabled ? templateVariables.prodLoadBalancerName == '*' ? templateVariables.appName + '-prod-api' : templateVariables.prodLoadBalancerName : '' }"
                   },
                   "labels": {
                     "app": "${ templateVariables.appName }prod"
@@ -481,8 +481,8 @@
               "namespace": "default"
             },
             "spec": {
-              "maxReplicas": 9,
-              "minReplicas": 2,
+              "minReplicas": "${ templateVariables.minPods }",
+              "maxReplicas": "${ templateVariables.maxPods }",
               "scaleTargetRef": {
                 "apiVersion": "apps/v1",
                 "kind": "Deployment",
@@ -528,8 +528,8 @@
             "kind": "Deployment",
             "metadata": {
               "annotations": {
-                "moniker.spinnaker.io/stack": "staging",
                 "moniker.spinnaker.io/detail": "api",
+                "moniker.spinnaker.io/stack": "staging",
                 "traffic.spinnaker.io/load-balancers": "[\"service ${ templateVariables.stagingLoadBalancerName == '*' ? templateVariables.appName + '-staging-api' : templateVariables.stagingLoadBalancerName }\"]"
               },
               "name": "${ templateVariables.appName }staging",
@@ -550,10 +550,10 @@
               "template": {
                 "metadata": {
                   "annotations": {
-                    "moniker.spinnaker.io/stack": "staging",
+                    "iam.amazonaws.com/role": "${ templateVariables.iamRole == '-' ? '' : templateVariables.iamRole }",
                     "moniker.spinnaker.io/detail": "api",
-                    "shawarma.centeredge.io/service-name": "${ templateVariables.shawarmaEnabled ? templateVariables.stagingLoadBalancerName == '*' ? templateVariables.appName + '-staging-api' : templateVariables.stagingLoadBalancerName : '' }",
-                    "iam.amazonaws.com/role": "${ templateVariables.iamRole == '-' ? '' : templateVariables.iamRole }"
+                    "moniker.spinnaker.io/stack": "staging",
+                    "shawarma.centeredge.io/service-name": "${ templateVariables.shawarmaEnabled ? templateVariables.stagingLoadBalancerName == '*' ? templateVariables.appName + '-staging-api' : templateVariables.stagingLoadBalancerName : '' }"
                   },
                   "labels": {
                     "app": "${ templateVariables.appName }staging"
@@ -986,10 +986,12 @@
       {
         "continuePipeline": false,
         "failPipeline": true,
-        "job": "Phoenix/job/Services/job/${ templateVariables.smokeTestServiceName == '*' ? 'Phoenix.Service.' + templateVariables.appName.substring(0,1).toUpperCase() + templateVariables.appName.substring(1) : templateVariables.smokeTestServiceName }/job/${ templateVariables.smokeTestServiceName == '*' ? 'Phoenix.Service.' + templateVariables.appName.substring(0,1).toUpperCase() + templateVariables.appName.substring(1) : templateVariables.smokeTestServiceName }.${ templateVariables.smokeTestProjectSuffix }",
+        "job": "Phoenix/job/${ templateVariables.smokeTestJobDirectory }/job/${ templateVariables.nestedJobDirectory ? templateVariables.smokeTestServiceName == '*' ? 'Phoenix.Service.' + templateVariables.appName.substring(0,1).toUpperCase() + templateVariables.appName.substring(1) + '/job/' : templateVariables.smokeTestServiceName + '/job/' : '' }${ templateVariables.smokeTestServiceName == '*' ? 'Phoenix.Service.' + templateVariables.appName.substring(0,1).toUpperCase() + templateVariables.appName.substring(1) : templateVariables.smokeTestServiceName }.${ templateVariables.smokeTestProjectSuffix }",
         "master": "primary-jenkins",
         "name": "Smoke Tests",
-        "parameters": {},
+        "parameters": {
+          "BASE_URL": "${ templateVariables.smokeTestUrl == '-' ? '' : templateVariables.smokeTestUrl }"
+        },
         "refId": "3",
         "requisiteStageRefIds": [
           "2"
@@ -1043,8 +1045,8 @@
             "kind": "Deployment",
             "metadata": {
               "annotations": {
-                "moniker.spinnaker.io/stack": "prod",
                 "moniker.spinnaker.io/detail": "jobs",
+                "moniker.spinnaker.io/stack": "prod",
                 "strategy.spinnaker.io/use-source-capacity": "true",
                 "traffic.spinnaker.io/load-balancers": "[\"service ${ templateVariables.jobsLoadBalancer == '*' ? templateVariables.appName + '-prod-jobs' : templateVariables.jobsLoadBalancer }\"]"
               },
@@ -1069,10 +1071,10 @@
               "template": {
                 "metadata": {
                   "annotations": {
-                    "moniker.spinnaker.io/stack": "prod",
+                    "iam.amazonaws.com/role": "${ templateVariables.iamRole == '-' ? '' : templateVariables.iamRole }",
                     "moniker.spinnaker.io/detail": "jobs",
-                    "shawarma.centeredge.io/service-name": "${ templateVariables.shawarmaEnabled ? templateVariables.jobsLoadBalancer == '*' ? templateVariables.appName + '-prod-jobs' : templateVariables.jobsLoadBalancer : '' }",
-                    "iam.amazonaws.com/role": "${ templateVariables.iamRole == '-' ? '' : templateVariables.iamRole }"
+                    "moniker.spinnaker.io/stack": "prod",
+                    "shawarma.centeredge.io/service-name": "${ templateVariables.shawarmaEnabled ? templateVariables.jobsLoadBalancer == '*' ? templateVariables.appName + '-prod-jobs' : templateVariables.jobsLoadBalancer : '' }"
                   },
                   "labels": {
                     "app": "${ templateVariables.appName }jobs"
@@ -1486,8 +1488,8 @@
               "namespace": "default"
             },
             "spec": {
-              "maxReplicas": 9,
-              "minReplicas": 2,
+              "minReplicas": "${ templateVariables.minPods }",
+              "maxReplicas": "${ templateVariables.maxPods }",
               "scaleTargetRef": {
                 "apiVersion": "apps/v1",
                 "kind": "Deployment",
@@ -1574,9 +1576,27 @@
       "type": "string"
     },
     {
+      "defaultValue": "Services",
+      "description": "The directory the job is location in. (i.e. Services or MashTub.Net)",
+      "name": "smokeTestJobDirectory",
+      "type": "string"
+    },
+    {
+      "decription": "Whether there is an addition /job directory for the service job location",
+      "defaultValue": true,
+      "name": "nestedJobDirectory",
+      "type": "boolean"
+    },
+    {
       "defaultValue": "*",
       "description": "The project name for the smoke tests; leave '*' for default pattern: Phoenix.Service.{appName.FirstCharacter.ToUpperCase}",
       "name": "smokeTestServiceName",
+      "type": "string"
+    },
+    {
+      "defaultValue": "-",
+      "description": "Special parameter to send to the smoke test pipeline; leave '-' for nothing",
+      "name": "smokeTestUrl",
       "type": "string"
     },
     {
@@ -1632,6 +1652,18 @@
       "description": "The IAM role name for the service to use; leave '-' to not use",
       "name": "iamRole",
       "type": "string"
+    },
+    {
+      "defaultValue": 2,
+      "description": "The minimum number of pods for the cluster. (i.e. autoscaling)",
+      "name": "minPods",
+      "type": "int"
+    },
+    {
+      "defaultValue": 9,
+      "description": "The maximum number of pods for the cluster. (i.e. autoscaling)",
+      "name": "maxPods",
+      "type": "int"
     },
     {
       "defaultValue": "100m",
