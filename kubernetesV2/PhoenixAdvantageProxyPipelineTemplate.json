@@ -125,11 +125,7 @@
                                     "containers": [
                                         {
                                             "env": [],
-                                            "imageDescription": {
-                                                "artifactId": "c5c3d29c-1e63-4f34-9dd8-35aaa257b16d",
-                                                "fromArtifact": true,
-                                                "imageId": "us.gcr.io/phoenix-177420/advantage-proxy-varnish (Artifact resolved at runtime)"
-                                               },
+                                            "image": "us.gcr.io/phoenix-177420/advantage-proxy-varnish",
                                             "imagePullPolicy": "IfNotPresent",
                                             "name": "us-gcr-io-phoenix-177420-advantage-proxy-varnish",
                                             "ports": [
@@ -206,24 +202,8 @@
                                                     }
                                                   }
                                             ],
-                                            "imageDescription": {
-                                                "artifactId": "fa46e029-bef3-4f16-89b0-a37ae7571787",
-                                                "fromArtifact": true,
-                                                "imageId": "us.gcr.io/phoenix-177420/advantage-proxy-nginx (Artifact resolved at runtime)"
-                                               },
+                                            "image": "us.gcr.io/phoenix-177420/advantage-proxy-nginx",
                                             "imagePullPolicy": "IfNotPresent",
-                                            "livenessProbe": {
-                                                "failureThreshold": 3,
-                                                "httpGet": {
-                                                    "path": "/health?type=ready",
-                                                    "port": 80,
-                                                    "scheme": "HTTP"
-                                                },
-                                                "initialDelaySeconds": 5,
-                                                "periodSeconds": 10,
-                                                "successThreshold": 1,
-                                                "timeoutSeconds": 1
-                                            },
                                             "name": "us-gcr-io-phoenix-177420-advantage-proxy-nginx",
                                             "ports": [
                                                 {
@@ -296,9 +276,6 @@
                 },
                 "name": "Deploy (${ templateVariables.stackName })",
                 "refId": "1",
-                "requiredArtifactIds": [
-                    "0f5786e8-3a1e-4dc3-a038-3d31bf6c1366"
-                ],
                 "requiredArtifacts": [],
                 "requisiteStageRefIds": [],
                 "skipExpressionEvaluation": false,
