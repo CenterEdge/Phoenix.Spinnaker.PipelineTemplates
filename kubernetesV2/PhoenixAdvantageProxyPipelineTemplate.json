@@ -22,7 +22,7 @@
             "description": "Stack Name"
         },
         {
-            "name": "loadBalancer",
+            "name": "loadBalancerName",
             "type": "string",
             "description": "Load Balancer Name"
         },
