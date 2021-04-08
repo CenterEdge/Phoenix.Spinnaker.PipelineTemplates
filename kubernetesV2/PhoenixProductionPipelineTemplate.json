@@ -986,7 +986,7 @@
       {
         "continuePipeline": false,
         "failPipeline": true,
-        "job": "Phoenix/job/${ templateVariables.smokeTestJobDirectory }/job/${ templateVariables.nestedJobDirectory ? templateVariables.smokeTestServiceName == '*' ? 'Phoenix.Service.' + templateVariables.appName.substring(0,1).toUpperCase() + templateVariables.appName.substring(1) + '/job/' : templateVariables.smokeTestServiceName + '/job/' : '' }${ templateVariables.smokeTestServiceName == '*' ? 'Phoenix.Service.' + templateVariables.appName.substring(0,1).toUpperCase() + templateVariables.appName.substring(1) : templateVariables.smokeTestServiceName }.${ templateVariables.smokeTestProjectSuffix }",
+        "job": "${ templateVariables.smokeTestJobFullName != '' ? templateVariables.smokeTestJobFullName : ('Phoenix/job/' + templateVariables.smokeTestJobDirectory + '/job/' + (templateVariables.nestedJobDirectory ? (templateVariables.smokeTestServiceName == '*' ? 'Phoenix.Service.' + templateVariables.appName.substring(0,1).toUpperCase() + templateVariables.appName.substring(1) + '/job/' : templateVariables.smokeTestServiceName) + '/job/' : '') + (templateVariables.smokeTestServiceName == '*' ? 'Phoenix.Service.' + templateVariables.appName.substring(0,1).toUpperCase() + templateVariables.appName.substring(1) : templateVariables.smokeTestServiceName) + templateVariables.smokeTestProjectSuffix) }",
         "master": "primary-jenkins",
         "name": "Smoke Tests",
         "parameters": "${ templateVariables.smokeTestParameters }",
@@ -1571,6 +1571,12 @@
       "defaultValue": "",
       "description": "Application Name",
       "name": "appName",
+      "type": "string"
+    },
+    {
+      "defaultValue": "",
+      "description": "Full name of the smoke test job. If blank, it is built automatically from the other parameters.",
+      "name": "smokeTestJobFullName",
       "type": "string"
     },
     {
