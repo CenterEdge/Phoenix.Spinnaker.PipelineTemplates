@@ -325,10 +325,10 @@
                           "port": 80,
                           "scheme": "HTTP"
                         },
-                        "initialDelaySeconds": 5,
+                        "initialDelaySeconds": 10,
                         "periodSeconds": 10,
                         "successThreshold": 1,
-                        "timeoutSeconds": 1
+                        "timeoutSeconds": 3
                       },
                       "name": "${ templateVariables.appName }",
                       "ports": [
@@ -348,7 +348,7 @@
                         "initialDelaySeconds": 15,
                         "periodSeconds": 10,
                         "successThreshold": 1,
-                        "timeoutSeconds": 1
+                        "timeoutSeconds": 3
                       },
                       "resources": {
                         "limits": {
@@ -803,10 +803,10 @@
                           "port": 80,
                           "scheme": "HTTP"
                         },
-                        "initialDelaySeconds": 5,
+                        "initialDelaySeconds": 10,
                         "periodSeconds": 10,
                         "successThreshold": 1,
-                        "timeoutSeconds": 1
+                        "timeoutSeconds": 3
                       },
                       "name": "${ templateVariables.appName }",
                       "ports": [
@@ -826,7 +826,7 @@
                         "initialDelaySeconds": 15,
                         "periodSeconds": 10,
                         "successThreshold": 1,
-                        "timeoutSeconds": 1
+                        "timeoutSeconds": 3
                       },
                       "resources": {
                         "limits": {
@@ -1330,10 +1330,10 @@
                           "port": 80,
                           "scheme": "HTTP"
                         },
-                        "initialDelaySeconds": 5,
+                        "initialDelaySeconds": 10,
                         "periodSeconds": 10,
                         "successThreshold": 1,
-                        "timeoutSeconds": 1
+                        "timeoutSeconds": 3
                       },
                       "name": "${ templateVariables.appName }",
                       "ports": [
@@ -1353,7 +1353,7 @@
                         "initialDelaySeconds": 15,
                         "periodSeconds": 10,
                         "successThreshold": 1,
-                        "timeoutSeconds": 1
+                        "timeoutSeconds": 3
                       },
                       "resources": {
                         "limits": {
