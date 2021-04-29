@@ -1,0 +1,803 @@
+id: phnx-emergency-production-pipeline-template-v3
+lastModifiedBy: bburnett@centeredgesoftware.com
+metadata:
+  description: Creates an emergency production pipeline with DataDog request scaling, skipping smoke tests
+  name: Kubernetes V3 Emergency Phoenix Service Production Template
+  scopes:
+  - global
+pipeline:
+  expectedArtifacts:
+  - defaultArtifact:
+      customKind: true
+      id: 39b0955b-01fc-4001-aa27-9dfa7074937a
+    displayName: ${ templateVariables.appName }
+    id: 0f5786e8-3a1e-4dc3-a038-3d31bf6c1366
+    matchArtifact:
+      artifactAccount: docker-registry
+      name: "us.gcr.io/${ templateVariables.gcrAccountName }/${ templateVariables.gcrImageName == '*' ? 'phoenix-service-' + templateVariables.appName : templateVariables.gcrImageName }"
+      type: docker/image
+    useDefaultArtifact: false
+    usePriorArtifact: false
+  keepWaitingPipelines: false
+  limitConcurrent: true
+  stages:
+  - account: phoenix-v2
+    cloudProvider: kubernetes
+    manifests:
+    - apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        annotations:
+          moniker.spinnaker.io/detail: api
+          moniker.spinnaker.io/stack: prod
+          strategy.spinnaker.io/use-source-capacity: "true"
+          traffic.spinnaker.io/load-balancers: "[\"service ${ templateVariables.prodLoadBalancerName == '*' ? templateVariables.appName + '-prod-api' : templateVariables.prodLoadBalancerName }\"]"
+        name: ${ templateVariables.appName }prod
+        namespace: default
+      spec:
+        progressDeadlineSeconds: 600
+        revisionHistoryLimit: 10
+        selector:
+          matchLabels:
+            app: ${ templateVariables.appName }prod
+        strategy:
+          rollingUpdate:
+            maxSurge: 1
+            maxUnavailable: 1
+          type: RollingUpdate
+        template:
+          metadata:
+            annotations:
+              iam.amazonaws.com/role: "${ templateVariables.iamRole == '-' ? '' : templateVariables.iamRole }"
+              moniker.spinnaker.io/detail: api
+              moniker.spinnaker.io/stack: prod
+              shawarma.centeredge.io/service-name: "${ templateVariables.shawarmaEnabled ? templateVariables.prodLoadBalancerName == '*' ? templateVariables.appName + '-prod-api' : templateVariables.prodLoadBalancerName : '' }"
+            labels:
+              app: ${ templateVariables.appName }prod
+          spec:
+            containers:
+            - env:
+              - name: ASPNETCORE_ENVIRONMENT
+                value: Production
+              - name: TriPosCloudOptions__LaneManagementHost
+                value: https://tripos.worldpay.com/cloudapi/
+              - name: TriPosCloudOptions__TransactionsHost
+                value: https://tripos.worldpay.com/
+              - name: Statsd__Config__StatsdServerName
+                valueFrom:
+                  fieldRef:
+                    apiVersion: v1
+                    fieldPath: status.hostIP
+              - name: Statsd__Enabled
+                value: "true"
+              # Set Statsd tags to align with our scaling metric query
+              - name: Statsd__Tags__app
+                value: ${ templateVariables.appName }
+              - name: Statsd__Tags__env
+                value: production
+              - name: Statsd__Tags__detail
+                value: api
+              - name: BusinessEntities__Host
+                valueFrom:
+                  configMapKeyRef:
+                    key: url
+                    name: businessentities-api
+              - name: Mappings__Host
+                valueFrom:
+                  configMapKeyRef:
+                    key: url
+                    name: mappings-api
+              - name: ProductCatalogs__Host
+                valueFrom:
+                  configMapKeyRef:
+                    key: url
+                    name: productcatalogs-api
+              - name: Stations__Host
+                valueFrom:
+                  configMapKeyRef:
+                    key: url
+                    name: stations-api
+              - name: HtmlToPdf__Host
+                valueFrom:
+                  configMapKeyRef:
+                    key: url
+                    name: pdf-api
+              - name: Couchbase__ConnectionString
+                valueFrom:
+                  secretKeyRef:
+                    key: connectionString
+                    name: couchbase-primary
+                    optional: true
+              - name: Couchbase__Username
+                valueFrom:
+                  secretKeyRef:
+                    key: username
+                    name: couchbase-primary
+                    optional: true
+              - name: Couchbase__Password
+                valueFrom:
+                  secretKeyRef:
+                    key: password
+                    name: couchbase-primary
+                    optional: true
+              - name: ASPNETCORE_URLS
+                value: http://localhost:8080/
+              - name: RabbitMQ__Hosts__0__Host
+                valueFrom:
+                  configMapKeyRef:
+                    key: host
+                    name: rabbitmq
+                    optional: true
+              - name: RabbitMQ__Username
+                valueFrom:
+                  configMapKeyRef:
+                    key: username
+                    name: rabbitmq
+                    optional: true
+              - name: RabbitMQ__Password
+                valueFrom:
+                  secretKeyRef:
+                    key: default-pass
+                    name: rabbitmq-config
+                    optional: true
+              - name: LaunchDarklyOptions__SdkKey
+                valueFrom:
+                  secretKeyRef:
+                    key: key
+                    name: feature-flag-key
+                    optional: true
+              - name: TimeoutOptions__KeepAliveTimeout
+                valueFrom:
+                  configMapKeyRef:
+                    key: keepalive
+                    name: timeouts
+                    optional: true
+              - name: TimeoutOptions__WaiverUploadTimeout
+                valueFrom:
+                  configMapKeyRef:
+                    key: connect_read_write
+                    name: timeouts
+                    optional: true
+              - name: WaiverUploadOptions__KeepAliveTimeout
+                valueFrom:
+                  configMapKeyRef:
+                    key: keepalive
+                    name: timeouts
+                    optional: true
+              - name: WaiverUploadOptions__KeepAliveTimeout
+                valueFrom:
+                  configMapKeyRef:
+                    key: keepalive
+                    name: timeouts
+                    optional: true
+              - name: JobOptions__ProcessBulkJobs
+                value: "false"
+              - name: COGNITO__ClientId
+                valueFrom:
+                  secretKeyRef:
+                    key: clientId
+                    name: cognito-creds
+                    optional: true
+              - name: COGNITO__ClientSecret
+                valueFrom:
+                  secretKeyRef:
+                    key: clientSecret
+                    name: cognito-creds
+                    optional: true
+              - name: COGNITO__UserPoolId
+                valueFrom:
+                  secretKeyRef:
+                    key: poolId
+                    name: cognito-creds
+                    optional: true
+              - name: COGNITO__Region
+                valueFrom:
+                  secretKeyRef:
+                    key: region
+                    name: cognito-creds
+                    optional: true
+              - name: JwtOptions__Secret
+                valueFrom:
+                  secretKeyRef:
+                    key: secret
+                    name: jwt-options
+                    optional: true
+              image: "us.gcr.io/${ templateVariables.gcrAccountName }/${ templateVariables.gcrImageName == '*' ? 'phoenix-service-' + templateVariables.appName : templateVariables.gcrImageName }"
+              imagePullPolicy: IfNotPresent
+              livenessProbe:
+                failureThreshold: 3
+                httpGet:
+                  path: /health
+                  port: 80
+                  scheme: HTTP
+                initialDelaySeconds: 10
+                periodSeconds: 10
+                successThreshold: 1
+                timeoutSeconds: 3
+              name: ${ templateVariables.appName }
+              ports:
+              - containerPort: 8080
+                name: http
+                protocol: TCP
+              readinessProbe:
+                failureThreshold: 3
+                httpGet:
+                  path: /health
+                  port: 80
+                  scheme: HTTP
+                initialDelaySeconds: 15
+                periodSeconds: 10
+                successThreshold: 1
+                timeoutSeconds: 3
+              resources:
+                limits:
+                  cpu: ${ templateVariables.maxCPU }
+                  memory: ${ templateVariables.maxMem }
+                requests:
+                  cpu: ${ templateVariables.reqCPU }
+                  memory: ${ templateVariables.reqMem }
+              terminationMessagePath: /dev/termination-log
+              terminationMessagePolicy: File
+            - env:
+              - name: STATSD_SERVER
+                valueFrom:
+                  fieldRef:
+                    apiVersion: v1
+                    fieldPath: status.hostIP
+              - name: STATSD_SAMPLE_RATE
+                value: ${ templateVariables.statsdSampleRate.toString() }
+              - name: SERVICE_NAME
+                value: prod.${ templateVariables.appName }
+              - name: TimeoutOptions__ConnectTimeout
+                valueFrom:
+                  configMapKeyRef:
+                    key: connect_read_write
+                    name: timeouts
+                    optional: true
+              - name: TimeoutOptions__ReadTimeout
+                valueFrom:
+                  configMapKeyRef:
+                    key: connect_read_write
+                    name: timeouts
+                    optional: true
+              - name: TimeoutOptions__SendTimeout
+                valueFrom:
+                  configMapKeyRef:
+                    key: connect_read_write
+                    name: timeouts
+                    optional: true
+              - name: WaiverUploadOptions__MaxRequestSize
+                valueFrom:
+                  configMapKeyRef:
+                    key: max_size
+                    name: waiver-upload-options
+                    optional: true
+              - name: PROXY_HOST
+                value: localhost
+              - name: PROXY_PORT
+                value: "8080"
+              - name: HEALTH_CHECK_URI
+                value: /health
+              image: us.gcr.io/phoenix-177420/nginx-proxy:27
+              imagePullPolicy: IfNotPresent
+              name: nginx-proxy
+              ports:
+              - containerPort: 80
+                name: http
+                protocol: TCP
+              resources:
+                limits:
+                  cpu: ${ templateVariables.maxCPU }
+                  memory: ${ templateVariables.maxMem }
+                requests:
+                  cpu: ${ templateVariables.reqCPU }
+                  memory: ${ templateVariables.reqMem }
+              terminationMessagePath: /dev/termination-log
+              terminationMessagePolicy: File
+            dnsPolicy: ClusterFirst
+            imagePullSecrets:
+            - name: gcr-phoenix
+            restartPolicy: Always
+            schedulerName: default-scheduler
+            securityContext: {}
+            terminationGracePeriodSeconds: 30
+    - apiVersion: datadoghq.com/v1alpha1
+      kind: DatadogMetric
+      metadata:
+        name: ${ templateVariables.appName }-prod-request-rate
+        namespace: default
+      spec:
+        # Total HTTP requests received filtered to this deployments tags as a rate per second
+        query: >-
+          sum:phnx.request.count{app:${ templateVariables.appName },env:production,detail:api}.as_rate()
+    - apiVersion: autoscaling/v2beta2
+      kind: HorizontalPodAutoscaler
+      metadata:
+        name: ${ templateVariables.appName }-prod-autoscaler
+        namespace: default
+      spec:
+        minReplicas: ${ templateVariables.minPods }
+        maxReplicas: ${ templateVariables.maxPods }
+        scaleTargetRef:
+          apiVersion: apps/v1
+          kind: Deployment
+          name: ${ templateVariables.appName }prod
+        metrics:
+        - external:
+            metric:
+              name: datadogmetric@default:${ templateVariables.appName }-prod-request-rate
+            target:
+              # Average the summed total across the number of pods in the deployment
+              averageValue: ${ templateVariables.targetRequestsPerSecondPerPod }
+              type: AverageValue
+          type: External
+    moniker:
+      app: ${ templateVariables.appName }
+    name: Deploy (Production)
+    refId: "1"
+    requiredArtifactIds:
+    - 0f5786e8-3a1e-4dc3-a038-3d31bf6c1366
+    requiredArtifacts: []
+    requisiteStageRefIds: []
+    skipExpressionEvaluation: false
+    source: text
+    trafficManagement:
+      enabled: false
+      options:
+        enableTraffic: false
+        services: []
+    type: deployManifest
+  - alias: preconfiguredWebhook
+    name: Publish Start Event
+    parameterValues:
+      alertType: info
+      environment: ${ templateVariables.appName }prod
+      product: Phoenix
+      text: Starting Production Pipeline Deploy For ${ templateVariables.appName }
+      title: Starting Production Deploy To ${ templateVariables.appName }prod
+    refId: "4"
+    requisiteStageRefIds: []
+    statusUrlResolution: getMethod
+    type: datadogEvent
+  - alias: preconfiguredWebhook
+    name: Publish Success Event
+    parameterValues:
+      alertType: success
+      environment: ${ templateVariables.appName }
+      product: Phoenix
+      text: Deployed To ${ templateVariables.appName }
+      title: Deployed To ${ templateVariables.appName }
+    refId: "5"
+    requisiteStageRefIds:
+    - "1"
+    stageEnabled:
+      expression: "#stage('Deploy (Production)').status.toString() == 'SUCCEEDED'"
+      type: expression
+    statusUrlResolution: getMethod
+    type: datadogEvent
+  - account: phoenix-v2
+    cloudProvider: kubernetes
+    manifests:
+    - apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        annotations:
+          moniker.spinnaker.io/detail: jobs
+          moniker.spinnaker.io/stack: prod
+          strategy.spinnaker.io/use-source-capacity: "true"
+          traffic.spinnaker.io/load-balancers: "[\"service ${ templateVariables.jobsLoadBalancer == '*' ? templateVariables.appName + '-prod-jobs' : templateVariables.jobsLoadBalancer }\"]"
+        name: ${ templateVariables.appName }jobs
+        namespace: default
+      spec:
+        progressDeadlineSeconds: 600
+        revisionHistoryLimit: 10
+        selector:
+          matchLabels:
+            app: ${ templateVariables.appName }jobs
+        strategy:
+          rollingUpdate:
+            maxSurge: 1
+            maxUnavailable: 1
+          type: RollingUpdate
+        template:
+          metadata:
+            annotations:
+              iam.amazonaws.com/role: "${ templateVariables.iamRole == '-' ? '' : templateVariables.iamRole }"
+              moniker.spinnaker.io/detail: jobs
+              moniker.spinnaker.io/stack: prod
+              shawarma.centeredge.io/service-name: "${ templateVariables.shawarmaEnabled ? templateVariables.jobsLoadBalancer == '*' ? templateVariables.appName + '-prod-jobs' : templateVariables.jobsLoadBalancer : '' }"
+            labels:
+              app: ${ templateVariables.appName }jobs
+          spec:
+            containers:
+            - env:
+              - name: ASPNETCORE_ENVIRONMENT
+                value: Production
+              - name: TriPosCloudOptions__LaneManagementHost
+                value: https://tripos.worldpay.com/cloudapi/
+              - name: TriPosCloudOptions__TransactionsHost
+                value: https://tripos.worldpay.com/
+              - name: Statsd__Config__StatsdServerName
+                valueFrom:
+                  fieldRef:
+                    apiVersion: v1
+                    fieldPath: status.hostIP
+              - name: Statsd__Enabled
+                value: "true"
+              # Set Statsd tags to align with our scaling metric query
+              - name: Statsd__Tags__app
+                value: ${ templateVariables.appName }
+              - name: Statsd__Tags__env
+                value: production
+              - name: Statsd__Tags__detail
+                value: jobs
+              - name: BusinessEntities__Host
+                valueFrom:
+                  configMapKeyRef:
+                    key: url
+                    name: businessentities-api
+              - name: Mappings__Host
+                valueFrom:
+                  configMapKeyRef:
+                    key: url
+                    name: mappings-api
+              - name: ProductCatalogs__Host
+                valueFrom:
+                  configMapKeyRef:
+                    key: url
+                    name: productcatalogs-api
+              - name: Stations__Host
+                valueFrom:
+                  configMapKeyRef:
+                    key: url
+                    name: stations-api
+              - name: HtmlToPdf__Host
+                valueFrom:
+                  configMapKeyRef:
+                    key: url
+                    name: pdf-api
+              - name: Couchbase__ConnectionString
+                valueFrom:
+                  secretKeyRef:
+                    key: connectionString
+                    name: couchbase-primary
+                    optional: true
+              - name: Couchbase__Username
+                valueFrom:
+                  secretKeyRef:
+                    key: username
+                    name: couchbase-primary
+                    optional: true
+              - name: Couchbase__Password
+                valueFrom:
+                  secretKeyRef:
+                    key: password
+                    name: couchbase-primary
+                    optional: true
+              - name: ASPNETCORE_URLS
+                value: http://localhost:8080/
+              - name: RabbitMQ__Hosts__0__Host
+                valueFrom:
+                  configMapKeyRef:
+                    key: host
+                    name: rabbitmq
+                    optional: true
+              - name: RabbitMQ__Username
+                valueFrom:
+                  configMapKeyRef:
+                    key: username
+                    name: rabbitmq
+                    optional: true
+              - name: RabbitMQ__Password
+                valueFrom:
+                  secretKeyRef:
+                    key: default-pass
+                    name: rabbitmq-config
+                    optional: true
+              - name: LaunchDarklyOptions__SdkKey
+                valueFrom:
+                  secretKeyRef:
+                    key: key
+                    name: feature-flag-key
+                    optional: true
+              - name: TimeoutOptions__KeepAliveTimeout
+                valueFrom:
+                  configMapKeyRef:
+                    key: keepalive
+                    name: timeouts
+                    optional: true
+              - name: TimeoutOptions__WaiverUploadTimeout
+                valueFrom:
+                  configMapKeyRef:
+                    key: connect_read_write
+                    name: timeouts
+                    optional: true
+              - name: WaiverUploadOptions__KeepAliveTimeout
+                valueFrom:
+                  configMapKeyRef:
+                    key: keepalive
+                    name: timeouts
+                    optional: true
+              - name: WaiverUploadOptions__KeepAliveTimeout
+                valueFrom:
+                  configMapKeyRef:
+                    key: keepalive
+                    name: timeouts
+                    optional: true
+              - name: JobOptions__ProcessBulkJobs
+                value: "true"
+              - name: COGNITO__ClientId
+                valueFrom:
+                  secretKeyRef:
+                    key: clientId
+                    name: cognito-creds
+                    optional: true
+              - name: COGNITO__ClientSecret
+                valueFrom:
+                  secretKeyRef:
+                    key: clientSecret
+                    name: cognito-creds
+                    optional: true
+              - name: COGNITO__UserPoolId
+                valueFrom:
+                  secretKeyRef:
+                    key: poolId
+                    name: cognito-creds
+                    optional: true
+              - name: COGNITO__Region
+                valueFrom:
+                  secretKeyRef:
+                    key: region
+                    name: cognito-creds
+                    optional: true
+              - name: JwtOptions__Secret
+                valueFrom:
+                  secretKeyRef:
+                    key: secret
+                    name: jwt-options
+                    optional: true
+              image: "us.gcr.io/${ templateVariables.gcrAccountName }/${ templateVariables.gcrImageName == '*' ? 'phoenix-service-' + templateVariables.appName : templateVariables.gcrImageName }"
+              imagePullPolicy: IfNotPresent
+              livenessProbe:
+                failureThreshold: 3
+                httpGet:
+                  path: /health
+                  port: 80
+                  scheme: HTTP
+                initialDelaySeconds: 10
+                periodSeconds: 10
+                successThreshold: 1
+                timeoutSeconds: 3
+              name: ${ templateVariables.appName }
+              ports:
+              - containerPort: 8080
+                name: http
+                protocol: TCP
+              readinessProbe:
+                failureThreshold: 3
+                httpGet:
+                  path: /health
+                  port: 80
+                  scheme: HTTP
+                initialDelaySeconds: 15
+                periodSeconds: 10
+                successThreshold: 1
+                timeoutSeconds: 3
+              resources:
+                limits:
+                  cpu: ${ templateVariables.maxCPU }
+                  memory: ${ templateVariables.maxMem }
+                requests:
+                  cpu: ${ templateVariables.reqCPU }
+                  memory: ${ templateVariables.reqMem }
+              terminationMessagePath: /dev/termination-log
+              terminationMessagePolicy: File
+            - env:
+              - name: STATSD_SERVER
+                valueFrom:
+                  fieldRef:
+                    apiVersion: v1
+                    fieldPath: status.hostIP
+              - name: STATSD_SAMPLE_RATE
+                value: ${ templateVariables.statsdSampleRate.toString() }
+              - name: SERVICE_NAME
+                value: prod.${ templateVariables.appName }
+              - name: TimeoutOptions__ConnectTimeout
+                valueFrom:
+                  configMapKeyRef:
+                    key: connect_read_write
+                    name: timeouts
+                    optional: true
+              - name: TimeoutOptions__ReadTimeout
+                valueFrom:
+                  configMapKeyRef:
+                    key: connect_read_write
+                    name: timeouts
+                    optional: true
+              - name: TimeoutOptions__SendTimeout
+                valueFrom:
+                  configMapKeyRef:
+                    key: connect_read_write
+                    name: timeouts
+                    optional: true
+              - name: WaiverUploadOptions__MaxRequestSize
+                valueFrom:
+                  configMapKeyRef:
+                    key: max_size
+                    name: waiver-upload-options
+                    optional: true
+              - name: PROXY_HOST
+                value: localhost
+              - name: PROXY_PORT
+                value: "8080"
+              - name: HEALTH_CHECK_URI
+                value: /health
+              image: us.gcr.io/phoenix-177420/nginx-proxy:27
+              imagePullPolicy: IfNotPresent
+              name: nginx-proxy
+              ports:
+              - containerPort: 80
+                name: http
+                protocol: TCP
+              resources:
+                limits:
+                  cpu: ${ templateVariables.maxCPU }
+                  memory: ${ templateVariables.maxMem }
+                requests:
+                  cpu: ${ templateVariables.reqCPU }
+                  memory: ${ templateVariables.reqMem }
+              terminationMessagePath: /dev/termination-log
+              terminationMessagePolicy: File
+            dnsPolicy: ClusterFirst
+            imagePullSecrets:
+            - name: gcr-phoenix
+            restartPolicy: Always
+            schedulerName: default-scheduler
+            securityContext: {}
+            terminationGracePeriodSeconds: 30
+    - apiVersion: datadoghq.com/v1alpha1
+      kind: DatadogMetric
+      metadata:
+        name: ${ templateVariables.appName }-jobs-event-rate
+        namespace: default
+      spec:
+        # Total RabbitMQ events received filtered to this deployments tags as a rate per second
+        query: >-
+          sum:phnx.event.received.count{app:${ templateVariables.appName },env:production,detail:jobs}.as_rate()
+    - apiVersion: autoscaling/v2beta2
+      kind: HorizontalPodAutoscaler
+      metadata:
+        name: ${ templateVariables.appName }-jobs-autoscaler
+        namespace: default
+      spec:
+        minReplicas: ${ templateVariables.minPods }
+        maxReplicas: ${ templateVariables.maxPods }
+        scaleTargetRef:
+          apiVersion: apps/v1
+          kind: Deployment
+          name: ${ templateVariables.appName }jobs
+        metrics:
+        - external:
+            metric:
+              name: datadogmetric@default:${ templateVariables.appName }-jobs-event-rate
+            target:
+              # Average the summed total across the number of pods in the deployment
+              averageValue: ${ templateVariables.targetEventsPerSecondPerPod }
+              type: AverageValue
+          type: External
+    moniker:
+      app: ${ templateVariables.appName }
+    name: Deploy Jobs (Production)
+    refId: "6"
+    requiredArtifactIds:
+    - 0f5786e8-3a1e-4dc3-a038-3d31bf6c1366
+    requiredArtifacts: []
+    requisiteStageRefIds: []
+    skipExpressionEvaluation: false
+    source: text
+    stageTimeoutMs: 1200000
+    trafficManagement:
+      enabled: false
+      options:
+        enableTraffic: false
+        services: []
+    type: deployManifest
+  - alias: preconfiguredWebhook
+    failOnFailedExpressions: true
+    isNew: true
+    name: Publish Fail Event
+    parameterValues:
+      alertType: error
+      environment: ${ templateVariables.appName } prod
+      product: Phoenix
+      text: Failed to deploy to production
+      title: Failed to deploy ${ templateVariables.appName } to production
+    refId: "7"
+    requisiteStageRefIds:
+    - "1"
+    stageEnabled:
+      expression: "#stage('Deploy (Production)').status.toString() != 'SUCCEEDED'"
+      type: expression
+    statusUrlResolution: getMethod
+    type: datadogEvent
+  triggers:
+  - account: gcr-phoenix
+    enabled: false
+    expectedArtifactIds:
+    - 0f5786e8-3a1e-4dc3-a038-3d31bf6c1366
+    organization: ${ templateVariables.gcrAccountName }
+    registry: us.gcr.io
+    repository: "${ templateVariables.gcrAccountName }/${ templateVariables.gcrImageName == '*' ? 'phoenix-service-' + templateVariables.appName : templateVariables.gcrImageName }"
+    runAsUser: phoenix-svc-account
+    type: docker
+protect: false
+schema: v2
+variables:
+- defaultValue: ""
+  description: Application Name
+  name: appName
+  type: string
+- defaultValue: '*'
+  description: "The Prod Load Balancer Name (i.e. waivers-prod-api); leave '*' to use default pattern: {appName}-prod-api."
+  name: prodLoadBalancerName
+  type: string
+- defaultValue: false
+  description: Determines whether a separate set of pods should be created for batch jobs
+  name: jobsEnabled
+  type: boolean
+- defaultValue: '*'
+  description: "The name of the jobs load balancer for clusters created by this pipeline; leave '*' to use default pattern: {appName}-prod-jobs"
+  name: jobsLoadBalancer
+  type: string
+- defaultValue: phoenix-177420
+  description: The GCR account name that contains the image
+  name: gcrAccountName
+  type: string
+- defaultValue: '*'
+  description: "The image name to pull; leave '*' to use default pattern: phoenix-service-{appName}"
+  name: gcrImageName
+  type: string
+- defaultValue: true
+  description: Is Shawarma Enabled?
+  name: shawarmaEnabled
+  type: boolean
+- defaultValue: '-'
+  description: The IAM role name for the service to use; leave '-' to not use
+  name: iamRole
+  type: string
+- defaultValue: 2
+  description: The minimum number of pods for the cluster. (i.e. autoscaling)
+  name: minPods
+  type: int
+- defaultValue: 9
+  description: The maximum number of pods for the cluster. (i.e. autoscaling)
+  name: maxPods
+  type: int
+- defaultValue: 50
+  description: Target request count per second per pod for autoscaling.
+  name: targetRequestsPerSecondPerPod
+  type: int
+- defaultValue: 50
+  description: Target message bus event count per second per pod for jobs pod autoscaling.
+  name: targetEventsPerSecondPerPod
+  type: int
+- defaultValue: 100m
+  description: Pod Requested CPU
+  name: reqCPU
+  type: string
+- defaultValue: 512Mi
+  description: Pod Requested Memory
+  name: reqMem
+  type: string
+- defaultValue: 200m
+  description: Pod Max CPU
+  name: maxCPU
+  type: string
+- defaultValue: 4096Mi
+  description: Pod Max Memory
+  name: maxMem
+  type: string
+- defaultValue: "100"
+  description: StatsD Sample Rate 0-100
+  name: statsdSampleRate
+  type: int
