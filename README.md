@@ -1,10 +1,11 @@
 V2 Pipeline Templates
 ----
-Quick Steps For Updating And Testing
-Update the template, save to Spinnaker using: spin pipeline-templates save --file <path to pipeline json>
-Run in spinnaker, verify working correctly
-Update repo
-More information can be found at https://www.spinnaker.io/guides/spin/pipeline-templates/
+Quick Steps For Updating And Testing  
+1. Install and configure spin cli https://centeredge.atlassian.net/wiki/spaces/DEP/pages/657489921/Configuring+Spinnaker+CLI
+1. Update the template, save to Spinnaker using: spin pipeline-templates save --file <path to pipeline json>
+2. Run in spinnaker, verify working correctly
+3. Update repo
+4. More information can be found at https://www.spinnaker.io/guides/spin/pipeline-templates/
 
 You can also convert an existing pipeline into a template:
 
