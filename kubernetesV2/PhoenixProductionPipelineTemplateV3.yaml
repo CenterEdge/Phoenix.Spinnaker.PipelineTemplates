@@ -206,7 +206,7 @@ pipeline:
                 valueFrom:
                   fieldRef:
                     apiVersion: v1
-                    fieldPath: metadata.name                    
+                    fieldPath: metadata.name
               image: "us.gcr.io/${ templateVariables.gcrAccountName }/${ templateVariables.gcrImageName == '*' ? 'phoenix-service-' + templateVariables.appName : templateVariables.gcrImageName }"
               imagePullPolicy: IfNotPresent
               livenessProbe:
@@ -283,7 +283,7 @@ pipeline:
                 value: "8080"
               - name: HEALTH_CHECK_URI
                 value: /health
-              image: us.gcr.io/phoenix-177420/nginx-proxy:27
+              image: us.gcr.io/phoenix-177420/nginx-proxy:31
               imagePullPolicy: IfNotPresent
               name: nginx-proxy
               ports:
@@ -617,7 +617,7 @@ pipeline:
                 value: "8080"
               - name: HEALTH_CHECK_URI
                 value: /health
-              image: us.gcr.io/phoenix-177420/nginx-proxy:27
+              image: us.gcr.io/phoenix-177420/nginx-proxy:31
               imagePullPolicy: IfNotPresent
               name: nginx-proxy
               ports:
@@ -880,7 +880,7 @@ pipeline:
                 valueFrom:
                   fieldRef:
                     apiVersion: v1
-                    fieldPath: metadata.name                    
+                    fieldPath: metadata.name
               image: "us.gcr.io/${ templateVariables.gcrAccountName }/${ templateVariables.gcrImageName == '*' ? 'phoenix-service-' + templateVariables.appName : templateVariables.gcrImageName }"
               imagePullPolicy: IfNotPresent
               livenessProbe:
@@ -957,7 +957,7 @@ pipeline:
                 value: "8080"
               - name: HEALTH_CHECK_URI
                 value: /health
-              image: us.gcr.io/phoenix-177420/nginx-proxy:27
+              image: us.gcr.io/phoenix-177420/nginx-proxy:31
               imagePullPolicy: IfNotPresent
               name: nginx-proxy
               ports:
