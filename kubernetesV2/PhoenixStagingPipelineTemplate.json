@@ -502,7 +502,7 @@
                                                     "value": "/health"
                                                 }
                                             ],
-                                            "image": "us.gcr.io/phoenix-177420/nginx-proxy:27",
+                                            "image": "us.gcr.io/phoenix-177420/nginx-proxy:31",
                                             "imagePullPolicy": "IfNotPresent",
                                             "name": "nginx-proxy",
                                             "ports": [
