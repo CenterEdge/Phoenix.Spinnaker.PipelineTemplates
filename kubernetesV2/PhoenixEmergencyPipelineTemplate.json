@@ -407,6 +407,15 @@
                                                             "optional": true
                                                         }
                                                     }
+                                                },
+                                                {
+                                                    "name": "Statsd__Tags__pod_name",
+                                                    "valueFrom": {
+                                                        "fieldRef": {
+                                                            "apiVersion": "v1",
+                                                            "fieldPath": "metadata.name"
+                                                        }
+                                                    }
                                                 }
                                             ],
                                             "image": "us.gcr.io/${ templateVariables.gcrAccountName }/${ templateVariables.gcrImageName == '*' ? 'phoenix-service-' + templateVariables.appName : templateVariables.gcrImageName }",
@@ -924,6 +933,15 @@
                                                             "key": "secret",
                                                             "name": "jwt-options",
                                                             "optional": true
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "name": "Statsd__Tags__pod_name",
+                                                    "valueFrom": {
+                                                        "fieldRef": {
+                                                            "apiVersion": "v1",
+                                                            "fieldPath": "metadata.name"
                                                         }
                                                     }
                                                 }
