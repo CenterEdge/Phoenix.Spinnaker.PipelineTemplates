@@ -1,0 +1,37 @@
+schema: v2
+id: phnx-cleanup-v4
+metadata:
+  description: Create a pipeline that cleans up the staging pods after a deployment or at a specified time every day
+  name: Kubernetes V2 Phoenix Cleanup
+  scopes:
+  - global
+protect: false
+variables:
+- defaultValue: ""
+  description: Application Name
+  name: appName
+  type: string
+pipeline:
+  keepWaitingPipelines: false
+  limitConcurrent: true
+  stages:
+  - account: phoenix-v2
+    app: ${ templateVariables.appName }
+    cloudProvider: kubernetes
+    cluster: deployment ${ templateVariables.appName }-staging
+    criteria: newest
+    kind: deployment
+    location: default
+    mode: dynamic
+    name: Delete (Manifest)
+    options:
+      cascading: true
+    refId: "1"
+    requisiteStageRefIds: []
+    type: deleteManifest
+  triggers:
+  - cronExpression": "0 0 0 1/1 * ? *"
+    enabled: true
+    id: b6df20bf-efcc-4a50-8a33-c65cc53d3922
+    runAsUser: phoenix-svc-account
+    type: cron
