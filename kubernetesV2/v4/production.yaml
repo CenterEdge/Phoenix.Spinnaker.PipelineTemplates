@@ -1,0 +1,239 @@
+id: phnx-production-v4
+lastModifiedBy: bburnett@centeredgesoftware.com
+metadata:
+  description: Creates a production pipeline with DataDog request scaling using Kustomize templates
+  name: Kustomize V4 Phoenix Service Production
+  scopes:
+  - global
+pipeline:
+  expectedArtifacts:
+  - defaultArtifact:
+      customKind: true
+      id: 39b0955b-01fc-4001-aa27-9dfa7074937a
+    displayName: ${ templateVariables.appName }
+    id: 0f5786e8-3a1e-4dc3-a038-3d31bf6c1366
+    matchArtifact:
+      artifactAccount: docker-registry
+      name: "us.gcr.io/${ templateVariables.gcrAccountName }/${ templateVariables.gcrImageName == '*' ? 'phoenix-service-' + templateVariables.appName : templateVariables.gcrImageName }"
+      type: docker/image
+    useDefaultArtifact: false
+    usePriorArtifact: false
+  - defaultArtifact:
+      customKind: true
+      id: abaeac64-c6c6-47b5-962a-691bcb6d31bd
+    displayName: github-repo
+    id: 90161e9a-4aae-4bed-83e1-c924b7e8eb6a
+    matchArtifact:
+      artifactAccount: github
+      name: github-repo
+      reference: ${templateVariables.gitHubRepo }
+      type: git/repo
+  keepWaitingPipelines: false
+  limitConcurrent: true
+  stages:
+  - expectedArtifacts:
+    - defaultArtifact:
+        customKind: true
+        id: 9c78c00f-1d89-4460-9895-45beecfec9ad
+      displayName: manifest-prod
+      id: a5494803-9f03-48da-a97d-d8d1684b5d0e
+      matchArtifact:
+        artifactAccount: embedded-artifact
+        customKind: false
+        id: 44d32374-da56-4b20-bbc6-da0433364eca
+        name: manifest-prod
+        type: embedded/base64
+      useDefaultArtifact: false
+      usePriorArtifact: false
+    inputArtifact:
+      id: 90161e9a-4aae-4bed-83e1-c924b7e8eb6a
+    kustomizeFilePath: deployment/env/prod/kustomization.yaml
+    name: Bake (Production)
+    overrides: {}
+    refId: "1"
+    requisiteStageRefIds: []
+    templateRenderer: KUSTOMIZE
+    type: bakeManifest
+  - expectedArtifacts:
+    - defaultArtifact:
+        customKind: true
+        id: 31f8d68f-a95d-488d-b573-91b1da295d4f
+      displayName: manifest-staging
+      id: 8877348a-0a3d-4243-98f3-9fc670558ad7
+      matchArtifact:
+        artifactAccount: embedded-artifact
+        customKind: false
+        id: b8a47e06-8453-4282-8151-1e3c55b53689
+        name: manifest-staging
+        type: embedded/base64
+      useDefaultArtifact: false
+      usePriorArtifact: false
+    inputArtifact:
+      id: 90161e9a-4aae-4bed-83e1-c924b7e8eb6a
+    kustomizeFilePath: deployment/env/staging/kustomization.yaml
+    name: Bake (Staging)
+    overrides: {}
+    refId: "3"
+    requisiteStageRefIds: []
+    templateRenderer: KUSTOMIZE
+    type: bakeManifest
+  - account: phoenix-v2
+    cloudProvider: kubernetes
+    manifestArtifactId: 8877348a-0a3d-4243-98f3-9fc670558ad7
+    moniker:
+      app: ${ templateVariables.appName }
+    name: Deploy (Staging)
+    namespaceOverride: default
+    refId: "4"
+    requiredArtifactIds:
+    - 0f5786e8-3a1e-4dc3-a038-3d31bf6c1366
+    requisiteStageRefIds:
+    - "3"
+    skipExpressionEvaluation: false
+    source: artifact
+    trafficManagement:
+      enabled: false
+      options:
+        enableTraffic: false
+        services: []
+    type: deployManifest
+  - continuePipeline: false
+    failPipeline: true
+    job: "${ templateVariables.smokeTestJobFullName != '-' ? templateVariables.smokeTestJobFullName : ('Phoenix/job/' + templateVariables.smokeTestJobDirectory + '/job/' + (templateVariables.nestedJobDirectory ? (templateVariables.smokeTestServiceName == '*' ? 'Phoenix.Service.' + templateVariables.appName.substring(0,1).toUpperCase() + templateVariables.appName.substring(1)  + '/job/' : templateVariables.smokeTestServiceName  + '/job/' ) : '') + (templateVariables.smokeTestServiceName == '*' ? 'Phoenix.Service.' + templateVariables.appName.substring(0,1).toUpperCase() + templateVariables.appName.substring(1) : templateVariables.smokeTestServiceName) + '.' + templateVariables.smokeTestProjectSuffix) }"
+    master: primary-jenkins
+    name: Smoke Tests
+    parameters: ${ templateVariables.smokeTestParameters }
+    refId: "5"
+    requisiteStageRefIds:
+    - "4"
+    type: jenkins
+  - alias: preconfiguredWebhook
+    name: Publish Start Event
+    parameterValues:
+      alertType: info
+      environment: ${ templateVariables.appName }prod
+      product: Phoenix
+      text: Starting Production Pipeline Deploy For ${ templateVariables.appName }
+      title: Starting Production Deploy To ${ templateVariables.appName }prod
+    refId: "6"
+    requisiteStageRefIds:
+    - "1"
+    - "5"
+    statusUrlResolution: getMethod
+    type: datadogEvent
+  - account: phoenix-v2
+    cloudProvider: kubernetes
+    manifestArtifactId: a5494803-9f03-48da-a97d-d8d1684b5d0e
+    moniker:
+      app: ${ templateVariables.appName }
+    name: Deploy (Production)
+    namespaceOverride: default
+    refId: "7"
+    requiredArtifactIds:
+    - 0f5786e8-3a1e-4dc3-a038-3d31bf6c1366
+    requisiteStageRefIds:
+    - "6"
+    skipExpressionEvaluation: false
+    source: artifact
+    stageEnabled:
+      expression: "#stage('Smoke Tests')['context']['buildInfo']['result']=='SUCCESS'"
+      type: expression
+    trafficManagement:
+      enabled: false
+      options:
+        enableTraffic: false
+        services: []
+    type: deployManifest
+  - alias: preconfiguredWebhook
+    name: Publish Success Event
+    parameterValues:
+      alertType: success
+      environment: ${ templateVariables.appName }
+      product: Phoenix
+      text: Deployed To ${ templateVariables.appName }
+      title: Deployed To ${ templateVariables.appName }
+    refId: "9"
+    requisiteStageRefIds:
+    - "7"
+    stageEnabled:
+      expression: "#stage('Deploy (Production)').status.toString() == 'SUCCEEDED'"
+      type: expression
+    statusUrlResolution: getMethod
+    type: datadogEvent
+  - alias: preconfiguredWebhook
+    failOnFailedExpressions: true
+    isNew: true
+    name: Publish Fail Event
+    parameterValues:
+      alertType: error
+      environment: ${ templateVariables.appName } prod
+      product: Phoenix
+      text: Failed to deploy to production
+      title: Failed to deploy ${ templateVariables.appName } to production
+    refId: "10"
+    requisiteStageRefIds:
+    - "7"
+    stageEnabled:
+      expression: "#stage('Deploy (Production)').status.toString() != 'SUCCEEDED'"
+      type: expression
+    statusUrlResolution: getMethod
+    type: datadogEvent
+  - account: phoenix-v2
+    app: ${ templateVariables.appName }
+    cloudProvider: kubernetes
+    cluster: deployment ${ templateVariables.appName }-staging
+    criteria: newest
+    kind: deployment
+    location: default
+    mode: dynamic
+    name: Cleanup Staging
+    options:
+      cascading: true
+    refId: "11"
+    requisiteStageRefIds:
+    - "7"
+    type: deleteManifest
+  triggers: []
+protect: false
+schema: v2
+variables:
+- defaultValue: ""
+  description: Application Name
+  name: appName
+  type: string
+- defaultValue: '-'
+  description: Full name of the smoke test job. If '-', it is built automatically from the other parameters.
+  name: smokeTestJobFullName
+  type: string
+- defaultValue: Services
+  description: The directory the job is location in. (i.e. Services or MashTub.Net)
+  name: smokeTestJobDirectory
+  type: string
+- decription: Whether there is an addition /job directory for the service job location
+  defaultValue: true
+  name: nestedJobDirectory
+  type: boolean
+- defaultValue: '*'
+  description: "The project name for the smoke tests; leave '*' for default pattern: Phoenix.Service.{appName.FirstCharacter.ToUpperCase}"
+  name: smokeTestServiceName
+  type: string
+- defaultValue: {}
+  description: Special parameters to send to the smoke test pipeline
+  name: smokeTestParameters
+  type: object
+- defaultValue: Smoke
+  description: The project suffix for the smoke tests (i.e. Phoenix.Service.Waivers.*Smoke*)
+  name: smokeTestProjectSuffix
+  type: string
+- defaultValue: phoenix-177420
+  description: The GCR account name that contains the image
+  name: gcrAccountName
+  type: string
+- defaultValue: '*'
+  description: "The image name to pull; leave '*' to use default pattern: phoenix-service-{appName}"
+  name: gcrImageName
+  type: string
+- defaultValue: ''
+  description: "GitHub repository path (should end in '.git')"
+  name: gitHubRepo
+  type: string
