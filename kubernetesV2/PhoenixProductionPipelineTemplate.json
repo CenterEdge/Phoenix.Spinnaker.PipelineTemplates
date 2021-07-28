@@ -444,7 +444,7 @@
                           "value": "/health"
                         }
                       ],
-                      "image": "us.gcr.io/phoenix-177420/nginx-proxy:31",
+                      "image": "us.gcr.io/phoenix-177420/nginx-proxy:32",
                       "imagePullPolicy": "IfNotPresent",
                       "name": "nginx-proxy",
                       "ports": [
@@ -932,7 +932,7 @@
                           "value": "/health"
                         }
                       ],
-                      "image": "us.gcr.io/phoenix-177420/nginx-proxy:31",
+                      "image": "us.gcr.io/phoenix-177420/nginx-proxy:32",
                       "imagePullPolicy": "IfNotPresent",
                       "name": "nginx-proxy",
                       "ports": [
@@ -1458,7 +1458,7 @@
                           "value": "/health"
                         }
                       ],
-                      "image": "us.gcr.io/phoenix-177420/nginx-proxy:31",
+                      "image": "us.gcr.io/phoenix-177420/nginx-proxy:32",
                       "imagePullPolicy": "IfNotPresent",
                       "name": "nginx-proxy",
                       "ports": [
