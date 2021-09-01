@@ -283,7 +283,7 @@ pipeline:
                 value: "8080"
               - name: HEALTH_CHECK_URI
                 value: /health
-              image: us.gcr.io/phoenix-177420/nginx-proxy:32
+              image: us.gcr.io/phoenix-177420/nginx-proxy:33
               imagePullPolicy: IfNotPresent
               name: nginx-proxy
               ports:
@@ -642,7 +642,7 @@ pipeline:
                 value: "8080"
               - name: HEALTH_CHECK_URI
                 value: /health
-              image: us.gcr.io/phoenix-177420/nginx-proxy:32
+              image: us.gcr.io/phoenix-177420/nginx-proxy:33
               imagePullPolicy: IfNotPresent
               name: nginx-proxy
               ports:
