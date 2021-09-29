@@ -1,0 +1,163 @@
+{
+    "schema": "v2",
+    "protect": false,
+    "id": "phnx-ui-pipeline-template-v4",
+    "metadata": {
+        "description": "Creates a standard pipeline that deploys a single pod for UI purposes (i.e. webUI/online waivers/etc.)",
+        "name": "Kubernetes V4 Phoenix UI Production Template",
+        "scopes": [
+            "global"
+        ]
+    },
+    "pipeline": {
+        "expectedArtifacts": [
+            {
+                "defaultArtifact": {
+                    "customKind": true,
+                    "id": "39b0955b-01fc-4001-aa27-9dfa7074937a"
+                },
+                "displayName": "${ templateVariables.appName }",
+                "id": "0f5786e8-3a1e-4dc3-a038-3d31bf6c1366",
+                "matchArtifact": {
+                    "artifactAccount": "docker-registry",
+                    "name": "us.gcr.io/${ templateVariables.gcrAccountName }/${ templateVariables.gcrImageName == '*' ? 'phoenix-service-' + templateVariables.appName : templateVariables.gcrImageName }",
+                    "type": "docker/image"
+                },
+                "useDefaultArtifact": false,
+                "usePriorArtifact": false
+            }
+        ],
+        "keepWaitingPipelines": false,
+        "limitConcurrent": true,
+        "stages": [
+            {
+                "expectedArtifacts": [
+                  {
+                    "defaultArtifact": {
+                      "customKind": true,
+                      "id": "9c78c00f-1d89-4460-9895-45beecfec9ad"
+                    },
+                    "displayName": "manifest-${ templateVariables.deploymentType }",
+                    "id": "a5494803-9f03-48da-a97d-d8d1684b5d0e",
+                    "matchArtifact": {
+                      "artifactAccount": "embedded-artifact",
+                      "customKind": false,
+                      "id": "44d32374-da56-4b20-bbc6-da0433364eca",
+                      "name": "manifest-${ templateVariables.deploymentType }",
+                      "type": "embedded/base64"
+                    },
+                    "useDefaultArtifact": false,
+                    "usePriorArtifact": false
+                  }
+                ],
+                "inputArtifact": {
+                  "id": "90161e9a-4aae-4bed-83e1-c924b7e8eb6a"
+                },
+                "kustomizeFilePath": "Deployment/env/${ templateVariables.deploymentType }/kustomization.yaml",
+                "name": "Bake Kustomize (${ templateVariables.deploymentType })",
+                "overrides": {},
+                "refId": "1",
+                "requisiteStageRefIds": [],
+                "templateRenderer": "KUSTOMIZE",
+                "type": "bakeManifest"
+            },
+            {
+                "account": "phoenix-v2",
+                "cloudProvider": "kubernetes",
+                "manifestArtifactId": "a5494803-9f03-48da-a97d-d8d1684b5d0e",
+                "moniker": {
+                    "app": "${ templateVariables.appName }"
+                },
+                "name": "Deploy (${ templateVariables.deploymentType })",
+                "refId": "2",
+                "requiredArtifactIds": [
+                    "0f5786e8-3a1e-4dc3-a038-3d31bf6c1366"
+                ],
+                "requisiteStageRefIds": [
+                    "1"
+                ],
+                "skipExpressionEvaluation": false,
+                "source": "artifact",
+                "trafficManagement": {
+                    "enabled": false,
+                    "options": {
+                        "enableTraffic": false,
+                        "services": []
+                    }
+                },
+                "type": "deployManifest"
+            },
+            {
+                "alias": "preconfiguredWebhook",
+                "name": "Publish Start Event",
+                "parameterValues": {
+                    "alertType": "info",
+                    "environment": "${ templateVariables.appName }${ templateVariables.deploymentType }",
+                    "product": "Phoenix",
+                    "text": "Starting UI Pipeline Deploy For ${ templateVariables.appName }",
+                    "title": "Starting UI Deploy To ${ templateVariables.appName }${ templateVariables.deploymentType }"
+                },
+                "refId": "3",
+                "requisiteStageRefIds": [
+                    "1"
+                ],
+                "statusUrlResolution": "getMethod",
+                "type": "datadogEvent"
+            },
+            {
+                "alias": "preconfiguredWebhook",
+                "name": "Publish Success Event",
+                "parameterValues": {
+                    "alertType": "success",
+                    "environment": "${ templateVariables.appName }",
+                    "product": "Phoenix",
+                    "text": "Deployed To ${ templateVariables.appName }",
+                    "title": "Deployed To ${ templateVariables.appName }"
+                },
+                "refId": "4",
+                "requisiteStageRefIds": [
+                    "2"
+                ],
+                "stageEnabled": {
+                    "type": "expression"
+                },
+                "statusUrlResolution": "getMethod",
+                "type": "datadogEvent"
+            }
+        ],
+        "triggers": [
+        ]
+    },
+    "variables": [
+        {
+            "defaultValue": "",
+            "description": "Application Name",
+            "name": "appName",
+            "type": "string"
+        },
+        {
+            "defaultValue": true,
+            "description": "Allow this pipeline to be triggered by a new build",
+            "name": "allowAutomatedTriggers",
+            "type": "boolean"
+        },
+        {
+            "defaultValue": "dev",
+            "description": "Decides if dev or prod kustomize files are used",
+            "name": "deploymentType",
+            "type": "string"
+        },
+        {
+            "defaultValue": "phoenix-177420",
+            "description": "The GCR account name that contains the image",
+            "name": "gcrAccountName",
+            "type": "string"
+        },
+        {
+            "defaultValue": "*",
+            "description": "The image name to pull; leave '*' to use default pattern: phoenix-service-{appName}",
+            "name": "gcrImageName",
+            "type": "string"
+        }
+    ]
+}
