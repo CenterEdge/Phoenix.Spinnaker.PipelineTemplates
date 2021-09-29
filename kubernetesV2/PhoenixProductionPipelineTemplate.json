@@ -323,7 +323,7 @@
                               "fieldPath": "metadata.name"
                             }
                           }
-                        }                       
+                        }
                       ],
                       "image": "us.gcr.io/${ templateVariables.gcrAccountName }/${ templateVariables.gcrImageName == '*' ? 'phoenix-service-' + templateVariables.appName : templateVariables.gcrImageName }",
                       "imagePullPolicy": "IfNotPresent",
@@ -444,7 +444,7 @@
                           "value": "/health"
                         }
                       ],
-                      "image": "us.gcr.io/phoenix-177420/nginx-proxy:31",
+                      "image": "us.gcr.io/phoenix-177420/nginx-proxy:33",
                       "imagePullPolicy": "IfNotPresent",
                       "name": "nginx-proxy",
                       "ports": [
@@ -932,7 +932,7 @@
                           "value": "/health"
                         }
                       ],
-                      "image": "us.gcr.io/phoenix-177420/nginx-proxy:31",
+                      "image": "us.gcr.io/phoenix-177420/nginx-proxy:33",
                       "imagePullPolicy": "IfNotPresent",
                       "name": "nginx-proxy",
                       "ports": [
@@ -1337,7 +1337,7 @@
                               "fieldPath": "metadata.name"
                             }
                           }
-                        }                       
+                        }
                       ],
                       "image": "us.gcr.io/${ templateVariables.gcrAccountName }/${ templateVariables.gcrImageName == '*' ? 'phoenix-service-' + templateVariables.appName : templateVariables.gcrImageName }",
                       "imagePullPolicy": "IfNotPresent",
@@ -1458,7 +1458,7 @@
                           "value": "/health"
                         }
                       ],
-                      "image": "us.gcr.io/phoenix-177420/nginx-proxy:31",
+                      "image": "us.gcr.io/phoenix-177420/nginx-proxy:33",
                       "imagePullPolicy": "IfNotPresent",
                       "name": "nginx-proxy",
                       "ports": [
