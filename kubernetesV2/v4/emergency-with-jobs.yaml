@@ -105,9 +105,6 @@ pipeline:
     - "6"
     skipExpressionEvaluation: false
     source: artifact
-    stageEnabled:
-      expression: "#stage('Smoke Tests')['context']['buildInfo']['result']=='SUCCESS'"
-      type: expression
     trafficManagement:
       enabled: false
       options:
