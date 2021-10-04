@@ -74,7 +74,16 @@ pipeline:
         enableTraffic: false
         services: []
     type: deployManifest
-  triggers: []
+  triggers:
+  - account: gcr-phoenix
+    enabled: false
+    expectedArtifactIds:
+    - 0f5786e8-3a1e-4dc3-a038-3d31bf6c1366
+    organization: ${ templateVariables.gcrAccountName }
+    registry: us.gcr.io
+    repository: "${ templateVariables.gcrAccountName }/${ templateVariables.gcrImageName == '*' ? 'phoenix-service-' + templateVariables.appName + '-ci' : templateVariables.gcrImageName }"
+    runAsUser: phoenix-svc-account
+    type: docker
 protect: false
 schema: v2
 variables:
