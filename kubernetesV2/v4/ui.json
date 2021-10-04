@@ -25,6 +25,22 @@
                 },
                 "useDefaultArtifact": false,
                 "usePriorArtifact": false
+            },
+            {
+                "defaultArtifact": {
+                    "customKind": true,
+                    "id": "abaeac64-c6c6-47b5-962a-691bcb6d31bd"
+                },
+                "displayName": "github-repo",
+                "id": "90161e9a-4aae-4bed-83e1-c924b7e8eb6a",
+                "matchArtifact": {
+                    "artifactAccount": "github",
+                    "name": "github-repo",
+                    "reference": "${templateVariables.gitHubRepo }",
+                    "type": "git/repo"
+                },
+                "useDefaultArtifact": false,
+                "usePriorArtifact": false
             }
         ],
         "keepWaitingPipelines": false,
