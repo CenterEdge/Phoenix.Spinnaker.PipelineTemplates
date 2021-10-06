@@ -85,6 +85,7 @@
                     "app": "${ templateVariables.appName }"
                 },
                 "name": "Deploy (${ templateVariables.deploymentType })",
+                "namespaceOverride": "ui",
                 "refId": "2",
                 "requiredArtifactIds": [
                     "0f5786e8-3a1e-4dc3-a038-3d31bf6c1366"
@@ -173,6 +174,12 @@
             "defaultValue": "*",
             "description": "The image name to pull; leave '*' to use default pattern: phoenix-service-{appName}",
             "name": "gcrImageName",
+            "type": "string"
+        },
+        {
+            "defaultValue": "",
+            "description": "GitHub repository path (should end in '.git')",
+            "name": "gitHubRepo",
             "type": "string"
         }
     ]
