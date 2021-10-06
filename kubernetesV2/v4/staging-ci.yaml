@@ -1,8 +1,8 @@
-id: phnx-emergency-v4
-lastModifiedBy: bburnett@centeredgesoftware.com
+id: phnx-staging-ci-v4
+lastModifiedBy: jweiss@centeredgesoftware.com
 metadata:
-  description: Creates a production pipeline with DataDog request scaling using Kustomize templates, skipping staging and smoke tests
-  name: Kustomize V4 Phoenix Service Emergency
+  description: Creates a staging pipeline for deploying PRs
+  name: Kustomize V4 Phoenix Service Staging
   scopes:
   - global
 pipeline:
@@ -21,6 +21,9 @@ pipeline:
   - defaultArtifact:
       customKind: true
       id: abaeac64-c6c6-47b5-962a-691bcb6d31bd
+      artifactAccount: github
+      type: git/repo
+      reference: "${ templateVariables.gitHubRepo == '*' ? 'https://github.com/CenterEdge/Phoenix.Service.' + templateVariables.appName + '.git' : templateVariables.gitHubRepo }"
     displayName: github-repo
     id: 90161e9a-4aae-4bed-83e1-c924b7e8eb6a
     matchArtifact:
@@ -28,57 +31,45 @@ pipeline:
       name: github-repo
       reference: ${templateVariables.gitHubRepo }
       type: git/repo
+    useDefaultArtifact: true
   keepWaitingPipelines: false
   limitConcurrent: true
   stages:
   - expectedArtifacts:
     - defaultArtifact:
         customKind: true
-        id: 9c78c00f-1d89-4460-9895-45beecfec9ad
-      displayName: manifest-prod
-      id: a5494803-9f03-48da-a97d-d8d1684b5d0e
+        id: 31f8d68f-a95d-488d-b573-91b1da295d4f
+      displayName: manifest-staging
+      id: 8877348a-0a3d-4243-98f3-9fc670558ad7
       matchArtifact:
         artifactAccount: embedded-artifact
         customKind: false
-        id: 44d32374-da56-4b20-bbc6-da0433364eca
-        name: manifest-prod
+        id: b8a47e06-8453-4282-8151-1e3c55b53689
+        name: manifest-staging
         type: embedded/base64
       useDefaultArtifact: false
       usePriorArtifact: false
     inputArtifact:
       id: 90161e9a-4aae-4bed-83e1-c924b7e8eb6a
-    kustomizeFilePath: deployment/env/prod/kustomization.yaml
-    name: Bake (Production)
+    kustomizeFilePath: deployment/env/staging-ci/kustomization.yaml
+    name: Bake (Staging)
     overrides: {}
-    refId: "1"
+    refId: "3"
     requisiteStageRefIds: []
     templateRenderer: KUSTOMIZE
     type: bakeManifest
-  - alias: preconfiguredWebhook
-    name: Publish Start Event
-    parameterValues:
-      alertType: info
-      environment: ${ templateVariables.appName }prod
-      product: Phoenix
-      text: Starting Production Pipeline Deploy For ${ templateVariables.appName }
-      title: Starting Production Deploy To ${ templateVariables.appName }prod
-    refId: "6"
-    requisiteStageRefIds:
-    - "1"
-    statusUrlResolution: getMethod
-    type: datadogEvent
   - account: phoenix-v2
     cloudProvider: kubernetes
-    manifestArtifactId: a5494803-9f03-48da-a97d-d8d1684b5d0e
+    manifestArtifactId: 8877348a-0a3d-4243-98f3-9fc670558ad7
     moniker:
       app: ${ templateVariables.appName }
-    name: Deploy (Production)
+    name: Deploy (Staging)
     namespaceOverride: default
-    refId: "7"
+    refId: "4"
     requiredArtifactIds:
     - 0f5786e8-3a1e-4dc3-a038-3d31bf6c1366
     requisiteStageRefIds:
-    - "6"
+    - "3"
     skipExpressionEvaluation: false
     source: artifact
     trafficManagement:
@@ -87,41 +78,16 @@ pipeline:
         enableTraffic: false
         services: []
     type: deployManifest
-  - alias: preconfiguredWebhook
-    name: Publish Success Event
-    parameterValues:
-      alertType: success
-      environment: ${ templateVariables.appName }
-      product: Phoenix
-      text: Deployed To ${ templateVariables.appName }
-      title: Deployed To ${ templateVariables.appName }
-    refId: "9"
-    requisiteStageRefIds:
-    - "7"
-    stageEnabled:
-      expression: "#stage('Deploy (Production)').status.toString() == 'SUCCEEDED'"
-      type: expression
-    statusUrlResolution: getMethod
-    type: datadogEvent
-  - alias: preconfiguredWebhook
-    failOnFailedExpressions: true
-    isNew: true
-    name: Publish Fail Event
-    parameterValues:
-      alertType: error
-      environment: ${ templateVariables.appName } prod
-      product: Phoenix
-      text: Failed to deploy to production
-      title: Failed to deploy ${ templateVariables.appName } to production
-    refId: "10"
-    requisiteStageRefIds:
-    - "7"
-    stageEnabled:
-      expression: "#stage('Deploy (Production)').status.toString() != 'SUCCEEDED'"
-      type: expression
-    statusUrlResolution: getMethod
-    type: datadogEvent
-  triggers: []
+  triggers:
+  - account: gcr-phoenix
+    enabled: false
+    expectedArtifactIds:
+    - 0f5786e8-3a1e-4dc3-a038-3d31bf6c1366
+    organization: ${ templateVariables.gcrAccountName }
+    registry: us.gcr.io
+    repository: "${ templateVariables.gcrAccountName }/${ templateVariables.gcrImageName == '*' ? 'phoenix-service-' + templateVariables.appName + '-ci' : templateVariables.gcrImageName }"
+    runAsUser: phoenix-svc-account
+    type: docker
 protect: false
 schema: v2
 variables:
