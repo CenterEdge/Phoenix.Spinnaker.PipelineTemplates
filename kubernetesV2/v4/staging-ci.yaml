@@ -2,7 +2,7 @@ id: phnx-staging-ci-v4
 lastModifiedBy: jweiss@centeredgesoftware.com
 metadata:
   description: Creates a staging pipeline for deploying PRs
-  name: Kustomize V4 Phoenix Service Staging
+  name: Kustomize V4 Phoenix Service Staging Ci
   scopes:
   - global
 pipeline:
