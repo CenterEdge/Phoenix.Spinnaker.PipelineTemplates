@@ -69,7 +69,7 @@
                 "inputArtifact": {
                   "id": "90161e9a-4aae-4bed-83e1-c924b7e8eb6a"
                 },
-                "kustomizeFilePath": "Deployment/env/${ templateVariables.deploymentType }/kustomization.yaml",
+                "kustomizeFilePath": "${ templateVariables.kustomizeSubFolder == '*' ? 'Deployment/env/' + ${ templateVariables.deploymentType } + '/kustomization.yaml' : 'Deployment/' + ${ templateVariables.kustomizeSubFolder } + '/env/' + ${ templateVariables.deploymentType } + '/kustomization.yaml' }",
                 "name": "Bake Kustomize (${ templateVariables.deploymentType })",
                 "overrides": {},
                 "refId": "1",
@@ -180,6 +180,12 @@
             "defaultValue": "",
             "description": "GitHub repository path (should end in '.git')",
             "name": "gitHubRepo",
+            "type": "string"
+        },
+        {
+            "defaultValue": "*",
+            "description": "subfolder contining the kustomize files for this deployment",
+            "name": "kustomizeSubFolder",
             "type": "string"
         }
     ]
