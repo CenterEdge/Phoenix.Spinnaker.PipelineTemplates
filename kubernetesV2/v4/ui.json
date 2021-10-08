@@ -69,7 +69,7 @@
                 "inputArtifact": {
                   "id": "90161e9a-4aae-4bed-83e1-c924b7e8eb6a"
                 },
-                "kustomizeFilePath": "${ templateVariables.kustomizeSubFolder == '*' ? 'Deployment/env/' + ${ templateVariables.deploymentType } + '/kustomization.yaml' : 'Deployment/' + ${ templateVariables.kustomizeSubFolder } + '/env/' + ${ templateVariables.deploymentType } + '/kustomization.yaml' }",
+                "kustomizeFilePath": "Deployment/${ templateVariables.kustomizeSubFolder == '*' ? '' : ${ templateVariables.kustomizeSubFolder } + '/' }env/${ templateVariables.deploymentType }/kustomization.yaml",
                 "name": "Bake Kustomize (${ templateVariables.deploymentType })",
                 "overrides": {},
                 "refId": "1",
