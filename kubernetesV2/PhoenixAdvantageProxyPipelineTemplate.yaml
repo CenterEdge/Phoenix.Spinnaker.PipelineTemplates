@@ -147,6 +147,20 @@ pipeline:
                   configMapKeyRef:
                     key: relayDomainSuffix
                     name: ${ templateVariables.configMap }
+              - name: Statsd__Tags__pod_name
+                valueFrom:
+                  fieldRef:
+                    apiVersion: v1
+                    fieldPath: metadata.name
+              - name: Tracing__Enabled
+                value: 'true'
+              - name: Tracing__Jaeger__AgentHost
+                valueFrom:
+                  fieldRef:
+                    apiVersion: v1
+                    fieldPath: status.hostIP
+              - name: OTEL_RESOURCE_ATTRIBUTES
+                value: k8s.pod.name=$(Statsd__Tags__pod_name)
               image: us.gcr.io/phoenix-177420/advantage-proxy-auth
               imagePullPolicy: IfNotPresent
               name: auth
