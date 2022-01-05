@@ -122,7 +122,7 @@ pipeline:
     statusUrlResolution: getMethod
     type: datadogEvent
   # Triggers tied to jenkins builds to the main branch aren't defined in the template so we can manually edit them, such as when enabling or disabling an automated trigger
-  # Note, a trigger tied to a jenkins built is necessary for someone to be able to "Start Manual Execution" on a pipeline and be able to choose which build number to execute
+  # Note, a trigger tied to a jenkins build is necessary for someone to be able to "Start Manual Execution" on a pipeline and be able to choose which build number to execute
   triggers: []
 protect: false
 schema: v2
