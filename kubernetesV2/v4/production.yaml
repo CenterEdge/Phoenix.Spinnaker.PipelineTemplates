@@ -193,6 +193,7 @@ pipeline:
     requisiteStageRefIds:
     - "7"
     type: deleteManifest
+  # Triggers tied to jenkins builds to the main branch aren't defined in the template so we can manually edit them, such as when enabling or disabling an automated trigger
   triggers: []
 protect: false
 schema: v2
