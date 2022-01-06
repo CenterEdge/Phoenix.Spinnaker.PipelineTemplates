@@ -1,8 +1,8 @@
 V2 Pipeline Templates
 ----
-Quick Steps For Updating And Testing  
+Quick Steps For Updating And Testing
 1. Install and configure spin cli https://centeredge.atlassian.net/wiki/spaces/DEP/pages/657489921/Configuring+Spinnaker+CLI
-1. Update the template, save to Spinnaker using: spin pipeline-templates save --file <path to pipeline json>
+1. Update the template, save to Spinnaker using: `spin pipeline-templates save --file <path to pipeline json>`
 2. Run in spinnaker, verify working correctly
 3. Update repo
 4. More information can be found at https://www.spinnaker.io/guides/spin/pipeline-templates/
@@ -10,13 +10,13 @@ Quick Steps For Updating And Testing
 You can also convert an existing pipeline into a template:
 
 Create a pipeline in Spinnaker you wish to use as a starting point for the template
-Get the pipeline's JSON file: spin pipeline get --name <pipelineName> --application <appName> Alternatively, you can save the json directly to a file: spin pipeline get --name <pipelineName> --application <appName> | tee new_template.txt
+Get the pipeline's JSON file: `spin pipeline get --name <pipelineName> --application <appName>` Alternatively, you can save the json directly to a file: `spin pipeline get --name <pipelineName> --application <appName>` | tee new_template.txt
 Edit the json to a template:
 Add a reference to the pipeline templates schema "schema": "v2"
 Add a variables section
 "variables": [ { "type": "", "defaultValue": , "description": "", "name": "" }, { "type": "", "defaultValue": , "description": "", "name": "" } ]```
 
-Use template variables in place of hard coded ones by using ${ templateVariables.<varName> }
+Use template variables in place of hard coded ones by using ${ `templateVariables.<varName>` }
 Save the template to be usable: spin pipeline-templates save --file my_template.txt
 Verify pipeline works in spinnaker
 More information can be found at https://www.spinnaker.io/guides/user/pipeline/pipeline-templates/create/
