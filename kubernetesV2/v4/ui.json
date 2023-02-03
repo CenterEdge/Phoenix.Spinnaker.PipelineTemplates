@@ -45,6 +45,26 @@
         ],
         "keepWaitingPipelines": false,
         "limitConcurrent": true,
+        "notifications": [
+          {
+            "address": "phoenixdev-ci",
+            "level": "pipeline",
+            "type": "slack",
+            "when": [
+              "pipeline.starting",
+              "pipeline.complete",
+              "pipeline.failed"
+            ]
+          },
+          {
+            "address": "phoenixdev",
+            "level": "pipeline",
+            "type": "slack",
+            "when": [
+              "pipeline.failed"
+            ]
+          }
+        ],
         "stages": [
             {
                 "expectedArtifacts": [
