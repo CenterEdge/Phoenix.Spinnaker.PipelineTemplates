@@ -28,6 +28,14 @@ pipeline:
       name: github-repo
       reference: ${templateVariables.gitHubRepo }
       type: git/repo
+  notifications:
+  - address: phoenixdev
+    level: pipeline
+    type: slack
+    when:
+    - pipeline.starting
+    - pipeline.complete
+    - pipeline.failed
   keepWaitingPipelines: false
   limitConcurrent: true
   stages:
