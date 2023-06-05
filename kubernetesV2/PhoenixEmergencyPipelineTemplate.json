@@ -576,7 +576,7 @@
                         }
                     },
                     {
-                        "apiVersion": "autoscaling/v1",
+                        "apiVersion": "autoscaling/v2",
                         "kind": "HorizontalPodAutoscaler",
                         "metadata": {
                             "name": "${ templateVariables.appName }-prod-autoscaler",
@@ -1104,7 +1104,7 @@
                         }
                     },
                     {
-                        "apiVersion": "autoscaling/v1",
+                        "apiVersion": "autoscaling/v2",
                         "kind": "HorizontalPodAutoscaler",
                         "metadata": {
                             "name": "${ templateVariables.appName }-jobs-autoscaler",
