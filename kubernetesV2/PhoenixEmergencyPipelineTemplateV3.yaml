@@ -315,7 +315,7 @@ pipeline:
         # Total HTTP requests received filtered to this deployments tags as a rate per second
         query: >-
           sum:phnx.request.count{app:${ templateVariables.appName },env:production,detail:api}.as_rate()
-    - apiVersion: autoscaling/v2beta2
+    - apiVersion: autoscaling/v2
       kind: HorizontalPodAutoscaler
       metadata:
         name: ${ templateVariables.appName }-prod-autoscaler
@@ -674,7 +674,7 @@ pipeline:
         # Total RabbitMQ events received filtered to this deployments tags as a rate per second
         query: >-
           sum:phnx.event.received.count{app:${ templateVariables.appName },env:production,detail:jobs}.as_rate()
-    - apiVersion: autoscaling/v2beta2
+    - apiVersion: autoscaling/v2
       kind: HorizontalPodAutoscaler
       metadata:
         name: ${ templateVariables.appName }-jobs-autoscaler

@@ -213,7 +213,7 @@
                         }
                     },
                     {
-                        "apiVersion": "autoscaling/v1",
+                        "apiVersion": "autoscaling/v2",
                         "kind": "HorizontalPodAutoscaler",
                         "metadata": {
                             "name": "${ templateVariables.appName }-prod-autoscaler",
